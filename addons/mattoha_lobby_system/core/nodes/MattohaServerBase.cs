@@ -23,13 +23,13 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	[Export] MattohaServerMiddleware? Middleware { get; set; }
 	private MattohaSystem? _sysetm;
 
-	private readonly Dictionary<long, JsonObject> _players = [];
-	private readonly Dictionary<long, JsonObject> _lobbies = [];
+	private readonly Dictionary<long, JsonObject> _players = new();
+	private readonly Dictionary<long, JsonObject> _lobbies = new();
 
 	/// <summary>
 	/// Spawned nodes in each lobby, every key has a value of List<MattohaSpawnNodeInfo>.
 	/// </summary>
-	public Dictionary<long, List<MattohaSpawnNodeInfo>> SpawnedNodes { get; private set; } = [];
+	public Dictionary<long, List<MattohaSpawnNodeInfo>> SpawnedNodes { get; private set; } = new();
 
 	public override void _EnterTree()
 	{
@@ -69,7 +69,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			return _players as Dictionary<long, T>;
 		}
 
-		Dictionary<long, T> items = [];
+		Dictionary<long, T> items = new();
 		foreach (var kvp in _players)
 		{
 			items.Add(kvp.Key, MattohaUtils.Deserialize<T>(kvp.Value)!);
@@ -90,7 +90,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		{
 			return _lobbies as Dictionary<long, T>;
 		}
-		Dictionary<long, T> items = [];
+		Dictionary<long, T> items = new();
 		foreach (var kvp in _lobbies)
 		{
 			items.Add(kvp.Key, MattohaUtils.Deserialize<T>(kvp.Value)!);
@@ -299,7 +299,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			lobbyData[nameof(IMattohaLobby.OwnerId)] = playerId;
 			_lobbies.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), lobbyData);
 
-			SpawnedNodes.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), []);
+			SpawnedNodes.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), new());
 
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.SetPlayerData), MattohaUtils.Serialize(player!));
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.CreateLobby), MattohaUtils.Serialize(lobbyData!));

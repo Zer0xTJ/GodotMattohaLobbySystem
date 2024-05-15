@@ -9,7 +9,7 @@ public partial class MattohaReplicatorBase : MattohaSystemFinder
 	[Export] bool ReplicationEnabled = true;
 	[Export] bool AutoDespawn = true;
 	[Export] float ReplicationIntervalSeconds = 0;
-	[Export] public Array<MattohaReplicationItem> ReplicationItems = [];
+	[Export] public Array<MattohaReplicationItem> ReplicationItems = new();
 	private float _lastReplicationTime = 0;
 
 	public override void _EnterTree()

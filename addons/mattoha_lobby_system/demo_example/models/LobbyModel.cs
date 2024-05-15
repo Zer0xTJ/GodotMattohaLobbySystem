@@ -11,7 +11,7 @@ public partial class LobbyModel : IMattohaLobby
 	public int MaxPlayers { get; set; }
 	public int PlayersCount { get; set; }
 	public bool IsGameStarted { get; set; }
-	public List<string> PrivateProps { get; set; } = [];
+	public List<string> PrivateProps { get; set; } = new();
 
 	public override string ToString()
 	{

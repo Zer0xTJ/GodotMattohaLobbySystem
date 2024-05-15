@@ -181,9 +181,9 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	private MattohaSystem? _sysetm;
-	private JsonObject _currentLobbyData = [];
-	private JsonObject _currentPlayerData = [];
-	private Dictionary<long, JsonObject> _joinedPlayers = [];
+	private JsonObject _currentLobbyData = new();
+	private JsonObject _currentPlayerData = new();
+	private Dictionary<long, JsonObject> _joinedPlayers = new();
 
 	public override void _EnterTree()
 	{
@@ -238,7 +238,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 			return _joinedPlayers as Dictionary<long, T>;
 		}
 
-		Dictionary<long, T> items = [];
+		Dictionary<long, T> items = new();
 		foreach (var item in _joinedPlayers)
 		{
 			items.Add(item.Key, MattohaUtils.Deserialize<T>(item.Value)!);
@@ -543,7 +543,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	public void LeaveLobby()
 	{
 #if MATTOHA_CLIENT
-		_currentLobbyData = [];
+		_currentLobbyData = new();
 		_currentPlayerData[nameof(IMattohaPlayer.JoinedLobbyId)] = 0;
 		RpcId(1, nameof(ServerRpc), nameof(MattohaServerRpcMethods.LeaveLobby), "");
 #endif

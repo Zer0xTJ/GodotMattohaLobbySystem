@@ -9,7 +9,7 @@ namespace MattohaLobbySystem.Core.Nodes;
 
 public class MattohaUtils
 {
-	
+
 	/// <summary>
 	/// Return JsonObject without Props that exists in "PrivateProps" list property, used when sending player data to other players.
 	/// </summary>
@@ -17,7 +17,7 @@ public class MattohaUtils
 	/// <returns>new object without PrivateProps properties.</returns>
 	public static JsonObject ToHiddenPrivatePropsObject(JsonObject obj)
 	{
-		JsonObject newObj = [];
+		JsonObject newObj = new();
 		var privateProps = GetPrivateProps(obj);
 		foreach (var kvp in obj)
 		{
@@ -31,7 +31,7 @@ public class MattohaUtils
 			}
 			else if (IsEnumerable(kvp.Value) && !privateProps.Contains(kvp.Key))
 			{
-				List<object> items = [];
+				List<object> items = new();
 				foreach (var item in kvp.Value.AsArray())
 				{
 					if (item != null)
@@ -67,7 +67,7 @@ public class MattohaUtils
 		return newObj;
 	}
 
-	
+
 	/// <summary>
 	/// Convert JsonObject to a  new object that has only ChatProps fields.
 	/// </summary>
@@ -76,7 +76,7 @@ public class MattohaUtils
 	public static JsonObject ToChatObject(JsonObject obj)
 	{
 
-		JsonObject newObj = [];
+		JsonObject newObj = new();
 		var chatProps = GetChatProps(obj);
 
 		foreach (var kvp in obj)
@@ -93,7 +93,7 @@ public class MattohaUtils
 			else if (IsEnumerable(kvp.Value))
 			{
 				bool shouldAddItems = true;
-				List<object> items = [];
+				List<object> items = new();
 				foreach (var item in kvp.Value.AsArray())
 				{
 					if (item != null)
@@ -142,7 +142,7 @@ public class MattohaUtils
 	/// <returns>List of private properties names.</returns>
 	public static List<String> GetPrivateProps(JsonObject obj)
 	{
-		List<string> privateProps = ["ChatProps", "PrivateProps"];
+		List<string> privateProps = new() { "ChatProps", "PrivateProps" };
 		if (obj.ContainsKey("PrivateProps"))
 		{
 			var node = obj["PrivateProps"];
@@ -169,7 +169,7 @@ public class MattohaUtils
 	/// <returns>List of chat properties names.</returns>
 	public static List<String> GetChatProps(JsonObject obj)
 	{
-		List<string> chatProps = [];
+		List<string> chatProps = new();
 		if (obj.ContainsKey("ChatProps"))
 		{
 			var node = obj["ChatProps"];
@@ -264,7 +264,7 @@ public class MattohaUtils
 	{
 		return JsonSerializer.Deserialize<T>(jsonObject);
 	}
-	
+
 	/// <summary>
 	/// Serialize any object to json string.
 	/// </summary>

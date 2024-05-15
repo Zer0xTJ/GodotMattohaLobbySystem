@@ -13,7 +13,7 @@ public partial class MattohaReplicationViewer : Control
 	[Export] PackedScene? ReplicationItemSlot { get; set; }
 	[Export] LineEdit? SearchLineEdit { get; set; }
 	[Export] CheckBox? ShowActiveOnly { get; set; }
-	public Array<MattohaReplicationItem> Items { get; set; } = [];
+	public Array<MattohaReplicationItem> Items { get; set; } = new();
 	public string RootNodeName { get; set; } = "..";
 
 

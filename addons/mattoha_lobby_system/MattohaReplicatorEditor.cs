@@ -11,9 +11,9 @@ namespace MattohaLobbySystem.Editors;
 public partial class MattohaReplicatorEditor : EditorProperty
 {
 	private Button _propertyControl = new();
-	private Array<MattohaReplicationItem> _currentValue = [];
+	private Array<MattohaReplicationItem> _currentValue = new();
 	private Node? _rootNode;
-	private List<int> _usageToIgnore = [128, 10, 64, 256];
+	private List<int> _usageToIgnore = new() { 128, 10, 64, 256 };
 	private MattohaLobbySystemPlugin _plugin;
 
 	public MattohaReplicatorEditor(MattohaLobbySystemPlugin plugin)
@@ -63,7 +63,7 @@ public partial class MattohaReplicatorEditor : EditorProperty
 
 	private Array<MattohaReplicationItem> InitReplicationItems()
 	{
-		Array<MattohaReplicationItem> items = [];
+		Array<MattohaReplicationItem> items = new();
 		var nodesToReplicate = GetReplicationNodes();
 		foreach (var node in nodesToReplicate)
 		{
@@ -97,7 +97,7 @@ public partial class MattohaReplicatorEditor : EditorProperty
 	private Array<Node> GetReplicationNodes(Node? node = null)
 	{
 		var replicatorNodeName = ((Node)GetEditedObject()).Name.ToString().Trim();
-		Array<Node> nodes = [];
+		Array<Node> nodes = new();
 		node ??= _rootNode;
 		if (node!.Name.ToString().Trim() != replicatorNodeName)
 		{
