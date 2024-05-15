@@ -16,8 +16,6 @@ Mattoha Lobby System is an addon designed to simplify multiplayer game developme
 - **ServerMiddleware:** customize your Before & After almost all server events.
 - **UnhandledRpc:** MattohaLobbySystem allows you to send a custom RPC and handle it at your own, for both client & server.
 
-Get started with multiplayer game development in Godot today using the Multi-Lobby System addon!
-
 
 ## Have any ideas ?
 DM me on X-platform - https://x.com/zer0xtj , It would be appreciated if you write in Arabic.
