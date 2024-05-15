@@ -13,6 +13,8 @@ Mattoha Lobby System is an addon designed to simplify multiplayer game developme
 - **Dynamic Spawning:** Seamlessly spawn and manage game entities within each lobby.
 - **Easy Integration:** Designed for C# developers with a user-friendly API.
 - **Extensibility:** Customize and extend functionality to suit your game's needs.
+- **ServerMiddleware:** customize your Before & After almost all server events.
+- **UnhandledRpc:** MattohaLobbySystem allows you to send a custom RPC and handle it at your own, for both client & server.
 
 Get started with multiplayer game development in Godot today using the Multi-Lobby System addon!
 
@@ -37,7 +39,7 @@ There is an example that comes with MattohaLobbySystem Addon , you can discover 
 - Youtube [ English ] :
 - Youtube [ Arabic ] :
 
-## Step By Step Explination
+## Main Concepts
 before we start, configure your .csproject to be similar to this:
 ```
 <Project Sdk="Godot.NET.Sdk/4.2.2">
@@ -56,7 +58,7 @@ before we start, configure your .csproject to be similar to this:
   </PropertyGroup>
 </Project>
 ```
-When you want to distrubite your game for players, disable MATTOHA_SERVER constant and keep MATTOHA_CLIENT, this will protect your server side code.
+When you want to distrubite your game for players, disable `MATTOHA_SERVER` constant and keep `MATTOHA_CLIENT`, this will protect your server side code.
 This configuration will help you to debug your code easly.
 
 After Enabling The addon on your project, Create a new node and call it whatever you want.
@@ -92,4 +94,118 @@ Your tree would be something like this;
 Now, from inspector, edit MattohaSystem proeprties and assign `Server` & `Client` nodes to it.
 You can also configure the system proeprties like `IP`, `PORT`, `MaxPlayersPerLobby` etc .
 
+<img src="pics/config.png" height="400" />
+
 Last but not least, go ahead and add this scene to autoload in your project settings.
+
+<img src="pics/auto_load.png" height="400" />
+
+After this setup, we are ready to use the functionality of our MattohaLobbySystem!, you can access all public function on server and client nodes.
+
+- Examples:
+```csharp
+// start server
+MyLobbyManager.System.Server.StartServer()
+
+// connect client to server
+MyLobbyManager.System.Client.ConnectToServer()
+
+// we also can listen to nodes signal from codes
+MyLobbyManager.System.Client.ConnectedToServer += OnConnectedToServer;
+```
+
+- We also can listen to signals from godot engine user interface:
+
+<img src="pics/client_signals.png" width="400" />
+
+
+| Signal Name                       | Description                                                                                          |
+|-----------------------------------|------------------------------------------------------------------------------------------------------|
+| ConnectedToServer                 | Emmited when a connection to server is succeed.                                                      |
+| ConnectionFailed                  | Emmited when a connection to server failed.                                                          |
+| ServerDisconnected                | Emmited when server disconnected.                                                                    |
+| CurrentPlayerUpdated              | Emmited when current player data is updated.                                                         |
+| NewLobbyCreated                   | Emmited when a new lobby is created successfully.                                                    |
+| AvailableLobbiesRefreshed         | Emmited when the list of available lobbies is updated.                                                |
+| JoinLobbySucceed                  | Emmited when joining to lobby succeeed.                                                               |
+| NewPlayerJoinedLobby              | Emmited when new player joined current lobby.                                                         |
+| JoinedLobbyRefreshed              | Emmited when joined lobby is updated.                                                                 |
+| JoinedPlayersRefreshed            | Emmited when joined players list in lobby is updated.                                                 |
+| TeamMessageReceived               | Emmited when a new team message is received.                                                         |
+| LobbyMessageReceived              | Emmited when a new lobby message is received.                                                        |
+| GlobalMessageReceived             | Emmited when a new global message is received.                                                        |
+| GameStarted                       | Emmited when joined lobby game started.                                                               |
+| PlayerLeftLobby                   | Emmited when a player left a lobby.                                                                   |
+| NodeSpawnRequested                | Emmited when a new node should be spawned.                                                            |
+| NodeDespawnRequested              | Emmited when a node should be despawned.                                                              |
+| JoinLobbyFailed                   | Emmited when joining to lobby failed.                                                                 |
+| SetPlayerDataFailed               | Emmited when setting player data fail.                                                                |
+| CreateLobbyFailed                 | Emmited when creating lobby failed.                                                                   |
+| SetLobbyDataFailed                | Emmited when setting lobby data fail.                                                                 |
+| TeamMessageFailed                 | Emmited when sending team message fail.                                                               |
+| LobbyMessageFailed                | Emmited when sending lobby message fail.                                                              |
+| GlobalMessageFailed               | Emmited when sending global message fail.                                                             |
+| StartGameFailed                   | Emmited when starting lobby game fail.                                                                |
+| SpawnNodeFailed                   | Emmited when spawning a node fail.                                                                    |
+| DespawnNodeFailed                 | Emmited when despawning a node fail.                                                                  |
+| UnhandledClientRpc                | Emmited when a server called unhandled RPC.                                                           |
+
+
+
+when you create a game scene, you need to add important nodes, `MattohaSpawnListener` the one responisble for spawning & despawning nodes for other players,
+and `MattohaReplicateListener` the node responsible for replicate some node data for other players in same lobby.
+you dont need to configure them, adding them will do the job.
+
+
+the last node for client is `MattohaReplicator` node, its the node responsible for sending node data for other players in same lobby
+
+lets assume that we have a player node called `Player`, and has a child `Sprite2D`, in this case, we need to replicate the player position and the `Modulate` of the sprite,
+
+we cann add `MattohaReplicator` node to the `Player` node, this node has a fiew but important properties.
+
+<img src="pics/replicator_properties.png" width="400" />
+
+we can enable or disable the replication, 
+and we can set auto despawn to true , this will despawn the node for all players when a node exit the tree.
+also there is an important button `Edit Items In Inspector`, here we can select the properties we need to replicate over network for other players in same lobby
+
+<img src="pics/replicator_properties.png" height="400" />
+
+when we press that button, we will see the bottom panel Replication Viewer
+
+<img src="pics/replicator_viewer.png" height="400" />
+
+We can select properties that we want to replicate, and we can select if we want the replication to be applied smoothly or not, also we can select the smooth time, and specify this replication if it's team only or for all lobby players.
+
+`NOTE: press Ctrl+S whenever change any replication data`
+
+
+
+This was the main nodes for client, but wait , what if we want to customize our server side codes?, what if we want to block player from edit his data? what if we want to connect to our database ?
+
+Well, this is why MattohaLobbySystem is powerfull, it comes with a node called `ServerMiddleware`, You can create your own ServerMiddleware for sure to customize your server logic before & after almost all events.
+
+## Custom Server Middleware
+To create your custom Server middleware, go to MyLobbyManager scene, and under `MattohaClient`, add new node.
+Now attach a new script and call it `CustomServerMiddleware` the class snippet as following :
+```csharp
+public partial class CustomServerMiddleware : MattohaServerMiddleware
+{
+#if MATTOHA_SERVER
+	public override MattohaMiddlewareResponse BeforeSetPlayerData(MattohaServerBase server, JsonObject player)
+	{
+		GD.Print("Doing some logic on custom middleware");
+		return new MattohaMiddlewareResponse
+		{
+			Status = false,
+			Messsage = "Some error message"
+		};
+	}
+#endif
+}
+```
+We override a method called `BeforeSetPlayerData`, this method will return `MattohaMiddlewareResponse` object with a status propery, if status is `true` then the execution will continue, otherwise, the execution will not, and FailSignal will be emmited on client node with a `Message` error, the signal emmited depends on the method that returned `false` status.
+
+The following table describe the middleware methods that you can use to customiae your server side logic:
+
+
