@@ -288,3 +288,4 @@ The following table describe the server side methods :
 
 # TODO:
 - ADD an option to replicator to set "despawn" type to => server / direct peers
+- GDScript binding
