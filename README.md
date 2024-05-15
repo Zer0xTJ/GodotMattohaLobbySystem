@@ -228,6 +228,8 @@ public partial class CustomServerMiddleware : MattohaServerMiddleware
 ```
 We override a method called `BeforeSetPlayerData`, this method will return `MattohaMiddlewareResponse` object with a status propery, if status is `true` then the execution will continue, otherwise, the execution will not, and FailSignal will be emmited on client node with a `Message` error, the signal emmited depends on the method that returned `false` status.
 
+Now select `MattohaServer` node and assign your custom MiddlewareNode to `Server Middleware` property.
+
 The following table describe the middleware methods that you can use to customiae your server side logic:
 
 | Method              | Description                                              |
