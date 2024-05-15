@@ -186,7 +186,6 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 #if MATTOHA_SERVER
 		if (_sysetm == null)
 		{
-			GD.Print("SYSTEM IS NULL:");
 			return;
 		}
 		var peer = new ENetMultiplayerPeer();

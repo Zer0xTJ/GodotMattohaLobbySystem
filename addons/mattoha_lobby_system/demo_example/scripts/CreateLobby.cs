@@ -14,6 +14,12 @@ public partial class CreateLobby : Control
 		base._Ready();
 	}
 
+	public override void _ExitTree()
+	{
+		MyLobbyManager.System!.Client!.NewLobbyCreated -= OnNewLobbyCreated;
+		base._ExitTree();
+	}
+
 	private void OnNewLobbyCreated(MattohaSignal<JsonObject> lobby)
 	{
 		GetTree().ChangeSceneToFile("res://addons/mattoha_lobby_system/demo_example/scenes/lobby.tscn");

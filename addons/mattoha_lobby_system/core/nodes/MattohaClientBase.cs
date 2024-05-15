@@ -255,7 +255,6 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 #if MATTOHA_CLIENT
 		if (_sysetm == null)
 		{
-			GD.Print("SYSTEM IS NULL:");
 			return;
 		}
 		var peer = new ENetMultiplayerPeer();
@@ -495,7 +494,6 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	{
 #if MATTOHA_CLIENT
 		var payload = MattohaUtils.ToJsonObject(jsonPayload);
-		GD.Print(payload);
 		var message = payload!["Message"]!.GetValue<string>();
 		var messageType = payload["MessageType"]!.GetValue<string>();
 		var playerData = MattohaUtils.Deserialize<JsonObject>(MattohaUtils.Serialize(payload["PlayerData"]!));
