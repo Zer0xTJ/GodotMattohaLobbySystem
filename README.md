@@ -39,7 +39,7 @@ There is an example that comes with MattohaLobbySystem Addon , you can discover 
 
 ## Main Concepts
 before we start, configure your .csproject to be similar to this:
-```
+```xml
 <Project Sdk="Godot.NET.Sdk/4.2.2">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
