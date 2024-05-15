@@ -20,11 +20,11 @@ public partial class MattohaReplicatorBase : MattohaSystemFinder
 
 	public override void _ExitTree()
 	{
-		base._ExitTree();
 		if (AutoDespawn)
 		{
 			GetMattohaSystem()!.Client!.DespawnNode(GetNode(".."));
 		}
+		base._ExitTree();
 	}
 
 

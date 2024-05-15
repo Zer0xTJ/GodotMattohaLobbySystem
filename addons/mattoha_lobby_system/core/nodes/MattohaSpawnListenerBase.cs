@@ -14,7 +14,7 @@ public partial class MattohaSpawnListenerBase : MattohaSystemFinder
 
 	private void OnNodeDespawnRequested(MattohaSignal<string> nodePath)
 	{
-		GetNode(nodePath.Value!)?.QueueFree();
+		GetNode(nodePath.Value!).QueueFree();
 	}
 
 	private void OnNodeSpawnRequested(MattohaSignal<MattohaSpawnNodeInfo> nodeInfo)

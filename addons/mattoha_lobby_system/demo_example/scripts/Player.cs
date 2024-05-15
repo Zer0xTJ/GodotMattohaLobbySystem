@@ -6,12 +6,15 @@ public partial class Player : CharacterBody2D
 {
 	[Export] public PackedScene? ProjectileScene;
 	[Export] public float Speed = 300;
+
+	private Node? _currentProjectile;
 	public override void _Process(double delta)
 	{
 		// only owner can move node;
 		if (GetMultiplayerAuthority() == Multiplayer.GetUniqueId())
 		{
 			MovePlayer();
+			SpawnProjectile();
 		}
 		base._Process(delta);
 	}
@@ -27,7 +30,17 @@ public partial class Player : CharacterBody2D
 	{
 		if (Input.IsActionJustPressed("ui_jump"))
 		{
-			var instance = MyLobbyManager.System!.CreateInstanceFromPackedScene(ProjectileScene!);
+			if (_currentProjectile == null)
+			{
+				_currentProjectile = MyLobbyManager.System!.CreateInstanceFromPackedScene(ProjectileScene!);
+				AddChild(_currentProjectile);
+				MyLobbyManager.System!.Client!.SpawnNode(_currentProjectile);
+			}
+			else
+			{
+				_currentProjectile.QueueFree(); // projectile has "replicator node aith auto despawn enabled"
+				_currentProjectile = null;
+			}
 		}
 	}
 }

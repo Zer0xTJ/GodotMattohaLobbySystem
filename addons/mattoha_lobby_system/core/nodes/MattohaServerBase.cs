@@ -949,7 +949,11 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			var joinedPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
 			foreach (var player in joinedPlayers!)
 			{
-				RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode), $"{info!.ParentPath}/{info!.NodeName}");
+				RpcId(
+					player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+					nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode),
+					$"{info!.ParentPath}/{info!.NodeName}"
+				);
 			}
 		}
 		else

@@ -9,7 +9,7 @@ public partial class MattohaReplicator: MattohaReplicatorBase
 
 	public override void _ExitTree()
 	{
-		base._ExitTree();
 		// your code here
+		base._ExitTree();
 	}
 }

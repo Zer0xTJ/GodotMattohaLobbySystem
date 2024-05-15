@@ -6,13 +6,8 @@ namespace MattohaLobbySystem.Editors;
 #if TOOLS
 public partial class MattohaReplicatorInspector: EditorInspectorPlugin
 {
-	private MattohaLobbySystemPlugin _plugin;
+	public MattohaLobbySystemPlugin? Plugin;
 	
-	public MattohaReplicatorInspector(MattohaLobbySystemPlugin plugin)
-	{
-		_plugin = plugin;
-	}
-
 	public override bool _CanHandle(GodotObject @object)
 	{
 		return true;
@@ -24,7 +19,7 @@ public partial class MattohaReplicatorInspector: EditorInspectorPlugin
 	{
 		if (name == "ReplicationItems")
 		{
-			AddPropertyEditor(name, new MattohaReplicatorEditor(_plugin));
+			AddPropertyEditor(name, new MattohaReplicatorEditor(Plugin!));
 			return true;
 		}
 
