@@ -179,6 +179,30 @@ We can select properties that we want to replicate, and we can select if we want
 
 `NOTE: press Ctrl+S whenever change any replication data`
 
+MattohaClient Methods to interact with server:
+
+| Method              | Description                                              |            Signal(s) Emmited (success or fail)             |
+----------------------|----------------------------------------------------------|------------------------------------------------------------|
+| GetCurrentPlayerData | Get current player object casted to concrete type instead of JsonObject. | |
+| GetCurrentLobbyData | Get current lobby object casted to concrete type instead of JsonObject. | |
+| GetJoinedPlayers | Return list of joined players casted to concrete type instead of List<JsonObject>. | |
+| ConnectToServer | Connect to server. | ConnectedToServer / ConnectionFailed |
+| SetPlayerData | Set or register player data on server, NOTE that: Id, JoindLobbyId cant be set. | CurrentPlayerUpdated / SetPlayerDataFailed
+| CreateLobby | Create a new lobby, then join it. | NewLobbyCreated / CreateLobbyFailed |
+| LoadAvailableLobbies | Load available lobbies, when done, a signal will be emmited. | AvailableLobbiesRefreshed |
+| JoinLobby | Join loby by it's Id. | JoinLobby / JoinLobbyFailed |
+| RefreshJoinedLobby | Refresh joined lobby data and fetch the data from server. | JoinedLobbyRefreshed |
+| RefreshJoinedPlayers | Refresh joined players in lobby. | JoinedPlayersRefreshed |
+| SetLobbyData | Update Joined Lobby data (only owner can update it), note that Id, PlayersCount & IsGameStarted cant be updated. | JoinedLobbyRefreshed / SetLobbyDataFailed | 
+| SendTeamMessage | Send a team message. | TeamMessageReceived / TeamMessageFailed |
+| SendLobbyMessage | Send a lobby message. | LobbyMessageReceived / LobbyMessageFailed  |
+| SendGlobalMessage | Send a global message. | GlobalMessageReceived / GlobalMessageFailed |
+| StartGame | Start joined lobby game, only owner can start games. | GameStarted / StartGameFailed |
+| LeaveLobby | Leave joined lobby | PlayerLeftLobby (for remaining players in lobby ) |
+| SpawnNode | Spawn a node for players in joined lobby. | NodeSpawnRequested / SpawnNodeFailed |
+| SpawnAvailableNodes | Spawn nodes that already spawned from other players, use this method when a new player join the game scene. | NodeSpawnRequested(foreach node) |
+| DespawnNode | Despawn node on players's devices, player can despawn nodes he owns only. | NodeDespawnRequested / DespawnNodeFailed |
+| SendUnhandledServerRpc | Send a custom method name RPC to server to execute, this will emmit "UnhandledRpc" signal on server node. | UnhandledServerRpc (On Server Node)  |
 
 
 This was the main nodes for client, but wait , what if we want to customize our server side codes?, what if we want to block player from edit his data? what if we want to connect to our database ?
