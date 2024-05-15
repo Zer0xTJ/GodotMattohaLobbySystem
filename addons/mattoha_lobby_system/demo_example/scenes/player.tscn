@@ -1,0 +1,41 @@
+[gd_scene load_steps=8 format=3 uid="uid://c1xsajn74al37"]
+
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/demo_example/scripts/Player.cs" id="1_oncya"]
+[ext_resource type="Texture2D" uid="uid://wcxowoxvkef7" path="res://icon.svg" id="2_pxpn8"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaReplicator.cs" id="3_or1ej"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/models/MattohaReplicationItem.cs" id="4_nsodr"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_4d5lc"]
+
+[sub_resource type="Resource" id="Resource_f1xso"]
+script = ExtResource("4_nsodr")
+NodePath = ".."
+PropertyPath = "position"
+IsActive = true
+IsTeamOnly = true
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_xklfd"]
+script = ExtResource("4_nsodr")
+NodePath = ".."
+PropertyPath = "name"
+IsActive = true
+IsTeamOnly = true
+IsSmooth = true
+SmoothTime = 0.05
+
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 0
+script = ExtResource("1_oncya")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_pxpn8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_4d5lc")
+
+[node name="MattohaReplicator" type="Node" parent="."]
+script = ExtResource("3_or1ej")
+ReplicationItems = [SubResource("Resource_f1xso"), SubResource("Resource_xklfd")]

@@ -1,0 +1,65 @@
+[gd_scene load_steps=2 format=3 uid="uid://hu01pjpa4a53"]
+
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/UI/ReplicationItemSlot.cs" id="1_kgcdf"]
+
+[node name="ReplicationItemSlot" type="MarginContainer" node_paths=PackedStringArray("NodeNameLabel", "PropertyPathLabel", "IsActiveCheckBox", "IsTeamOnlyCheckBox", "IsSmoothCheckBox", "SmoothTimeLineEdit")]
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_kgcdf")
+NodeNameLabel = NodePath("HBoxContainer/NodePathLabel")
+PropertyPathLabel = NodePath("HBoxContainer/PropertyPathLabel")
+IsActiveCheckBox = NodePath("HBoxContainer/IsActiveCheckBox")
+IsTeamOnlyCheckBox = NodePath("HBoxContainer/IsTeamOnlyCheckBox")
+IsSmoothCheckBox = NodePath("HBoxContainer/IsSmoothCheckBox")
+SmoothTimeLineEdit = NodePath("HBoxContainer/SmoothTimeLineEdit")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="NodePathLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 17
+text = "node_path"
+autowrap_mode = 2
+
+[node name="PropertyPathLabel" type="Label" parent="HBoxContainer"]
+custom_minimum_size = Vector2(250, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 17
+text = "property_path"
+autowrap_mode = 2
+
+[node name="IsActiveCheckBox" type="CheckBox" parent="HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+text = "Active"
+
+[node name="IsTeamOnlyCheckBox" type="CheckBox" parent="HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+text = "Team Only"
+
+[node name="IsSmoothCheckBox" type="CheckBox" parent="HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_font_sizes/font_size = 16
+text = "Smooth"
+
+[node name="SmoothTimeLineEdit" type="LineEdit" parent="HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 16
+text = "0.01"
+placeholder_text = "smooth time"
+
+[connection signal="toggled" from="HBoxContainer/IsActiveCheckBox" to="." method="OnIsActiveButtonToggled"]
+[connection signal="toggled" from="HBoxContainer/IsTeamOnlyCheckBox" to="." method="OnIsTeamOnlyButtonToggled"]
+[connection signal="toggled" from="HBoxContainer/IsSmoothCheckBox" to="." method="OnIsSmoothButtonToggled"]
+[connection signal="text_changed" from="HBoxContainer/SmoothTimeLineEdit" to="." method="OnSmoothTimeLineEditChanged"]
