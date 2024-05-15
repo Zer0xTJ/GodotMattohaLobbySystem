@@ -14,11 +14,15 @@ public partial class MattohaSpawnListenerBase : MattohaSystemFinder
 
 	private void OnNodeDespawnRequested(MattohaSignal<string> nodePath)
 	{
-		GetNode(nodePath.Value!).QueueFree();
+		if (GetTree().Root.HasNode(nodePath.Value))
+		{
+			GetNode(nodePath.Value!).QueueFree();
+		}
 	}
 
 	private void OnNodeSpawnRequested(MattohaSignal<MattohaSpawnNodeInfo> nodeInfo)
 	{
+
 		GetMattohaSystem()!.SpawnNodeFromNodeInfo(nodeInfo!.Value!);
 
 	}
