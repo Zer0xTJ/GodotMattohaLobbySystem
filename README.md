@@ -232,4 +232,59 @@ We override a method called `BeforeSetPlayerData`, this method will return `Matt
 
 The following table describe the middleware methods that you can use to customiae your server side logic:
 
+| Method              | Description                                              |
+----------------------|----------------------------------------------------------|
+| BeforeSetPlayerData | Executes before setting player data. |
+| AfterSetPlayerData | Executes after setting player data. |
+| BeforeCreateLobby | Executes before createing lobby. |
+| AfterCreateLobby | Executes after create lobby. |
+| BeforeJoinLobby | Executes before a player join a lobby. |
+| AfterJoinLobby | Executes after a player joined a lobby. |
+| BeforeSetLobbyData | Executes before setting lobby data by owner. |
+| AfterSetLobbyData | Executes after lobby data being set. |
+| BeforeSendTeamMessage | Executes before sending a team message. |
+| AfterSendTeamMessage | Executes after a team message sent. |
+| BeforeSendLobbyMessage | Executes before sending a lobby message. |
+| AfterSendLobbyMessage | Executes after a lobby message sent. |
+| BeforeSendGlobalMessage | Executes before sending a global message. |
+| AfterSendGlobalMessage | Executes after a global message sent. |
+| BeforeStartGame | Executes before starting lobby game. |
+| AfterStartGame | Executes after starting the game. |
+| BeforePlayerLeaveLobby | Executes before player leave lobby. |
+| AfterPlayerLeaveLobby | Executes after player leave lobby. |
+| BeforeSpawnNode | Executes before spawning a node. |
+| AfterSpawnNode | Executes after spawning a node. |
+| BeforeDespawnNode | Executes before despawning a node. | 
+| AfterDespawnNode | Executes after despawning a node. |
 
+
+The following table describe the server side methods :
+| Method              | Description                                              |
+----------------------|----------------------------------------------------------|
+| SendUnhandledClientRpc | Send a custom method name RPC to client to execute, this will emmit "UnhandledRpc" signal on client node. | 
+| GetPlayers | Get Players dictionary, but cast it to custom concrete objects instead of JsonObject, where key is the id of player, and the value is the player object. |
+| GetLobbies | Get lobbies dictionary, but cast it to custom concrete objects instead of JsonObject, where key is the id of lobby, and the value is the lobby object. |
+| GetPlayer | Get Player from players dictionary but casted to custom type. |
+| GetLobby | Get Lobby from lobbies dictionary but casted to custom type. |
+| GetPlayersInLobby | Get List of players joined in lobby. |
+| GetLobbyOfPlayer | Get the joined lobby from player id. |
+| StartServer | Start the server session. |
+| RefreshAvailableLobbiesForAll | Send available lobbies for all players. |
+| RefreshJoinedLobbyForPlayer | Refresh joined lobby for a specific player. |
+| RefreshJoinedLobbyForAll | Refresh joined lobby for all players joined. |
+| RefreshJoinedPlayersForPlayer | Send the joined players list to a specific player. |
+| RefreshJoinedPlayersForAll | Send the joined players list to a all players in specific lobby. |
+| RefreshLobbyDataForAllJoinedPlayers | Refresh Lobby data for all joined players in the lobby. |
+| SendTeamMessage | Send a message for all players in same lobby and same team. |
+| SendLobbyMessage | Send a message for all players in same lobby. |
+| SendGlobalMessage | Send a message for all online players. |
+| DespawnPlayerNodes | Despawn player nodes from his current joined lobby. |
+| RemovePlayerFromJoinedLobby | Remove player from joined lobby. |
+| SendUnhandledClientRpc | Send a custom method name RPC to client to execute, this will emmit "UnhandledClientRpc" signal on client node. |
+
+
+
+
+
+# TODO:
+- ADD an option to replicator to set "despawn" type to => server / direct peers
