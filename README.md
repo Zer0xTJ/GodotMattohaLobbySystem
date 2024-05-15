@@ -230,7 +230,7 @@ We override a method called `BeforeSetPlayerData`, this method will return `Matt
 
 Now select `MattohaServer` node and assign your custom MiddlewareNode to `Server Middleware` property.
 
-The following table describe the middleware methods that you can use to customiae your server side logic:
+The following table describe the middleware methods that you can use to customize your server side logic:
 
 | Method              | Description                                              |
 ----------------------|----------------------------------------------------------|
@@ -258,7 +258,7 @@ The following table describe the middleware methods that you can use to customia
 | AfterDespawnNode | Executes after despawning a node. |
 
 
-The following table describe the server side methods :
+The following table describe the server node methods :
 | Method              | Description                                              |
 ----------------------|----------------------------------------------------------|
 | SendUnhandledClientRpc | Send a custom method name RPC to client to execute, this will emmit "UnhandledRpc" signal on client node. | 
@@ -283,7 +283,7 @@ The following table describe the server side methods :
 | SendUnhandledClientRpc | Send a custom method name RPC to client to execute, this will emmit "UnhandledClientRpc" signal on client node. |
 
 
-
+## Export
 
 
 # TODO:
