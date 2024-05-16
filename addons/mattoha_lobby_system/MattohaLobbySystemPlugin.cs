@@ -15,8 +15,10 @@ public partial class MattohaLobbySystemPlugin : EditorPlugin
 	public override void _EnterTree()
 	{
 		AddTypes();
-		_mattohaReplicationInspector = new MattohaReplicatorInspector();
-		_mattohaReplicationInspector.Plugin = this;
+		_mattohaReplicationInspector = new MattohaReplicatorInspector
+		{
+			Plugin = this
+		};
 		AddInspectorPlugin(_mattohaReplicationInspector);
 		_selection = EditorInterface.Singleton.GetSelection();
 		_selection.SelectionChanged += OnSelectionChanged;

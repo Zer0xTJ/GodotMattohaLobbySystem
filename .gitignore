@@ -1,7 +1,5 @@
 # ide ignores
 .vs
-.vscode
-Properties
 # Godot 4+ specific ignores
 .godot/
 
