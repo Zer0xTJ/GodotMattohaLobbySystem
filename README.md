@@ -298,3 +298,4 @@ When you export your game for the server, insure to remove MATTOHA_CLIENT from c
 -   ADD an option to replicator to set "despawn" type to => server / direct peers
 -   GDScript binding
 -	EndLobbyGame (By owner or server)
+-	Detailed documentation
