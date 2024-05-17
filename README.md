@@ -290,6 +290,11 @@ The following table describe the server node methods :
 
 ## Export
 
+# Server
+
+When you export your game for the server, insure to remove MATTOHA_CLIENT from csproject constants values for conditional compilation, same for client version, you should remove MATTOHA_SERVER for security reasons.
+
+
 # TODO:
 
 -   ADD an option to replicator to set "despawn" type to => server / direct peers
