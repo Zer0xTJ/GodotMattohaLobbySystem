@@ -213,7 +213,7 @@ Well, this is why MattohaLobbySystem is powerfull, it comes with a node called `
 
 ## Custom Server Middleware
 
-To create your custom Server middleware, go to MyLobbyManager scene, and under `MattohaClient`, add new node.
+To create your custom Server middleware, go to MyLobbyManager scene, and under `MattohaServer`, add new node.
 Now attach a new script and call it `CustomServerMiddleware` the class snippet as following :
 
 ```csharp
