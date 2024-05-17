@@ -290,7 +290,7 @@ The following table describe the server node methods :
 
 ## Export
 
-# Server
+### Server
 
 When you export your game for the server, insure to remove MATTOHA_CLIENT from csproject constants values for conditional compilation, same for client version, you should remove MATTOHA_SERVER for security reasons.
 
