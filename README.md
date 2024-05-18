@@ -141,6 +141,7 @@ MyLobbyManager.System.Client.ConnectedToServer += OnConnectedToServer;
 | LobbyMessageReceived      | Emmited when a new lobby message is received.          |
 | GlobalMessageReceived     | Emmited when a new global message is received.         |
 | GameStarted               | Emmited when joined lobby game started.                |
+| GameEnded                 | Emmited when joined lobby game ended.                  |
 | PlayerLeftLobby           | Emmited when a player left a lobby.                    |
 | NodeSpawnRequested        | Emmited when a new node should be spawned.             |
 | NodeDespawnRequested      | Emmited when a node should be despawned.               |
@@ -152,6 +153,7 @@ MyLobbyManager.System.Client.ConnectedToServer += OnConnectedToServer;
 | LobbyMessageFailed        | Emmited when sending lobby message fail.               |
 | GlobalMessageFailed       | Emmited when sending global message fail.              |
 | StartGameFailed           | Emmited when starting lobby game fail.                 |
+| endGameFailed             | Emmited when ending   lobby game fail.                 |
 | SpawnNodeFailed           | Emmited when spawning a node fail.                     |
 | DespawnNodeFailed         | Emmited when despawning a node fail.                   |
 | UnhandledClientRpc        | Emmited when a server called unhandled RPC.            |
@@ -201,6 +203,7 @@ MattohaClient Methods to interact with server:
 | SendLobbyMessage       | Send a lobby message.                                                                                            | LobbyMessageReceived / LobbyMessageFailed         |
 | SendGlobalMessage      | Send a global message.                                                                                           | GlobalMessageReceived / GlobalMessageFailed       |
 | StartGame              | Start joined lobby game, only owner can start games.                                                             | GameStarted / StartGameFailed                     |
+| EndGame              | End joined lobby game, only owner can end games.                                                             | GameEnded / EndGameFailed                     |
 | LeaveLobby             | Leave joined lobby                                                                                               | PlayerLeftLobby (for remaining players in lobby ) |
 | SpawnNode              | Spawn a node for players in joined lobby.                                                                        | NodeSpawnRequested / SpawnNodeFailed              |
 | SpawnAvailableNodes    | Spawn nodes that already spawned from other players, use this method when a new player join the game scene.      | NodeSpawnRequested(foreach node)                  |
@@ -257,6 +260,8 @@ The following table describe the middleware methods that you can use to customiz
 | AfterSendGlobalMessage  | Executes after a global message sent.        |
 | BeforeStartGame         | Executes before starting lobby game.         |
 | AfterStartGame          | Executes after starting the game.            |
+| BeforeEndGame           | Executes before ending lobby game.           |
+| AfterEndGame            | Executes after ending the game.              |
 | BeforePlayerLeaveLobby  | Executes before player leave lobby.          |
 | AfterPlayerLeaveLobby   | Executes after player leave lobby.           |
 | BeforeSpawnNode         | Executes before spawning a node.             |
@@ -287,6 +292,8 @@ The following table describe the server node methods :
 | DespawnPlayerNodes | Despawn player nodes from his current joined lobby. |
 | RemovePlayerFromJoinedLobby | Remove player from joined lobby. |
 | SendUnhandledClientRpc | Send a custom method name RPC to client to execute, this will emmit "UnhandledClientRpc" signal on client node. |
+| StartLobbyGame | Start lobby game, StartGameFailed signal will be emmited if starting game failed. |
+| EndLobbyGame | End lobby game, EndGameFailed signal will be emmited if ending game failed. |
 
 ## Export
 
@@ -297,5 +304,4 @@ When you export your game for the server, insure to remove MATTOHA_CLIENT from c
 
 -   ADD an option to replicator to set "despawn" type to => server / direct peers
 -   GDScript binding
--	EndLobbyGame (By owner or server)
 -	Detailed documentation

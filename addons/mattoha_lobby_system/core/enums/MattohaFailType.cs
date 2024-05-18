@@ -11,4 +11,5 @@ public enum MattohaFailType
 	StartGame,
 	SpawnNode,
 	DespawnNode,
+	EndGame,
 }

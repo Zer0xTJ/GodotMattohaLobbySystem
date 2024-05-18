@@ -13,4 +13,5 @@ public enum MattohaClientRpcMethods
 	PlayerLeft,
 	SpawnNode,
 	DespawnNode,
+	EndGame,
 }

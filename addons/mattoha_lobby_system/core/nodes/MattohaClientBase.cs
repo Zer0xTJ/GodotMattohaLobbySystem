@@ -38,7 +38,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	[Signal] public delegate void NewLobbyCreatedEventHandler(MattohaSignal<JsonObject> lobby);
 
 	/// <summary>
-	/// Emmited when the list of available lobbies is updated. 
+	/// Emmited when the list of available lobbies is updated.
 	/// </summary>
 	/// <param name="lobbies">MatohaSignal with value of Available lobbies as json objects.</param>
 	[Signal] public delegate void AvailableLobbiesRefreshedEventHandler(MattohaSignal<List<JsonObject>> lobbies);
@@ -92,6 +92,12 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// Emmited when a joined lobby game started.
 	/// </summary>
 	[Signal] public delegate void GameStartedEventHandler();
+
+
+	/// <summary>
+	/// Emmited when a joined lobby game ended.
+	/// </summary>
+	[Signal] public delegate void GameEndedEventHandler();
 
 	/// <summary>
 	/// Emmited when a player left a lobby.
@@ -158,6 +164,12 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// </summary>
 	/// <param name="failCause"></param>
 	[Signal] public delegate void StartGameFailedEventHandler(MattohaSignal<string> failCause);
+
+	/// <summary>
+	/// Emmited when ending the lobby game fail.
+	/// </summary>
+	/// <param name="failCause"></param>
+	[Signal] public delegate void EndGameFailedEventHandler(MattohaSignal<string> failCause);
 
 	/// <summary>
 	/// Emmited when spawning a node fail.
@@ -536,6 +548,28 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
+	/// Start joined lobby game, only owner can end the games.
+	/// </summary>
+	public void EndGame()
+	{
+#if MATTOHA_CLIENT
+		RpcId(1, nameof(ServerRpc), nameof(MattohaServerRpcMethods.EndGame), "");
+#endif
+	}
+
+
+	/// <summary>
+	/// Client RPC sent by Server to notify players that a game is ended.
+	/// </summary>
+	private void RpcEndGame()
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.GameEnded);
+#endif
+	}
+
+
+	/// <summary>
 	/// Leave joined lobby
 	/// </summary>
 	public void LeaveLobby()
@@ -695,6 +729,9 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 			case nameof(MattohaClientRpcMethods.DespawnNode):
 				RpcDespawnNode(payload);
 				break;
+			case nameof(MattohaClientRpcMethods.EndGame):
+				RpcEndGame();
+				break;
 			default:
 				GD.Print("Unhandled Client RPC: " + method);
 				EmitSignal(SignalName.UnhandledClientRpc, new MattohaSignal<string> { Value = method }, new MattohaSignal<string> { Value = payload });
@@ -738,6 +775,9 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 				break;
 			case nameof(MattohaFailType.DespawnNode):
 				EmitSignal(SignalName.DespawnNodeFailed, new MattohaSignal<string> { Value = failCause });
+				break;
+			case nameof(MattohaFailType.EndGame):
+				EmitSignal(SignalName.EndGameFailed, new MattohaSignal<string> { Value = failCause });
 				break;
 		}
 #endif

@@ -19,6 +19,17 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <param name="payload"></param>
 	[Signal] public delegate void UnhandledServerRpcEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload);
 
+	/// <summary>
+	/// Emmited when start game failed when trying to start game from server (not owner request)
+	/// </summary>
+	/// <param name="failCause"></param>
+	[Signal] public delegate void StartGameFailedEventHandler(MattohaSignal<string> failCause);
+
+	/// <summary>
+	/// Emmited when start game failed when trying to end game from server (not owner request)
+	/// </summary>
+	[Signal] public delegate void EndGameFailedEventHandler(MattohaSignal<string> failCause);
+
 
 	[Export] MattohaServerMiddleware? Middleware { get; set; }
 	private MattohaSystem? _sysetm;
@@ -740,6 +751,40 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
+	/// Start lobby game, StartGameFailed signal will be emmited if starting game failed.
+	/// </summary>
+	/// <param name="lobbyId">lobby id to end.</param>
+	public void StartLobbyGame(long lobbyId)
+	{
+#if MATTOHA_SERVER
+		var lobby = GetLobby<JsonObject>(lobbyId);
+		if (lobby == null)
+			return;
+		var resp = Middleware!.BeforeStartGame(this, null, lobby);
+		if (resp.Status)
+		{
+			lobby![nameof(IMattohaLobby.IsGameStarted)] = true;
+			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			foreach (var joinedPlayer in lobbyPlayers!)
+			{
+				RpcId(joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.StartGame), "");
+			}
+			if (_sysetm?.AutoRefreshAvailableLobbies == true)
+			{
+				RefreshAvailableLobbiesForAll();
+			}
+			RefreshJoinedLobbyForAll(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			Middleware!.AfterStartGame(this, null, lobby);
+		}
+		else
+		{
+			EmitSignal(SignalName.StartGameFailed, new MattohaSignal<string> { Value = resp.Message });
+		}
+#endif
+	}
+
+
+	/// <summary>
 	/// Server RPC sent by client to start owning lobby.
 	/// </summary>
 	private void RpcStartGame()
@@ -774,6 +819,79 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		else
 		{
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.StartGame), resp.Message);
+		}
+#endif
+	}
+
+
+	/// <summary>
+	/// End lobby game, EndGameFailed signal will be emmited if ending game failed.
+	/// </summary>
+	/// <param name="lobbyId">lobby id to end.</param>
+	public void EndLobbyGame(long lobbyId)
+	{
+#if MATTOHA_SERVER
+		var lobby = GetLobby<JsonObject>(lobbyId);
+		if (lobby == null)
+			return;
+		var resp = Middleware!.BeforeEndGame(this, null, lobby);
+		if (resp.Status)
+		{
+			lobby![nameof(IMattohaLobby.IsGameStarted)] = false;
+			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			foreach (var joinedPlayer in lobbyPlayers!)
+			{
+				RpcId(joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.EndGame), "");
+			}
+			if (_sysetm?.AutoRefreshAvailableLobbies == true)
+			{
+				RefreshAvailableLobbiesForAll();
+			}
+			RefreshJoinedLobbyForAll(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			Middleware!.AfterEndGame(this, null, lobby);
+		}
+		else
+		{
+			EmitSignal(SignalName.EndGameFailed, new MattohaSignal<string> { Value = resp.Message });
+		}
+#endif
+	}
+
+	/// <summary>
+	/// Server RPC sent by client to end owning lobby game.
+	/// </summary>
+	private void RpcEndGame()
+	{
+#if MATTOHA_SERVER
+		var playerId = (long)Multiplayer.GetRemoteSenderId();
+		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
+		if (lobby == null)
+			return;
+		if (lobby[nameof(IMattohaLobby.OwnerId)]!.GetValue<long>() != playerId)
+		{
+			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.EndGame), "not-owner");
+			return;
+		}
+		var owner = GetPlayer<JsonObject>(playerId);
+		var resp = Middleware!.BeforeEndGame(this, owner!, lobby);
+		if (resp.Status)
+		{
+			lobby[nameof(IMattohaLobby.IsGameStarted)] = false;
+			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			foreach (var joinedPlayer in lobbyPlayers!)
+			{
+				RpcId(joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.EndGame), "");
+			}
+			if (_sysetm?.AutoRefreshAvailableLobbies == true)
+			{
+				RefreshAvailableLobbiesForAll();
+			}
+			RefreshJoinedLobbyForAll(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			Middleware!.AfterEndGame(this, owner!, lobby);
+		}
+		else
+		{
+			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.EndGame), resp.Message);
 		}
 #endif
 	}
@@ -1015,6 +1133,9 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 				break;
 			case nameof(MattohaServerRpcMethods.StartGame):
 				RpcStartGame();
+				break;
+			case nameof(MattohaServerRpcMethods.EndGame):
+				RpcEndGame();
 				break;
 			case nameof(MattohaServerRpcMethods.LeaveLobby):
 				RpcLeaveLobby();

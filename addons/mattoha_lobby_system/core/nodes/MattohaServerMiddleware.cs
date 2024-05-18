@@ -179,10 +179,10 @@ public partial class MattohaServerMiddleware : Node
 	/// Executes before starting lobby game.
 	/// </summary>
 	/// <param name="server">server instance</param>
-	/// <param name="ownerData">Owner of the lobby as JsonObject</param>
+	/// <param name="ownerData">Owner of the lobby as JsonObject, null if start game requested from server.</param>
 	/// <param name="lobbyData">Lobby data as JsonObject</param>
 	/// <returns>MattohaMiddlewareResponse object with status, if status true then execution will continue.</returns>
-	public virtual MattohaMiddlewareResponse BeforeStartGame(MattohaServerBase server, JsonObject ownerData, JsonObject lobbyData)
+	public virtual MattohaMiddlewareResponse BeforeStartGame(MattohaServerBase server, JsonObject? ownerData, JsonObject lobbyData)
 	{
 		return new MattohaMiddlewareResponse
 		{
@@ -195,9 +195,34 @@ public partial class MattohaServerMiddleware : Node
 	/// Executes after starting the game.
 	/// </summary>
 	/// <param name="server">server instance</param>
-	/// <param name="ownerData">Owner of the lobby as JsonObject</param>
+	/// <param name="ownerData">Owner of the lobby as JsonObject, null if start game requested from server.</param>
 	/// <param name="lobbyData">Lobby data as JsonObject</param>
-	public virtual void AfterStartGame(MattohaServerBase server, JsonObject ownerData, JsonObject lobbyData) { }
+	public virtual void AfterStartGame(MattohaServerBase server, JsonObject? ownerData, JsonObject lobbyData) { }
+
+
+	/// <summary>
+	/// Executes before ending lobby game.
+	/// </summary>
+	/// <param name="server">server instance</param>
+	/// <param name="ownerData">Owner of the lobby as JsonObject, null if end game requested from server.</param>
+	/// <param name="lobbyData">Lobby data as JsonObject</param>
+	/// <returns>MattohaMiddlewareResponse object with status, if status true then execution will continue.</returns>
+	public virtual MattohaMiddlewareResponse BeforeEndGame(MattohaServerBase server, JsonObject? ownerData, JsonObject lobbyData)
+	{
+		return new MattohaMiddlewareResponse
+		{
+			Status = true,
+		};
+	}
+
+
+	/// <summary>
+	/// Executes after ending the game.
+	/// </summary>
+	/// <param name="server">server instance</param>
+	/// <param name="ownerData">Owner of the lobby as JsonObject, null if end game requested from server.</param>
+	/// <param name="lobbyData">Lobby data as JsonObject</param>
+	public virtual void AfterEndGame(MattohaServerBase server, JsonObject? ownerData, JsonObject lobbyData) { }
 
 
 	/// <summary>
