@@ -26,7 +26,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	[Signal] public delegate void StartGameFailedEventHandler(MattohaSignal<string> failCause);
 
 	/// <summary>
-	/// Emmited when start game failed when trying to end game from server (not owner request)
+	/// Emmited when end game failed when trying to end game from server (not owner request)
 	/// </summary>
 	[Signal] public delegate void EndGameFailedEventHandler(MattohaSignal<string> failCause);
 

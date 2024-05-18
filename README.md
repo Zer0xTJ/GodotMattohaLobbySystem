@@ -153,7 +153,7 @@ MyLobbyManager.System.Client.ConnectedToServer += OnConnectedToServer;
 | LobbyMessageFailed        | Emmited when sending lobby message fail.               |
 | GlobalMessageFailed       | Emmited when sending global message fail.              |
 | StartGameFailed           | Emmited when starting lobby game fail.                 |
-| endGameFailed             | Emmited when ending   lobby game fail.                 |
+| EndGameFailed             | Emmited when ending   lobby game fail.                 |
 | SpawnNodeFailed           | Emmited when spawning a node fail.                     |
 | DespawnNodeFailed         | Emmited when despawning a node fail.                   |
 | UnhandledClientRpc        | Emmited when a server called unhandled RPC.            |
