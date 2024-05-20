@@ -14,5 +14,6 @@ public enum MattohaServerRpcMethods
 	DespawnNode,
 	LeaveLobby,
 	SpawnAvailableNodes,
+	DespawnRemovedSceneNodes,
 	EndGame,
 }

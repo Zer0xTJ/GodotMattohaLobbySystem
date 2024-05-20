@@ -1,7 +1,7 @@
 using Godot;
 
 
-namespace MattohaLobbySystem.Demo;	
+namespace MattohaLobbySystem.Demo;
 public partial class Game : Node2D
 {
 	[Export] PackedScene? PlayerScene { get; set; }
@@ -10,6 +10,7 @@ public partial class Game : Node2D
 		base._Ready();
 		SpawnPlayer();
 		MyLobbyManager.System?.Client?.SpawnAvailableNodes();
+		MyLobbyManager.System?.Client?.DespawnRemovedSceneNodes();
 	}
 
 	private void SpawnPlayer()

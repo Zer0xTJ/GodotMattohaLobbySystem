@@ -207,6 +207,7 @@ MattohaClient Methods to interact with server:
 | LeaveLobby             | Leave joined lobby                                                                                               | PlayerLeftLobby (for remaining players in lobby ) |
 | SpawnNode              | Spawn a node for players in joined lobby.                                                                        | NodeSpawnRequested / SpawnNodeFailed              |
 | SpawnAvailableNodes    | Spawn nodes that already spawned from other players, use this method when a new player join the game scene.      | NodeSpawnRequested(foreach node)                  |
+| DespawnRemovedSceneNodes | Despawn scene nodes that already despawned from other players, use this method when a new player join the game scene.                                        | NodeDespawnRequested / DespawnNodeFailed          |
 | DespawnNode            | Despawn node on players's devices, player can despawn nodes he owns only.                                        | NodeDespawnRequested / DespawnNodeFailed          |
 | SendUnhandledServerRpc | Send a custom method name RPC to server to execute, this will emmit "UnhandledRpc" signal on server node.        | UnhandledServerRpc (On Server Node)               |
 

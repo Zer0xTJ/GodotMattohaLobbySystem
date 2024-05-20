@@ -17,7 +17,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	/// </summary>
 	/// <param name="method">unhandled method name</param>
 	/// <param name="payload"></param>
-	[Signal] public delegate void UnhandledServerRpcEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload);
+	[Signal] public delegate void UnhandledServerRpcReceivedEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload);
 
 	/// <summary>
 	/// Emmited when start game failed when trying to start game from server (not owner request)
@@ -41,6 +41,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	/// Spawned nodes in each lobby, every key has a value of List<MattohaSpawnNodeInfo>.
 	/// </summary>
 	public Dictionary<long, List<MattohaSpawnNodeInfo>> SpawnedNodes { get; private set; } = new();
+	private Dictionary<long, List<string>> _despawnedSceneNodes = new();
 
 	public override void _EnterTree()
 	{
@@ -310,6 +311,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			_lobbies.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), lobbyData);
 
 			SpawnedNodes.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), new());
+			_despawnedSceneNodes.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), new());
 
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.SetPlayerData), MattohaUtils.Serialize(player!));
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.CreateLobby), MattohaUtils.Serialize(lobbyData!));
@@ -1043,6 +1045,25 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
+	/// Server RPC sent by client to despawn scene nodes that already despawned from other players.
+	/// </summary>
+	private void RpcDespawnRemovedSceneNodes()
+	{
+#if MATTOHA_SERVER
+		var playerId = (long)Multiplayer.GetRemoteSenderId();
+		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
+		if (lobby == null)
+			return;
+		var nodes = _despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()];
+		foreach (var nodePath in nodes)
+		{
+			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode), nodePath);
+		}
+#endif
+	}
+
+
+	/// <summary>
 	/// Server RPC sent by client to despawn a node
 	/// </summary>
 	/// <param name="jsonSpawnNodeInfo">NodeInfo</param>
@@ -1060,17 +1081,39 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		{
 			var nodeIndex = SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()]
 				.FindIndex(node => node.OwnerId == playerId && node.ParentPath == info!.ParentPath && node.NodeName == info.NodeName);
-			if (nodeIndex == -1)
-				return;
-			SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].RemoveAt(nodeIndex);
+
 			var joinedPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
-			foreach (var player in joinedPlayers!)
+
+			// if node is not exists in spawned nodes , we will assume that it's already comes with a scene tree,
+			// so will will add it to _despawnedSceneNodes, then we will send an rpc to new joined players to despawn it.
+			if (nodeIndex == -1)
 			{
-				RpcId(
-					player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
-					nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode),
-					$"{info!.ParentPath}/{info!.NodeName}"
-				);
+				var nodePath = $"{info!.ParentPath}/{info!.NodeName}";
+				if (!_despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].Contains(nodePath))
+				{
+					_despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].Add(nodePath);
+				}
+				foreach (var player in joinedPlayers!)
+				{
+					RpcId(
+						player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+						nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode),
+						$"{info!.ParentPath}/{info!.NodeName}"
+					);
+				}
+			}
+			else
+			{
+				foreach (var player in joinedPlayers!)
+				{
+					RpcId(
+						player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+						nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode),
+						$"{info!.ParentPath}/{info!.NodeName}"
+					);
+				}
+				SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].RemoveAt(nodeIndex);
+
 			}
 		}
 		else
@@ -1146,12 +1189,14 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			case nameof(MattohaServerRpcMethods.SpawnAvailableNodes):
 				RpcSpawnAvailableNodes();
 				break;
+			case nameof(MattohaServerRpcMethods.DespawnRemovedSceneNodes):
+				RpcDespawnRemovedSceneNodes();
+				break;
 			case nameof(MattohaServerRpcMethods.DespawnNode):
 				RpcDespawnNode(payload);
 				break;
 			default:
-				GD.Print("Unhandled Server RPC: " + method);
-				EmitSignal(SignalName.UnhandledServerRpc, new MattohaSignal<string> { Value = method }, new MattohaSignal<string> { Value = payload });
+				EmitSignal(SignalName.UnhandledServerRpcReceived, new MattohaSignal<string> { Value = method }, new MattohaSignal<string> { Value = payload });
 				break;
 		}
 #endif

@@ -27,7 +27,7 @@ IsSmooth = true
 SmoothTime = 0.05
 
 [node name="Player" type="CharacterBody2D"]
-collision_mask = 0
+collision_mask = 2
 script = ExtResource("1_oncya")
 ProjectileScene = ExtResource("2_am8ug")
 

@@ -188,7 +188,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// </summary>
 	/// <param name="method">unhandled method name</param>
 	/// <param name="payload"></param>
-	[Signal] public delegate void UnhandledClientRpcEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload);
+	[Signal] public delegate void UnhandledClientRpcReceivedEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload);
 	#endregion
 
 
@@ -440,7 +440,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <summary>
 	/// Update Joined Lobby data (only owner can update it), note that Id, PlayersCount & IsGameStarted cant be updated.
 	/// </summary>
-	/// <param name="lobby"></param>
+	/// <param name="lobby">lobby object</param>
 	public void SetLobbyData(IMattohaLobby lobby)
 	{
 #if MATTOHA_CLIENT
@@ -644,6 +644,17 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
+	/// Despawn scene nodes that already despawned from other players, use this method when a new player join the game scene.
+	/// </summary>
+	public void DespawnRemovedSceneNodes()
+	{
+#if MATTOHA_CLIENT
+		RpcId(1, nameof(ServerRpc), nameof(MattohaServerRpcMethods.DespawnRemovedSceneNodes), "");
+#endif
+	}
+
+
+	/// <summary>
 	/// Despawn node on players's devices, player can despawn nodes he owns only.
 	/// </summary>
 	public void DespawnNode(Node node)
@@ -733,8 +744,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 				RpcEndGame();
 				break;
 			default:
-				GD.Print("Unhandled Client RPC: " + method);
-				EmitSignal(SignalName.UnhandledClientRpc, new MattohaSignal<string> { Value = method }, new MattohaSignal<string> { Value = payload });
+				EmitSignal(SignalName.UnhandledClientRpcReceived, new MattohaSignal<string> { Value = method }, new MattohaSignal<string> { Value = payload });
 				break;
 		}
 #endif
