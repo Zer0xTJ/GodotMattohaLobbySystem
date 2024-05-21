@@ -188,7 +188,8 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// </summary>
 	/// <param name="method">unhandled method name</param>
 	/// <param name="payload"></param>
-	[Signal] public delegate void UnhandledClientRpcReceivedEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload);
+	/// <param name="sender"></param>
+	[Signal] public delegate void UnhandledClientRpcReceivedEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload, MattohaSignal<long> sender);
 	#endregion
 
 
@@ -686,7 +687,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
-	/// Send a custom method name RPC to server to execute, this will emmit "UnhandledRpc" signal on server node.
+	/// Send a custom method name reliable RPC to server to execute, this will emmit "UnhandledRpc" signal on server node.
 	/// </summary>
 	/// <param name="methodName">method name to handle.</param>
 	/// <param name="paylaod">payload sent.</param>
@@ -699,6 +700,29 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	}
 
 
+	/// <summary>
+	/// Send a custom method name reliable RPC to other client to execute, this will emmit "UnhandledRpc" signal on client node.
+	/// </summary>
+	/// <param name="methodName">method name to handle.</param>
+	/// <param name="paylaod">payload sent.</param>
+	/// <param name="peer">peer id to send to, 0 = all.</param>
+	public void SendUnhandledClientRpc(string methodName, string paylaod, long peer = 0)
+	{
+#if MATTOHA_CLIENT
+		if (peer == 0)
+		{
+			Rpc(nameof(ClientRpc), methodName, paylaod);
+		}
+		else
+		{
+			RpcId(peer, nameof(ClientRpc), methodName, paylaod);
+		}
+#endif
+
+	}
+
+
+	[Rpc(MultiplayerApi.RpcMode.AnyPeer, TransferMode = MultiplayerPeer.TransferModeEnum.Reliable)]
 	public void ClientRpc(string method, string payload)
 	{
 #if MATTOHA_CLIENT
@@ -744,7 +768,12 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 				RpcEndGame();
 				break;
 			default:
-				EmitSignal(SignalName.UnhandledClientRpcReceived, new MattohaSignal<string> { Value = method }, new MattohaSignal<string> { Value = payload });
+				EmitSignal(
+					SignalName.UnhandledClientRpcReceived,
+					new MattohaSignal<string> { Value = method },
+					new MattohaSignal<string> { Value = payload },
+					new MattohaSignal<long> { Value = Multiplayer.GetRemoteSenderId() }
+				);
 				break;
 		}
 #endif

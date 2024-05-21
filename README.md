@@ -156,7 +156,7 @@ MyLobbyManager.System.Client.ConnectedToServer += OnConnectedToServer;
 | EndGameFailed             | Emmited when ending   lobby game fail.                 |
 | SpawnNodeFailed           | Emmited when spawning a node fail.                     |
 | DespawnNodeFailed         | Emmited when despawning a node fail.                   |
-| UnhandledClientRpc        | Emmited when a server called unhandled RPC.            |
+| UnhandledClientRpcReceived        | Emmited when a server called unhandled RPC.            |
 
 when you create a game scene, you need to add important nodes, `MattohaSpawnListener` the one responisble for spawning & despawning nodes for other players,
 and `MattohaReplicateListener` the node responsible for replicate some node data for other players in same lobby.
@@ -209,7 +209,8 @@ MattohaClient Methods to interact with server:
 | SpawnAvailableNodes    | Spawn nodes that already spawned from other players, use this method when a new player join the game scene.      | NodeSpawnRequested(foreach node)                  |
 | DespawnRemovedSceneNodes | Despawn scene nodes that already despawned from other players, use this method when a new player join the game scene.                                        | NodeDespawnRequested / DespawnNodeFailed          |
 | DespawnNode            | Despawn node on players's devices, player can despawn nodes he owns only.                                        | NodeDespawnRequested / DespawnNodeFailed          |
-| SendUnhandledServerRpc | Send a custom method name RPC to server to execute, this will emmit "UnhandledRpc" signal on server node.        | UnhandledServerRpc (On Server Node)               |
+| SendUnhandledServerRpc | Send a custom method name reliable RPC to server to execute, this will emmit "UnhandledRpc" signal on server node.        | UnhandledServerRpc (On Server Node)               |
+| SendUnhandledClientRpc | Send a custom method name reliable RPC to other client to execute, this will emmit "UnhandledRpc" signal on client node. | UnhandledClientRpcReceived |
 
 This was the main nodes for client, but wait , what if we want to customize our server side codes?, what if we want to block player from edit his data? what if we want to connect to our database ?
 
@@ -273,7 +274,7 @@ The following table describe the middleware methods that you can use to customiz
 The following table describe the server node methods :
 | Method | Description |
 ----------------------|----------------------------------------------------------|
-| SendUnhandledClientRpc | Send a custom method name RPC to client to execute, this will emmit "UnhandledRpc" signal on client node. |
+| SendUnhandledClientRpc | Send a custom method name reliable RPC to client to execute, this will emmit "UnhandledRpc" signal on client node. |
 | GetPlayers | Get Players dictionary, but cast it to custom concrete objects instead of JsonObject, where key is the id of player, and the value is the player object. |
 | GetLobbies | Get lobbies dictionary, but cast it to custom concrete objects instead of JsonObject, where key is the id of lobby, and the value is the lobby object. |
 | GetPlayer | Get Player from players dictionary but casted to custom type. |
@@ -292,7 +293,6 @@ The following table describe the server node methods :
 | SendGlobalMessage | Send a message for all online players. |
 | DespawnPlayerNodes | Despawn player nodes from his current joined lobby. |
 | RemovePlayerFromJoinedLobby | Remove player from joined lobby. |
-| SendUnhandledClientRpc | Send a custom method name RPC to client to execute, this will emmit "UnhandledClientRpc" signal on client node. |
 | StartLobbyGame | Start lobby game, StartGameFailed signal will be emmited if starting game failed. |
 | EndLobbyGame | End lobby game, EndGameFailed signal will be emmited if ending game failed. |
 
