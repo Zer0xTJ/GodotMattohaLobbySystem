@@ -1089,6 +1089,8 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			if (nodeIndex == -1)
 			{
 				var nodePath = $"{info!.ParentPath}/{info!.NodeName}";
+				var isNodeNameInSpawned = SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].FindIndex(node => node.NodeName == info!.NodeName && node.ParentPath == info!.ParentPath);
+				if (isNodeNameInSpawned != -1) return;
 				if (!_despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].Contains(nodePath))
 				{
 					_despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].Add(nodePath);
