@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://c1xsajn74al37" path="res://addons/mattoha_lobby_system/demo_example/scenes/player.tscn" id="1_wb327"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSpawnListener.cs" id="3_t53uo"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaReplicateListener.cs" id="4_bjuvp"]
-[ext_resource type="PackedScene" uid="uid://hnnapidqk1th" path="res://addons/mattoha_lobby_system/demo_example/scenes/coin.tscn" id="5_li1le"]
+[ext_resource type="PackedScene" uid="uid://hnnapidqk1th" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/coin.tscn" id="5_li1le"]
 
 [node name="Game" type="Node2D"]
 script = ExtResource("1_61q4r")

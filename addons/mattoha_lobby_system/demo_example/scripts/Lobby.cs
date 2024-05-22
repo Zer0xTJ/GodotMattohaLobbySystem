@@ -1,4 +1,5 @@
 using Godot;
+using MattohaLobbySystem.Core;
 using MattohaLobbySystem.Core.Nodes;
 using MattohaLobbySystem.Core.Utils;
 using MattohaLobbySystem.Demo.Models;
@@ -96,7 +97,7 @@ public partial class Lobby : Control
 	{
 		var lobby = MyLobbyManager.System!.Client!.GetCurrentLobbyData<LobbyModel>();
 		lobby!.Name = $"{GD.Randi() % 9999 + 1000}";
-		MyLobbyManager.System!.Client!.SetLobbyData(lobby);
+		MyLobbyManager.System!.Client!.SetLobbyData(lobby.ToDict());
 	}
 
 	public void OnRefreshLobbyButtonPressed()
@@ -109,7 +110,7 @@ public partial class Lobby : Control
 	{
 		var player = MyLobbyManager.System!.Client!.GetCurrentPlayerData<PlayerModel>();
 		player!.TeamId = 1;
-		MyLobbyManager.System?.Client?.SetPlayerData(player);
+		MyLobbyManager.System?.Client?.SetPlayerData(player.ToDict());
 
 	}
 
@@ -117,7 +118,7 @@ public partial class Lobby : Control
 	{
 		var player = MyLobbyManager.System!.Client!.GetCurrentPlayerData<PlayerModel>();
 		player!.TeamId = 2;
-		MyLobbyManager.System?.Client?.SetPlayerData(player);
+		MyLobbyManager.System?.Client?.SetPlayerData(player.ToDict());
 	}
 
 	public void OnRefreshPlayersButtonPressed()

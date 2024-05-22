@@ -30,10 +30,10 @@ public partial class CreateLobby : Control
 		var lobby = new LobbyModel
 		{
 			Name = LobbyNameLineEdit!.Text,
-			MaxPlayers = (int) (GD.Randi() % 10 + 4)
+			MaxPlayers = (int)(GD.Randi() % 10 + 4)
 		};
 
-		MyLobbyManager.System!.Client!.CreateLobby(lobby);
+		MyLobbyManager.System!.Client!.CreateLobby(lobby.ToDict());
 
 	}
 }

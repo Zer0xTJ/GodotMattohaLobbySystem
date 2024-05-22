@@ -1,11 +1,12 @@
 ﻿using Godot;
+using MattohaLobbySystem.Core.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace MattohaLobbySystem.Core.Nodes;
+namespace MattohaLobbySystem.Core;
 
 public class MattohaUtils
 {
@@ -265,6 +266,19 @@ public class MattohaUtils
 		return JsonSerializer.Deserialize<T>(jsonObject);
 	}
 
+
+	/// <summary>
+	/// Used to convert any Dictionary<string, Variant> to concrete object, usefull for working with custom datatypes in your project.
+	/// </summary>
+	/// <typeparam name="T">Object type</typeparam>
+	/// <param name="jsonObject">json string to convert</param>
+	/// <returns>new Object of Type T</returns>
+	public static T? Deserialize<T>(Godot.Collections.Dictionary<string, Variant> jsonObject)
+	{
+		return JsonSerializer.Deserialize<T>(Serialize(jsonObject));
+	}
+
+
 	/// <summary>
 	/// Serialize any object to json string.
 	/// </summary>
@@ -273,5 +287,94 @@ public class MattohaUtils
 	public static string Serialize(object obj)
 	{
 		return JsonSerializer.Serialize(obj);
+	}
+
+
+	/// <summary>
+	/// Serialize any Dictionary<string, Variant> to json string.
+	/// </summary>
+	/// <param name="obj">object to serialize</param>
+	/// <returns>object in json string format</returns>
+	public static string Serialize(Godot.Collections.Dictionary<string, Variant> obj)
+	{
+		return obj.ToString();
+	}
+
+
+	/// <summary>
+	/// Add missing player keys to a JsonObject.
+	/// </summary>
+	/// <param name="obj"></param>
+	public static void AddMissingPlayerKeys(JsonObject? obj)
+	{
+		if (obj == null) return;
+		if (!obj.ContainsKey(MattohaPlayerKeys.Id))
+		{
+			obj[MattohaPlayerKeys.Id] = (long)0;
+		}
+
+		if (!obj.ContainsKey(MattohaPlayerKeys.JoinedLobbyId))
+		{
+			obj[MattohaPlayerKeys.JoinedLobbyId] = (long)0;
+		}
+
+		if (!obj.ContainsKey(MattohaPlayerKeys.TeamId))
+		{
+			obj[MattohaPlayerKeys.TeamId] = 0;
+		}
+
+		if (!obj.ContainsKey(MattohaPlayerKeys.PrivateProps))
+		{
+			obj[MattohaPlayerKeys.PrivateProps] = ToJsonNode(new List<string> { });
+		}
+
+		if (!obj.ContainsKey(MattohaPlayerKeys.ChatProps))
+		{
+			obj[MattohaPlayerKeys.ChatProps] = ToJsonNode(new List<string> { MattohaPlayerKeys.Id });
+		}
+	}
+
+
+	/// <summary>
+	/// Add missing lobby keys to a JsonObject.
+	/// </summary>
+	/// <param name="obj"></param>
+	public static void AddMissingLobbyKeys(JsonObject? obj)
+	{
+		if (obj == null) return;
+		if (!obj.ContainsKey(MattohaLobbyKeys.Id))
+		{
+			obj[MattohaLobbyKeys.Id] = (long)0;
+		}
+
+		if (!obj.ContainsKey(MattohaLobbyKeys.OwnerId))
+		{
+			obj[MattohaLobbyKeys.OwnerId] = (long)0;
+		}
+
+		if (!obj.ContainsKey(MattohaLobbyKeys.Name))
+		{
+			obj[MattohaLobbyKeys.Name] = "";
+		}
+
+		if (!obj.ContainsKey(MattohaLobbyKeys.MaxPlayers))
+		{
+			obj[MattohaLobbyKeys.MaxPlayers] = 4;
+		}
+
+		if (!obj.ContainsKey(MattohaLobbyKeys.PlayersCount))
+		{
+			obj[MattohaLobbyKeys.PlayersCount] = 0;
+		}
+
+		if (!obj.ContainsKey(MattohaLobbyKeys.IsGameStarted))
+		{
+			obj[MattohaLobbyKeys.IsGameStarted] = false;
+		}
+
+		if (!obj.ContainsKey(MattohaLobbyKeys.PrivateProps))
+		{
+			obj[MattohaLobbyKeys.PrivateProps] = ToJsonNode(new List<string> { });
+		}
 	}
 }

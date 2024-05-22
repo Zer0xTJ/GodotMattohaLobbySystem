@@ -281,7 +281,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// Set or register player data on server, NOTE that: Id, JoindLobbyId cant be set.
 	/// </summary>
 	/// <param name="player"></param>
-	public void SetPlayerData(IMattohaPlayer player)
+	public void SetPlayerData(Godot.Collections.Dictionary<string, Variant> player)
 	{
 #if MATTOHA_CLIENT
 		RpcId(1, nameof(ServerRpc), nameof(MattohaServerRpcMethods.SetPlayerData), MattohaUtils.Serialize(player));
@@ -307,7 +307,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// Create a new lobby, then join it.
 	/// </summary>
 	/// <param name="lobby">Lobby object</param>
-	public void CreateLobby(IMattohaLobby lobby)
+	public void CreateLobby(Godot.Collections.Dictionary<string, Variant> lobby)
 	{
 #if MATTOHA_CLIENT
 		RpcId(1, nameof(ServerRpc), nameof(MattohaServerRpcMethods.CreateLobby), MattohaUtils.Serialize(lobby));
@@ -442,7 +442,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// Update Joined Lobby data (only owner can update it), note that Id, PlayersCount & IsGameStarted cant be updated.
 	/// </summary>
 	/// <param name="lobby">lobby object</param>
-	public void SetLobbyData(IMattohaLobby lobby)
+	public void SetLobbyData(Godot.Collections.Dictionary<string, Variant> lobby)
 	{
 #if MATTOHA_CLIENT
 		RpcId(1, nameof(ServerRpc), nameof(MattohaServerRpcMethods.SetLobbyData), MattohaUtils.Serialize(lobby));
@@ -577,7 +577,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	{
 #if MATTOHA_CLIENT
 		_currentLobbyData = new();
-		_currentPlayerData[nameof(IMattohaPlayer.JoinedLobbyId)] = 0;
+		_currentPlayerData[MattohaPlayerKeys.JoinedLobbyId] = 0;
 		RpcId(1, nameof(ServerRpc), nameof(MattohaServerRpcMethods.LeaveLobby), "");
 #endif
 	}

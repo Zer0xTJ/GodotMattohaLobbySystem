@@ -1,5 +1,5 @@
 using Godot;
-using MattohaLobbySystem.Core.Nodes;
+using MattohaLobbySystem.Core;
 using MattohaLobbySystem.Core.Utils;
 using MattohaLobbySystem.Demo.Models;
 using System.Collections.Generic;

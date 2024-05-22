@@ -1,12 +1,12 @@
 ﻿using Godot;
-using MattohaLobbySystem.Core.Interfaces;
 using MattohaLobbySystem.Core.Models;
+using MattohaLobbySystem.Core.Utils;
 using System.Text.Json.Nodes;
 
 namespace MattohaLobbySystem.Core.Nodes;
 public partial class MattohaReplicateListenerBase : MattohaSystemFinder
 {
-	
+
 	/// <summary>
 	/// Used by replicator, to replicate data for all lobby players.
 	/// </summary>
@@ -18,15 +18,15 @@ public partial class MattohaReplicateListenerBase : MattohaSystemFinder
 
 		foreach (var player in GetMattohaSystem()?.Client?.GetJoinedPlayers<JsonObject>()!.Values!)
 		{
-			if (Multiplayer.GetUniqueId() != player[nameof(IMattohaPlayer.Id)]!.GetValue<int>())
+			if (Multiplayer.GetUniqueId() != player[MattohaPlayerKeys.Id]!.GetValue<int>())
 			{
-				if (replicationInfo.IsTeamOnly && player[nameof(IMattohaPlayer.TeamId)]!.GetValue<int>() == currentPlayerData![nameof(IMattohaPlayer.TeamId)]!.GetValue<int>())
+				if (replicationInfo.IsTeamOnly && player[MattohaPlayerKeys.TeamId]!.GetValue<int>() == currentPlayerData![MattohaPlayerKeys.TeamId]!.GetValue<int>())
 				{
-					RpcId(player[nameof(IMattohaPlayer.Id)]!.GetValue<int>(), nameof(RpcReplicateData), MattohaUtils.Serialize(replicationInfo), propertyValue);
+					RpcId(player[MattohaPlayerKeys.Id]!.GetValue<int>(), nameof(RpcReplicateData), MattohaUtils.Serialize(replicationInfo), propertyValue);
 				}
 				else if (!replicationInfo.IsTeamOnly)
 				{
-					RpcId(player[nameof(IMattohaPlayer.Id)]!.GetValue<int>(), nameof(RpcReplicateData), MattohaUtils.Serialize(replicationInfo), propertyValue);
+					RpcId(player[MattohaPlayerKeys.Id]!.GetValue<int>(), nameof(RpcReplicateData), MattohaUtils.Serialize(replicationInfo), propertyValue);
 				}
 			}
 		}

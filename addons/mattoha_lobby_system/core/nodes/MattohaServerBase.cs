@@ -158,7 +158,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <returns></returns>
 	public List<T>? GetPlayersInLobby<T>(long lobbyId) where T : class
 	{
-		var players = _players.Values.Where(pl => pl[nameof(IMattohaPlayer.JoinedLobbyId)]!.GetValue<long>() == lobbyId).ToList();
+		var players = _players.Values.Where(pl => pl[MattohaPlayerKeys.JoinedLobbyId]!.GetValue<long>() == lobbyId).ToList();
 		if (typeof(T) == typeof(JsonObject))
 		{
 			return players as List<T>;
@@ -178,7 +178,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var player = GetPlayer<JsonObject>(playerId);
 		if (player == null)
 			return null;
-		var lobbyId = player[nameof(IMattohaPlayer.JoinedLobbyId)]!.GetValue<long>();
+		var lobbyId = player[MattohaPlayerKeys.JoinedLobbyId]!.GetValue<long>();
 		var lobby = GetLobby<JsonObject>(lobbyId);
 		if (lobby == null)
 			return null;
@@ -217,13 +217,14 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 #if MATTOHA_SERVER
 		var playerId = (long)Multiplayer.GetRemoteSenderId();
 		var playerData = MattohaUtils.ToJsonObject(jsonPlayerData);
-		playerData![nameof(IMattohaPlayer.JoinedLobbyId)] = (long)0;
+		MattohaUtils.AddMissingPlayerKeys(playerData);
+		playerData![MattohaPlayerKeys.JoinedLobbyId] = (long)0;
 		var player = GetPlayer<JsonObject>(playerId);
 
-		playerData![nameof(IMattohaPlayer.Id)] = playerId;
+		playerData![MattohaPlayerKeys.Id] = playerId;
 		if (player != null)
 		{
-			playerData![nameof(IMattohaPlayer.JoinedLobbyId)] = player[nameof(IMattohaPlayer.JoinedLobbyId)]!.GetValue<long>();
+			playerData![MattohaPlayerKeys.JoinedLobbyId] = player[MattohaPlayerKeys.JoinedLobbyId]!.GetValue<long>();
 		}
 		var resp = Middleware!.BeforeSetPlayerData(this, playerData);
 		if (resp.Status)
@@ -241,7 +242,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 
 			// todo: optimize the process, send only the player data and then client should refresh existsing player.
 			// refresh players list for all joined players in lobby
-			var joinedLobbyId = player![nameof(IMattohaPlayer.JoinedLobbyId)]!.GetValue<long>();
+			var joinedLobbyId = player![MattohaPlayerKeys.JoinedLobbyId]!.GetValue<long>();
 			if (joinedLobbyId != 0)
 			{
 				RefreshJoinedPlayersForAll(joinedLobbyId);
@@ -296,7 +297,8 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			return;
 		}
 		var lobbyData = MattohaUtils.ToJsonObject(jsonLobbyData);
-		if (lobbyData![nameof(IMattohaLobby.MaxPlayers)]!.GetValue<long>() > _sysetm!.MaxPlayersPerLobby)
+		MattohaUtils.AddMissingLobbyKeys(lobbyData);
+		if (lobbyData![MattohaLobbyKeys.MaxPlayers]!.GetValue<long>() > _sysetm!.MaxPlayersPerLobby)
 		{
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.CreateLobby), $"invalid-max-players,{_sysetm!.MaxPlayersPerLobby}");
 			return;
@@ -305,14 +307,14 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeCreateLobby(this, lobbyData);
 		if (resp.Status)
 		{
-			lobbyData![nameof(IMattohaLobby.Id)] = GenerateLobbyId();
-			player[nameof(IMattohaPlayer.JoinedLobbyId)] = MattohaUtils.ToJsonNode(lobbyData[nameof(IMattohaLobby.Id)]!);
-			lobbyData[nameof(IMattohaLobby.PlayersCount)] = 1;
-			lobbyData[nameof(IMattohaLobby.OwnerId)] = playerId;
-			_lobbies.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), lobbyData);
+			lobbyData![MattohaLobbyKeys.Id] = GenerateLobbyId();
+			player[MattohaPlayerKeys.JoinedLobbyId] = MattohaUtils.ToJsonNode(lobbyData[MattohaLobbyKeys.Id]!);
+			lobbyData[MattohaLobbyKeys.PlayersCount] = 1;
+			lobbyData[MattohaLobbyKeys.OwnerId] = playerId;
+			_lobbies.Add(lobbyData[MattohaLobbyKeys.Id]!.GetValue<long>(), lobbyData);
 
-			SpawnedNodes.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), new());
-			_despawnedSceneNodes.Add(lobbyData[nameof(IMattohaLobby.Id)]!.GetValue<long>(), new());
+			SpawnedNodes.Add(lobbyData[MattohaLobbyKeys.Id]!.GetValue<long>(), new());
+			_despawnedSceneNodes.Add(lobbyData[MattohaLobbyKeys.Id]!.GetValue<long>(), new());
 
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.SetPlayerData), MattohaUtils.Serialize(player!));
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.CreateLobby), MattohaUtils.Serialize(lobbyData!));
@@ -383,7 +385,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.JoinLobby), "player-not-found");
 			return;
 		}
-		if (lobby[nameof(IMattohaLobby.PlayersCount)]!.GetValue<int>() >= lobby[nameof(IMattohaLobby.MaxPlayers)]!.GetValue<int>())
+		if (lobby[MattohaLobbyKeys.PlayersCount]!.GetValue<int>() >= lobby[MattohaLobbyKeys.MaxPlayers]!.GetValue<int>())
 		{
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.JoinLobby), "max-players-reached");
 			return;
@@ -392,8 +394,8 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		if (resp.Status)
 		{
 			RemovePlayerFromJoinedLobby(playerId);
-			player[nameof(IMattohaPlayer.JoinedLobbyId)] = MattohaUtils.ToJsonNode(lobby[nameof(IMattohaLobby.Id)]!);
-			lobby[nameof(IMattohaLobby.PlayersCount)] = lobby[nameof(IMattohaLobby.PlayersCount)]!.GetValue<int>() + 1;
+			player[MattohaPlayerKeys.JoinedLobbyId] = MattohaUtils.ToJsonNode(lobby[MattohaLobbyKeys.Id]!);
+			lobby[MattohaLobbyKeys.PlayersCount] = lobby[MattohaLobbyKeys.PlayersCount]!.GetValue<int>() + 1;
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.SetPlayerData), MattohaUtils.Serialize(player!));
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.JoinLobby), MattohaUtils.Serialize(MattohaUtils.ToHiddenPrivatePropsObject(lobby)!));
 			RefreshAvailableLobbiesForAll();
@@ -401,15 +403,15 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			// - a new player joined
 			// - a lobby data is updated
 			// - a players list is updated
-			var joiendPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			var joiendPlayers = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			foreach (var pl in joiendPlayers!)
 			{
-				var joinedPlayerId = pl[nameof(IMattohaLobby.Id)]!.GetValue<long>()!;
+				var joinedPlayerId = pl[MattohaLobbyKeys.Id]!.GetValue<long>()!;
 				if (joinedPlayerId != playerId)
 				{
 					RpcId(joinedPlayerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.NewPlayerJoinedLobby), MattohaUtils.Serialize(MattohaUtils.ToHiddenPrivatePropsObject(player)));
 				}
-				RefreshJoinedLobbyForPlayer(pl[nameof(IMattohaLobby.Id)]!.GetValue<long>()!);
+				RefreshJoinedLobbyForPlayer(pl[MattohaLobbyKeys.Id]!.GetValue<long>()!);
 				RefreshJoinedPlayersForPlayer(joinedPlayerId);
 			}
 			Middleware!.AfterJoinLobby(this, player, lobby);
@@ -444,7 +446,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		var ownerId = lobby[nameof(IMattohaLobby.OwnerId)]!.GetValue<long>();
+		var ownerId = lobby[MattohaLobbyKeys.OwnerId]!.GetValue<long>();
 		if (ownerId == playerId)
 		{
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.RefreshJoinedLobby), MattohaUtils.Serialize(lobby));
@@ -468,10 +470,10 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		if (lobby == null)
 			return;
 		var players = GetPlayersInLobby<JsonObject>(lobbyId);
-		var ownerId = lobby[nameof(IMattohaLobby.OwnerId)]!.GetValue<long>();
+		var ownerId = lobby[MattohaLobbyKeys.OwnerId]!.GetValue<long>();
 		foreach (var player in players!)
 		{
-			var playerId = player[nameof(IMattohaPlayer.Id)]!.GetValue<long>();
+			var playerId = player[MattohaPlayerKeys.Id]!.GetValue<long>();
 			if (ownerId == playerId)
 			{
 				RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.RefreshJoinedLobby), MattohaUtils.Serialize(lobby));
@@ -507,9 +509,9 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		if (lobby == null)
 			return;
 
-		var players = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+		var players = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 		var playersWithoutPrivateProps = players!.Select(p => MattohaUtils.ToHiddenPrivatePropsObject(p)).ToList();
-		var playersDict = playersWithoutPrivateProps!.ToDictionary(p => p[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), p => p);
+		var playersDict = playersWithoutPrivateProps!.ToDictionary(p => p[MattohaPlayerKeys.Id]!.GetValue<long>(), p => p);
 		RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.RefreshJoinedPlayers), MattohaUtils.Serialize(playersDict));
 #endif
 	}
@@ -525,13 +527,13 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobby<JsonObject>(lobbyId);
 		if (lobby == null)
 			return;
-		var players = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+		var players = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 		var playersWithoutPrivateProps = players!.Select(p => MattohaUtils.ToHiddenPrivatePropsObject(p)).ToList();
-		var playersDict = playersWithoutPrivateProps!.ToDictionary(p => p[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), p => p);
+		var playersDict = playersWithoutPrivateProps!.ToDictionary(p => p[MattohaPlayerKeys.Id]!.GetValue<long>(), p => p);
 		foreach (var joinedPlayer in players!)
 		{
 			RpcId(
-				joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+				joinedPlayer[MattohaPlayerKeys.Id]!.GetValue<long>(),
 				nameof(ClientRpc), nameof(MattohaClientRpcMethods.RefreshJoinedPlayers),
 				MattohaUtils.Serialize(playersDict)
 			);
@@ -553,7 +555,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var players = GetPlayersInLobby<JsonObject>(lobbyId);
 		foreach (var pl in players!)
 		{
-			RefreshJoinedLobbyForPlayer(pl[nameof(IMattohaPlayer.Id)]!.GetValue<long>());
+			RefreshJoinedLobbyForPlayer(pl[MattohaPlayerKeys.Id]!.GetValue<long>());
 		}
 #endif
 
@@ -574,26 +576,27 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		var lobbyOwnerId = lobby[nameof(IMattohaLobby.OwnerId)]!.GetValue<long>();
+		var lobbyOwnerId = lobby[MattohaLobbyKeys.OwnerId]!.GetValue<long>();
 		if (lobbyOwnerId != playerId)
 		{
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.SetLobbyData), "not-owner");
 			return;
 		}
 		var lobbyData = MattohaUtils.ToJsonObject(jsonLobbyData);
-		var playersCount = lobby[nameof(IMattohaLobby.PlayersCount)]!.GetValue<int>();
-		var isGameStarted = lobby[nameof(IMattohaLobby.IsGameStarted)]!.GetValue<bool>();
-		lobbyData![nameof(IMattohaLobby.PlayersCount)] = playersCount;
-		lobbyData![nameof(IMattohaLobby.IsGameStarted)] = isGameStarted;
+		MattohaUtils.AddMissingLobbyKeys(lobbyData);
+		var playersCount = lobby[MattohaLobbyKeys.PlayersCount]!.GetValue<int>();
+		var isGameStarted = lobby[MattohaLobbyKeys.IsGameStarted]!.GetValue<bool>();
+		lobbyData![MattohaLobbyKeys.PlayersCount] = playersCount;
+		lobbyData![MattohaLobbyKeys.IsGameStarted] = isGameStarted;
 
 		var resp = Middleware!.BeforeSetLobbyData(this, player, lobbyData!);
 
 		if (resp.Status)
 		{
 			// reset players acount & is Game started incase if the middleware changed it.
-			lobbyData![nameof(IMattohaLobby.PlayersCount)] = playersCount;
-			lobbyData![nameof(IMattohaLobby.IsGameStarted)] = isGameStarted;
-			var lobbyId = lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>();
+			lobbyData![MattohaLobbyKeys.PlayersCount] = playersCount;
+			lobbyData![MattohaLobbyKeys.IsGameStarted] = isGameStarted;
+			var lobbyId = lobby[MattohaLobbyKeys.Id]!.GetValue<long>();
 
 			_lobbies[lobbyId] = lobbyData;
 			RefreshLobbyDataForAllJoinedPlayers(lobbyId);
@@ -651,13 +654,13 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeSendTeamMessage(this, fromPlayer!);
 		if (resp.Status)
 		{
-			var players = GetPlayersInLobby<JsonObject>(joinedLobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			var players = GetPlayersInLobby<JsonObject>(joinedLobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			foreach (var player in players!)
 			{
-				if (player[nameof(IMattohaPlayer.TeamId)]!.GetValue<long>() == fromPlayer![nameof(IMattohaPlayer.TeamId)]!.GetValue<long>())
+				if (player[MattohaPlayerKeys.TeamId]!.GetValue<int>() == fromPlayer![MattohaPlayerKeys.TeamId]!.GetValue<int>())
 				{
 					RpcId(
-						player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+						player[MattohaPlayerKeys.Id]!.GetValue<long>(),
 						nameof(ClientRpc),
 						nameof(MattohaClientRpcMethods.SendMessage),
 						MattohaUtils.Serialize(new
@@ -692,11 +695,11 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeSendLobbyMessage(this, fromPlayer!, joinedLobby!);
 		if (resp.Status)
 		{
-			var players = GetPlayersInLobby<JsonObject>(joinedLobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			var players = GetPlayersInLobby<JsonObject>(joinedLobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			foreach (var player in players!)
 			{
 				RpcId(
-					player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+					player[MattohaPlayerKeys.Id]!.GetValue<long>(),
 					nameof(ClientRpc),
 					nameof(MattohaClientRpcMethods.SendMessage),
 					MattohaUtils.Serialize(new
@@ -733,7 +736,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			foreach (var player in _players.Values)
 			{
 				RpcId(
-					player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+					player[MattohaPlayerKeys.Id]!.GetValue<long>(),
 					nameof(ClientRpc),
 					nameof(MattohaClientRpcMethods.SendMessage),
 					MattohaUtils.Serialize(new
@@ -766,17 +769,17 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeStartGame(this, null, lobby);
 		if (resp.Status)
 		{
-			lobby![nameof(IMattohaLobby.IsGameStarted)] = true;
-			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			lobby![MattohaLobbyKeys.IsGameStarted] = true;
+			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			foreach (var joinedPlayer in lobbyPlayers!)
 			{
-				RpcId(joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.StartGame), "");
+				RpcId(joinedPlayer[MattohaPlayerKeys.Id]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.StartGame), "");
 			}
 			if (_sysetm?.AutoRefreshAvailableLobbies == true)
 			{
 				RefreshAvailableLobbiesForAll();
 			}
-			RefreshJoinedLobbyForAll(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			RefreshJoinedLobbyForAll(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			Middleware!.AfterStartGame(this, null, lobby);
 		}
 		else
@@ -797,7 +800,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		if (lobby[nameof(IMattohaLobby.OwnerId)]!.GetValue<long>() != playerId)
+		if (lobby[MattohaLobbyKeys.OwnerId]!.GetValue<long>() != playerId)
 		{
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.StartGame), "not-owner");
 			return;
@@ -806,17 +809,17 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeStartGame(this, owner!, lobby);
 		if (resp.Status)
 		{
-			lobby[nameof(IMattohaLobby.IsGameStarted)] = true;
-			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			lobby[MattohaLobbyKeys.IsGameStarted] = true;
+			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			foreach (var joinedPlayer in lobbyPlayers!)
 			{
-				RpcId(joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.StartGame), "");
+				RpcId(joinedPlayer[MattohaPlayerKeys.Id]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.StartGame), "");
 			}
 			if (_sysetm?.AutoRefreshAvailableLobbies == true)
 			{
 				RefreshAvailableLobbiesForAll();
 			}
-			RefreshJoinedLobbyForAll(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			RefreshJoinedLobbyForAll(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			Middleware!.AfterStartGame(this, owner!, lobby);
 		}
 		else
@@ -840,17 +843,17 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeEndGame(this, null, lobby);
 		if (resp.Status)
 		{
-			lobby![nameof(IMattohaLobby.IsGameStarted)] = false;
-			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			lobby![MattohaLobbyKeys.IsGameStarted] = false;
+			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			foreach (var joinedPlayer in lobbyPlayers!)
 			{
-				RpcId(joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.EndGame), "");
+				RpcId(joinedPlayer[MattohaPlayerKeys.Id]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.EndGame), "");
 			}
 			if (_sysetm?.AutoRefreshAvailableLobbies == true)
 			{
 				RefreshAvailableLobbiesForAll();
 			}
-			RefreshJoinedLobbyForAll(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			RefreshJoinedLobbyForAll(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			Middleware!.AfterEndGame(this, null, lobby);
 		}
 		else
@@ -870,7 +873,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		if (lobby[nameof(IMattohaLobby.OwnerId)]!.GetValue<long>() != playerId)
+		if (lobby[MattohaLobbyKeys.OwnerId]!.GetValue<long>() != playerId)
 		{
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.EndGame), "not-owner");
 			return;
@@ -879,17 +882,17 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeEndGame(this, owner!, lobby);
 		if (resp.Status)
 		{
-			lobby[nameof(IMattohaLobby.IsGameStarted)] = false;
-			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			lobby[MattohaLobbyKeys.IsGameStarted] = false;
+			var lobbyPlayers = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			foreach (var joinedPlayer in lobbyPlayers!)
 			{
-				RpcId(joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.EndGame), "");
+				RpcId(joinedPlayer[MattohaPlayerKeys.Id]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.EndGame), "");
 			}
 			if (_sysetm?.AutoRefreshAvailableLobbies == true)
 			{
 				RefreshAvailableLobbiesForAll();
 			}
-			RefreshJoinedLobbyForAll(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			RefreshJoinedLobbyForAll(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 			Middleware!.AfterEndGame(this, owner!, lobby);
 		}
 		else
@@ -910,14 +913,14 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		var lobbyId = lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>();
+		var lobbyId = lobby[MattohaLobbyKeys.Id]!.GetValue<long>();
 		var players = GetPlayersInLobby<JsonObject>(lobbyId);
 		var playerNodes = SpawnedNodes[lobbyId].FindAll(node => node.OwnerId == playerId);
 		foreach (var playerNode in playerNodes)
 		{
 			foreach (var player in players!)
 			{
-				var joinedPlayerId = player[nameof(IMattohaPlayer.Id)]!.GetValue<long>();
+				var joinedPlayerId = player[MattohaPlayerKeys.Id]!.GetValue<long>();
 				if (playerId != joinedPlayerId)
 				{
 					RpcId(joinedPlayerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode), $"{playerNode.ParentPath}/{playerNode!.NodeName}");
@@ -942,21 +945,21 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		var lobbyId = lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>();
+		var lobbyId = lobby[MattohaLobbyKeys.Id]!.GetValue<long>();
 		Middleware!.BeforePlayerLeaveLobby(this, player, lobby);
-		player[nameof(IMattohaPlayer.JoinedLobbyId)] = (long)0;
-		lobby[nameof(IMattohaLobby.PlayersCount)] = lobby[nameof(IMattohaLobby.PlayersCount)]!.GetValue<int>() - 1;
+		player[MattohaPlayerKeys.JoinedLobbyId] = (long)0;
+		lobby[MattohaLobbyKeys.PlayersCount] = lobby[MattohaLobbyKeys.PlayersCount]!.GetValue<int>() - 1;
 		// check if lobby is empty then remove it, otherwise , change owner if the left player is the owner
-		if (lobby[nameof(IMattohaLobby.PlayersCount)]!.GetValue<int>() == 0)
+		if (lobby[MattohaLobbyKeys.PlayersCount]!.GetValue<int>() == 0)
 		{
-			_lobbies.Remove(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			_lobbies.Remove(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 		}
 		else
 		{
 			var joinedPlayers = GetPlayersInLobby<JsonObject>(lobbyId);
-			if (lobby[nameof(IMattohaLobby.OwnerId)]!.GetValue<long>() == playerId)
+			if (lobby[MattohaLobbyKeys.OwnerId]!.GetValue<long>() == playerId)
 			{
-				lobby[nameof(IMattohaLobby.OwnerId)] = joinedPlayers!.First()[nameof(IMattohaPlayer.Id)]!.GetValue<long>();
+				lobby[MattohaLobbyKeys.OwnerId] = joinedPlayers!.First()[MattohaPlayerKeys.Id]!.GetValue<long>();
 			}
 			RefreshJoinedLobbyForAll(lobbyId);
 			RefreshJoinedPlayersForAll(lobbyId);
@@ -964,7 +967,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			foreach (var joinedPlayer in joinedPlayers!)
 			{
 				RpcId(
-					joinedPlayer[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+					joinedPlayer[MattohaPlayerKeys.Id]!.GetValue<long>(),
 					nameof(ClientRpc),
 					nameof(MattohaClientRpcMethods.PlayerLeft),
 					MattohaUtils.Serialize(MattohaUtils.ToHiddenPrivatePropsObject(player))
@@ -1002,7 +1005,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(ownerId);
 		if (lobby == null)
 			return;
-		var lobbyId = lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>();
+		var lobbyId = lobby[MattohaLobbyKeys.Id]!.GetValue<long>();
 		var ownerPlayer = GetPlayer<JsonObject>(ownerId);
 		var info = MattohaUtils.Deserialize<MattohaSpawnNodeInfo>(jsonSpawnNodeInfo);
 		var resp = Middleware!.BeforeSpawnNode(this, ownerPlayer!, lobby, info!);
@@ -1012,9 +1015,9 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			var players = GetPlayersInLobby<JsonObject>(lobbyId);
 			foreach (var player in players!)
 			{
-				if (player[nameof(IMattohaPlayer.Id)]!.GetValue<long>() == ownerId)
+				if (player[MattohaPlayerKeys.Id]!.GetValue<long>() == ownerId)
 					continue;
-				RpcId(player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.SpawnNode), jsonSpawnNodeInfo);
+				RpcId(player[MattohaPlayerKeys.Id]!.GetValue<long>(), nameof(ClientRpc), nameof(MattohaClientRpcMethods.SpawnNode), jsonSpawnNodeInfo);
 			}
 			Middleware!.AfterSpawnNode(this, ownerPlayer!, lobby, info!);
 		}
@@ -1036,7 +1039,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		var spawnedNodes = SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()];
+		var spawnedNodes = SpawnedNodes[lobby[MattohaLobbyKeys.Id]!.GetValue<long>()];
 		foreach (var node in spawnedNodes)
 		{
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.SpawnNode), MattohaUtils.Serialize(node));
@@ -1055,7 +1058,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var lobby = GetLobbyOfPlayer<JsonObject>(playerId);
 		if (lobby == null)
 			return;
-		var nodes = _despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()];
+		var nodes = _despawnedSceneNodes[lobby[MattohaLobbyKeys.Id]!.GetValue<long>()];
 		foreach (var nodePath in nodes)
 		{
 			RpcId(playerId, nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode), nodePath);
@@ -1080,26 +1083,26 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		var resp = Middleware!.BeforeDespawnNode(this, byPlayer!, lobby, info!);
 		if (resp.Status)
 		{
-			var nodeIndex = SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()]
+			var nodeIndex = SpawnedNodes[lobby[MattohaLobbyKeys.Id]!.GetValue<long>()]
 				.FindIndex(node => node.OwnerId == playerId && node.ParentPath == info!.ParentPath && node.NodeName == info.NodeName);
 
-			var joinedPlayers = GetPlayersInLobby<JsonObject>(lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>());
+			var joinedPlayers = GetPlayersInLobby<JsonObject>(lobby[MattohaLobbyKeys.Id]!.GetValue<long>());
 
 			// if node is not exists in spawned nodes , we will assume that it's already comes with a scene tree,
 			// so will will add it to _despawnedSceneNodes, then we will send an rpc to new joined players to despawn it.
 			if (nodeIndex == -1)
 			{
 				var nodePath = $"{info!.ParentPath}/{info!.NodeName}";
-				var isNodeNameInSpawned = SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].FindIndex(node => node.NodeName == info!.NodeName && node.ParentPath == info!.ParentPath);
+				var isNodeNameInSpawned = SpawnedNodes[lobby[MattohaLobbyKeys.Id]!.GetValue<long>()].FindIndex(node => node.NodeName == info!.NodeName && node.ParentPath == info!.ParentPath);
 				if (isNodeNameInSpawned != -1) return;
-				if (!_despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].Contains(nodePath))
+				if (!_despawnedSceneNodes[lobby[MattohaLobbyKeys.Id]!.GetValue<long>()].Contains(nodePath))
 				{
-					_despawnedSceneNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].Add(nodePath);
+					_despawnedSceneNodes[lobby[MattohaLobbyKeys.Id]!.GetValue<long>()].Add(nodePath);
 				}
 				foreach (var player in joinedPlayers!)
 				{
 					RpcId(
-						player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+						player[MattohaPlayerKeys.Id]!.GetValue<long>(),
 						nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode),
 						$"{info!.ParentPath}/{info!.NodeName}"
 					);
@@ -1110,12 +1113,12 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 				foreach (var player in joinedPlayers!)
 				{
 					RpcId(
-						player[nameof(IMattohaPlayer.Id)]!.GetValue<long>(),
+						player[MattohaPlayerKeys.Id]!.GetValue<long>(),
 						nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode),
 						$"{info!.ParentPath}/{info!.NodeName}"
 					);
 				}
-				SpawnedNodes[lobby[nameof(IMattohaLobby.Id)]!.GetValue<long>()].RemoveAt(nodeIndex);
+				SpawnedNodes[lobby[MattohaLobbyKeys.Id]!.GetValue<long>()].RemoveAt(nodeIndex);
 
 			}
 		}

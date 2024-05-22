@@ -1,4 +1,6 @@
 using Godot;
+using Godot.Collections;
+using MattohaLobbySystem.Core;
 using MattohaLobbySystem.Core.Utils;
 using MattohaLobbySystem.Demo.Models;
 using System.Text.Json.Nodes;
@@ -28,6 +30,7 @@ public partial class UserDialog : Control
 
 	private void OnCurrentPlayerUpdated(MattohaSignal<JsonObject> player)
 	{
+		GD.Print(player.Value);
 		GetTree().ChangeSceneToFile("res://addons/mattoha_lobby_system/demo_example/scenes/lobbies.tscn");
 	}
 
@@ -37,6 +40,6 @@ public partial class UserDialog : Control
 		{
 			Username = UsernameLineEdit!.Text,
 		};
-		MyLobbyManager.System?.Client?.SetPlayerData(player);
+		MyLobbyManager.System?.Client?.SetPlayerData(new Dictionary<string, Variant> { { "Username", player.Username } });
 	}
 }
