@@ -1,4 +1,5 @@
 ﻿using Godot;
+using Godot.Collections;
 using MattohaLobbySystem.Core.Utils;
 using System;
 using System.Collections;
@@ -300,81 +301,24 @@ public class MattohaUtils
 		return obj.ToString();
 	}
 
-
 	/// <summary>
-	/// Add missing player keys to a JsonObject.
+	/// Convert a JsonObject to a Dictionary<string, Variant>.
 	/// </summary>
 	/// <param name="obj"></param>
-	public static void AddMissingPlayerKeys(JsonObject? obj)
+	/// <returns></returns>
+	public static Godot.Collections.Dictionary<string, Variant> ToGodotDictionary(JsonObject obj)
 	{
-		if (obj == null) return;
-		if (!obj.ContainsKey(MattohaPlayerKeys.Id))
-		{
-			obj[MattohaPlayerKeys.Id] = (long)0;
-		}
-
-		if (!obj.ContainsKey(MattohaPlayerKeys.JoinedLobbyId))
-		{
-			obj[MattohaPlayerKeys.JoinedLobbyId] = (long)0;
-		}
-
-		if (!obj.ContainsKey(MattohaPlayerKeys.TeamId))
-		{
-			obj[MattohaPlayerKeys.TeamId] = 0;
-		}
-
-		if (!obj.ContainsKey(MattohaPlayerKeys.PrivateProps))
-		{
-			obj[MattohaPlayerKeys.PrivateProps] = ToJsonNode(new List<string> { });
-		}
-
-		if (!obj.ContainsKey(MattohaPlayerKeys.ChatProps))
-		{
-			obj[MattohaPlayerKeys.ChatProps] = ToJsonNode(new List<string> { MattohaPlayerKeys.Id });
-		}
+		var jsonString = Serialize(obj);
+		return ToGodotDictionary(jsonString);
 	}
 
-
 	/// <summary>
-	/// Add missing lobby keys to a JsonObject.
+	/// Convert a json string to a Dictionary<string, Variant>.
 	/// </summary>
-	/// <param name="obj"></param>
-	public static void AddMissingLobbyKeys(JsonObject? obj)
+	/// <param name="jsonString"></param>
+	/// <returns></returns>
+	public static Godot.Collections.Dictionary<string, Variant> ToGodotDictionary(string jsonString)
 	{
-		if (obj == null) return;
-		if (!obj.ContainsKey(MattohaLobbyKeys.Id))
-		{
-			obj[MattohaLobbyKeys.Id] = (long)0;
-		}
-
-		if (!obj.ContainsKey(MattohaLobbyKeys.OwnerId))
-		{
-			obj[MattohaLobbyKeys.OwnerId] = (long)0;
-		}
-
-		if (!obj.ContainsKey(MattohaLobbyKeys.Name))
-		{
-			obj[MattohaLobbyKeys.Name] = "";
-		}
-
-		if (!obj.ContainsKey(MattohaLobbyKeys.MaxPlayers))
-		{
-			obj[MattohaLobbyKeys.MaxPlayers] = 4;
-		}
-
-		if (!obj.ContainsKey(MattohaLobbyKeys.PlayersCount))
-		{
-			obj[MattohaLobbyKeys.PlayersCount] = 0;
-		}
-
-		if (!obj.ContainsKey(MattohaLobbyKeys.IsGameStarted))
-		{
-			obj[MattohaLobbyKeys.IsGameStarted] = false;
-		}
-
-		if (!obj.ContainsKey(MattohaLobbyKeys.PrivateProps))
-		{
-			obj[MattohaLobbyKeys.PrivateProps] = ToJsonNode(new List<string> { });
-		}
+		return Json.ParseString(jsonString).AsGodotDictionary<string, Variant>();
 	}
 }

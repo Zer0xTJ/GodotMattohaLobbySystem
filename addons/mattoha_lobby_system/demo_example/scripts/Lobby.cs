@@ -1,9 +1,8 @@
 using Godot;
+using Godot.Collections;
 using MattohaLobbySystem.Core;
-using MattohaLobbySystem.Core.Nodes;
 using MattohaLobbySystem.Core.Utils;
 using MattohaLobbySystem.Demo.Models;
-using System.Collections.Generic;
 using System.Text.Json.Nodes;
 
 namespace MattohaLobbySystem.Demo;
@@ -34,7 +33,7 @@ public partial class Lobby : Control
 
 	}
 
-	private void OnPlayerLeftLobby(MattohaSignal<JsonObject> player)
+	private void OnPlayerLeftLobby(Dictionary<string, Variant> player)
 	{
 	}
 
@@ -43,28 +42,28 @@ public partial class Lobby : Control
 		GetTree().ChangeSceneToFile("res://addons/mattoha_lobby_system/demo_example/scenes/game.tscn");
 	}
 
-	private void OnGlobalMessageReceived(MattohaSignal<string> message, MattohaSignal<JsonObject> player)
+	private void OnGlobalMessageReceived(string message, Dictionary<string, Variant> player)
 	{
-		var playerModel = MattohaUtils.Deserialize<PlayerModel>(player.Value!);
-		var label = new Label { Text = $"[Global] {playerModel!.Username} : {message.Value}" };
+		var playerModel = MattohaUtils.Deserialize<PlayerModel>(player);
+		var label = new Label { Text = $"[Global] {playerModel!.Username} : {message}" };
 		MessagesContainer?.AddChild(label);
 	}
 
-	private void OnLobbyMessageReceived(MattohaSignal<string> message, MattohaSignal<JsonObject> player)
+	private void OnLobbyMessageReceived(string message, Dictionary<string, Variant> player)
 	{
-		var playerModel = MattohaUtils.Deserialize<PlayerModel>(player.Value!);
-		var label = new Label { Text = $"[Lobby] {playerModel!.Username} : {message.Value}" };
+		var playerModel = MattohaUtils.Deserialize<PlayerModel>(player);
+		var label = new Label { Text = $"[Lobby] {playerModel!.Username} : {message}" };
 		MessagesContainer?.AddChild(label);
 	}
 
-	private void OnTeamMessageReceived(MattohaSignal<string> message, MattohaSignal<JsonObject> player)
+	private void OnTeamMessageReceived(string message, Dictionary<string, Variant> player)
 	{
-		var playerModel = MattohaUtils.Deserialize<PlayerModel>(player.Value!);
-		var label = new Label { Text = $"[Team] {playerModel!.Username} : {message.Value}" };
+		var playerModel = MattohaUtils.Deserialize<PlayerModel>(player);
+		var label = new Label { Text = $"[Team] {playerModel!.Username} : {message}" };
 		MessagesContainer?.AddChild(label);
 	}
 
-	private void OnJoinedPlayersRefreshed(MattohaSignal<Dictionary<long, JsonObject>> players)
+	private void OnJoinedPlayersRefreshed(Dictionary<long, Dictionary<string, Variant>> players)
 	{
 
 		foreach (var node in PlayersContainer!.GetChildren())
@@ -72,7 +71,7 @@ public partial class Lobby : Control
 			node.QueueFree();
 		}
 
-		foreach (var pl in players.Value!.Values)
+		foreach (var pl in players.Values)
 		{
 			var slot = new Label
 			{
@@ -82,15 +81,14 @@ public partial class Lobby : Control
 		}
 	}
 
-	private void OnJoinedLobbyRefreshed(MattohaSignal<JsonObject> lobbyObj)
+	private void OnJoinedLobbyRefreshed(Dictionary<string, Variant> lobbyObj)
 	{
-		var lobby = MattohaUtils.Deserialize<LobbyModel>(lobbyObj.Value!);
+		var lobby = MattohaUtils.Deserialize<LobbyModel>(lobbyObj);
 		LobbyNameLabel!.Text = $"{lobby!.Name} ({lobby.PlayersCount})";
 	}
 
-	private void OnNewPlayerJoined(MattohaSignal<JsonObject> player)
+	private void OnNewPlayerJoined(Dictionary<string, Variant> player)
 	{
-		GD.Print(player.Value);
 	}
 
 

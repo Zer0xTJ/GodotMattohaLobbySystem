@@ -1,8 +1,8 @@
 using Godot;
+using Godot.Collections;
 using MattohaLobbySystem.Core;
 using MattohaLobbySystem.Core.Utils;
 using MattohaLobbySystem.Demo.Models;
-using System.Collections.Generic;
 using System.Text.Json.Nodes;
 
 namespace MattohaLobbySystem.Demo;
@@ -26,9 +26,9 @@ public partial class Lobbies : Control
 		base._ExitTree();
 	}
 
-	private void OnJoinLobby(MattohaSignal<JsonObject> lobby)
+	private void OnJoinLobby(Dictionary<string, Variant> lobby)
 	{
-		if (MattohaUtils.Deserialize<LobbyModel>(lobby.Value!)!.IsGameStarted)
+		if (MattohaUtils.Deserialize<LobbyModel>(lobby)!.IsGameStarted)
 		{
 			GetTree().ChangeSceneToFile("res://addons/mattoha_lobby_system/demo_example/scenes/game.tscn");
 		}
@@ -39,14 +39,14 @@ public partial class Lobbies : Control
 	}
 
 
-	private void OnLobbiesRefreshed(MattohaSignal<List<JsonObject>> lobbies)
+	private void OnLobbiesRefreshed(Array<Dictionary<string, Variant>> lobbies)
 	{
 		foreach (var item in LobbiesContainer!.GetChildren())
 		{
 			item.QueueFree();
 		}
 
-		foreach (var item in lobbies.Value!)
+		foreach (var item in lobbies)
 		{
 			var slot = LobbySlot!.Instantiate<LobbySlot>();
 			slot.Lobby = MattohaUtils.Deserialize<LobbyModel>(item);

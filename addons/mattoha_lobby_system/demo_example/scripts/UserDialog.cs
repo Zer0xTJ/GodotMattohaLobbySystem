@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using MattohaLobbySystem.Core.Utils;
 using MattohaLobbySystem.Demo.Models;
 using System.Text.Json.Nodes;
@@ -15,9 +16,9 @@ public partial class UserDialog : Control
 		base._Ready();
 	}
 
-	private void OnSetPlayerDataFailed(MattohaSignal<string> failCause)
+	private void OnSetPlayerDataFailed(string failCause)
 	{
-		GD.Print("Setting player data failed: ", failCause.Value);
+		GD.Print("Setting player data failed: ", failCause);
 	}
 
 	public override void _ExitTree()
@@ -26,9 +27,8 @@ public partial class UserDialog : Control
 		base._ExitTree();
 	}
 
-	private void OnCurrentPlayerUpdated(MattohaSignal<JsonObject> player)
+	private void OnCurrentPlayerUpdated(Dictionary<string, Variant> player)
 	{
-		GD.Print(player.Value);
 		GetTree().ChangeSceneToFile("res://addons/mattoha_lobby_system/demo_example/scenes/lobbies.tscn");
 	}
 

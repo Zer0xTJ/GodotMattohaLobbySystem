@@ -1,4 +1,6 @@
-﻿using Godot;
+﻿using System.Text.Json.Nodes;
+using Godot;
+using Godot.Collections;
 using MattohaLobbySystem.Core.Models;
 
 namespace MattohaLobbySystem.Core.Nodes;
@@ -63,6 +65,11 @@ public partial class MattohaSystem : Node
 	[ExportGroup("Core Nodes")]
 	[Export] public MattohaClient? Client { get; set; }
 
+	public override void _EnterTree()
+	{
+		base._EnterTree();
+	}
+
 
 	/// <summary>
 	/// Create a scene instance from scene file with a unique name and assign authority to owner.
@@ -74,8 +81,8 @@ public partial class MattohaSystem : Node
 		var packedScene = GD.Load<PackedScene>(file);
 		var instance = packedScene.Instantiate();
 		var ownerId = Multiplayer.GetUniqueId();
-		instance.Name += $"_{GD.Randi() % 10000 + 99999}_{ownerId}";
 		instance.SetMultiplayerAuthority(ownerId);
+		instance.Name += $"_{GD.Randi() % 10000 + 99999}_{ownerId}";
 		return instance;
 	}
 

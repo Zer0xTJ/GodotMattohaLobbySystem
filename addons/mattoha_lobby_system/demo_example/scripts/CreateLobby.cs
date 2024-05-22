@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using MattohaLobbySystem.Core.Utils;
 using MattohaLobbySystem.Demo.Models;
 using System.Text.Json.Nodes;
@@ -20,7 +21,7 @@ public partial class CreateLobby : Control
 		base._ExitTree();
 	}
 
-	private void OnNewLobbyCreated(MattohaSignal<JsonObject> lobby)
+	private void OnNewLobbyCreated(Dictionary<string, Variant> lobby)
 	{
 		GetTree().ChangeSceneToFile("res://addons/mattoha_lobby_system/demo_example/scenes/lobby.tscn");
 	}

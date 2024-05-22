@@ -29,7 +29,6 @@ public partial class MattohaSpawnListenerBase : MattohaSystemFinder
 
 	public override void _ExitTree()
 	{
-
 		GetMattohaSystem()!.Client!.NodeSpawnRequested -= OnNodeSpawnRequested;
 		GetMattohaSystem()!.Client!.NodeDespawnRequested -= OnNodeDespawnRequested;
 		base._ExitTree();

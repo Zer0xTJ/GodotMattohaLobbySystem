@@ -1,0 +1,20 @@
+[gd_scene load_steps=5 format=3 uid="uid://8rfah0jvnuo5"]
+
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/autoload/lobby_manager.gd" id="1_iu1r7"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSystem.cs" id="2_7l22b"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaClient.cs" id="3_trrcv"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaServer.cs" id="4_lg28c"]
+
+[node name="LobbyManager" type="Node"]
+script = ExtResource("1_iu1r7")
+
+[node name="MattohaSystem" type="Node" parent="." node_paths=PackedStringArray("Server", "Client")]
+script = ExtResource("2_7l22b")
+Server = NodePath("MattohaServer")
+Client = NodePath("MattohaClient")
+
+[node name="MattohaClient" type="Node" parent="MattohaSystem"]
+script = ExtResource("3_trrcv")
+
+[node name="MattohaServer" type="Node" parent="MattohaSystem"]
+script = ExtResource("4_lg28c")

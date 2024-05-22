@@ -28,65 +28,52 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <summary>
 	/// Emmited when current player data is updated.
 	/// </summary>
-	/// <param name="player">MattohaSignal with value of player data as JsonObject.</param>
-	[Signal] public delegate void CurrentPlayerUpdatedEventHandler(MattohaSignal<JsonObject> player);
+	[Signal] public delegate void CurrentPlayerUpdatedEventHandler(Godot.Collections.Dictionary<string, Variant> player);
 
 	/// <summary>
 	/// Emmited when a new lobby is created successfully.
 	/// </summary>
-	/// <param name="lobby">MattohaSignal with value of lobby data as JsonObject.</param>
-	[Signal] public delegate void NewLobbyCreatedEventHandler(MattohaSignal<JsonObject> lobby);
+	[Signal] public delegate void NewLobbyCreatedEventHandler(Godot.Collections.Dictionary<string, Variant> lobby);
 
 	/// <summary>
 	/// Emmited when the list of available lobbies is updated.
 	/// </summary>
-	/// <param name="lobbies">MatohaSignal with value of Available lobbies as json objects.</param>
-	[Signal] public delegate void AvailableLobbiesRefreshedEventHandler(MattohaSignal<List<JsonObject>> lobbies);
+	[Signal] public delegate void AvailableLobbiesRefreshedEventHandler(Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>> lobbies);
 
 	/// <summary>
 	/// Emmited when joining to lobby succeeed.
 	/// </summary>
-	/// <param name="lobby">MattohaSignal with value of lobby data as JsonObject.</param>
-	[Signal] public delegate void JoinLobbySucceedEventHandler(MattohaSignal<JsonObject> lobby);
+	[Signal] public delegate void JoinLobbySucceedEventHandler(Godot.Collections.Dictionary<string, Variant> lobby);
 
 	/// <summary>
 	/// Emmited when new player joiend current lobby.
 	/// </summary>
-	/// <param name="player">MattohaSignal with value of lobby data as JsonObject.</param>
-	[Signal] public delegate void NewPlayerJoinedLobbyEventHandler(MattohaSignal<JsonObject> player);
+	[Signal] public delegate void NewPlayerJoinedLobbyEventHandler(Godot.Collections.Dictionary<string, Variant> player);
 
 	/// <summary>
 	/// Emmited when joined lobby is updated.
 	/// </summary>
-	/// <param name="lobby">MattohaSignal with value of lobby data as JsonObject.</param>
-	[Signal] public delegate void JoinedLobbyRefreshedEventHandler(MattohaSignal<JsonObject> lobby);
+	[Signal] public delegate void JoinedLobbyRefreshedEventHandler(Godot.Collections.Dictionary<string, Variant> lobby);
 
 	/// <summary>
 	/// Emmited when joined players list in lobby is updated.
 	/// </summary>
-	/// <param name="players">MattohaSignal with dictionary of joined players.</param>
-	[Signal] public delegate void JoinedPlayersRefreshedEventHandler(MattohaSignal<Dictionary<long, JsonObject>> players);
+	[Signal] public delegate void JoinedPlayersRefreshedEventHandler(Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> players);
 
 	/// <summary>
 	/// Emmited when a new team message is recieved.
 	/// </summary>
-	/// <param name="message">message content</param>
-	/// <param name="player">player data</param>
-	[Signal] public delegate void TeamMessageReceivedEventHandler(MattohaSignal<string> message, MattohaSignal<JsonObject> player);
+	[Signal] public delegate void TeamMessageReceivedEventHandler(string message, Godot.Collections.Dictionary<string, Variant> player);
 
 	/// <summary>
 	/// Emmited when a new lobby message is recieved.
 	/// </summary>
-	/// <param name="message">message content</param>
-	/// <param name="player">player data</param>
-	[Signal] public delegate void LobbyMessageReceivedEventHandler(MattohaSignal<string> message, MattohaSignal<JsonObject> player);
+	[Signal] public delegate void LobbyMessageReceivedEventHandler(string message, Godot.Collections.Dictionary<string, Variant> player);
 
 	/// <summary>
 	/// Emmited when a new global message is recieved.
 	/// </summary>
-	/// <param name="message">message content</param>
-	/// <param name="player">player data</param>
-	[Signal] public delegate void GlobalMessageReceivedEventHandler(MattohaSignal<string> message, MattohaSignal<JsonObject> player);
+	[Signal] public delegate void GlobalMessageReceivedEventHandler(string message, Godot.Collections.Dictionary<string, Variant> player);
 
 	/// <summary>
 	/// Emmited when a joined lobby game started.
@@ -102,8 +89,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <summary>
 	/// Emmited when a player left a lobby.
 	/// </summary>
-	/// <param name="player">player data</param>
-	[Signal] public delegate void PlayerLeftLobbyEventHandler(MattohaSignal<JsonObject> player);
+	[Signal] public delegate void PlayerLeftLobbyEventHandler(Godot.Collections.Dictionary<string, Variant> player);
 
 	/// <summary>
 	/// Emmited when a new node should be spawned.
@@ -120,76 +106,62 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <summary>
 	/// Emmited when joining to lobby failed.
 	/// </summary>
-	/// <param name="failCause">MattohaSignal with value of string containing the cause of fail.</param>
-	[Signal] public delegate void JoinLobbyFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void JoinLobbyFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when setting player data fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void SetPlayerDataFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void SetPlayerDataFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when setting player data fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void CreateLobbyFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void CreateLobbyFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when setting lobby data fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void SetLobbyDataFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void SetLobbyDataFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when sending team message fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void TeamMessageFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void TeamMessageFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when sending lobby message fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void LobbyMessageFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void LobbyMessageFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when sending global message fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void GlobalMessageFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void GlobalMessageFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when starting lobby game fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void StartGameFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void StartGameFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when ending the lobby game fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void EndGameFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void EndGameFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when spawning a node fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void SpawnNodeFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void SpawnNodeFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when despawning a node fail.
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void DespawnNodeFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void DespawnNodeFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when a server called unhandled RPC
 	/// </summary>
-	/// <param name="method">unhandled method name</param>
-	/// <param name="payload"></param>
-	/// <param name="sender"></param>
-	[Signal] public delegate void UnhandledClientRpcReceivedEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload, MattohaSignal<long> sender);
+	[Signal] public delegate void UnhandledClientRpcReceivedEventHandler(string method, string payload, long sender);
 	#endregion
 
 
@@ -226,9 +198,9 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <summary>
 	/// Get current player object as JsonObject.
 	/// </summary>
-	public JsonObject GetCurrentPlayerData()
+	public Godot.Collections.Dictionary<string, Variant> GetCurrentPlayerData()
 	{
-		return _currentPlayerData;
+		return MattohaUtils.ToGodotDictionary(_currentPlayerData);
 	}
 
 
@@ -251,9 +223,9 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// Get current lobby object as JsonObject.
 	/// </summary>
 	/// <returns>LobbyData as JsonObject</returns>
-	public JsonObject GetCurrentLobbyData()
+	public Godot.Collections.Dictionary<string, Variant> GetCurrentLobbyData()
 	{
-		return _currentLobbyData;
+		return MattohaUtils.ToGodotDictionary(_currentLobbyData);
 	}
 
 
@@ -282,9 +254,14 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	/// Return list of joined players as List<JsonObject>.
 	/// </summary>
 	/// <returns></returns>
-	public Dictionary<long, JsonObject> GetJoinedPlayers()
+	public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> GetJoinedPlayers()
 	{
-		return _joinedPlayers;
+		Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> players = new();
+		foreach (var player in _joinedPlayers)
+		{
+			players[player.Key] = MattohaUtils.ToGodotDictionary(player.Value);
+		}
+		return players;
 	}
 
 
@@ -324,9 +301,8 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	private void RpcSetPlayerData(string jsonPlayerData)
 	{
 #if MATTOHA_CLIENT
-		var playerObject = MattohaUtils.ToJsonObject(jsonPlayerData);
-		_currentPlayerData = playerObject!;
-		EmitSignal(SignalName.CurrentPlayerUpdated, new MattohaSignal<JsonObject> { Value = _currentPlayerData });
+		_currentPlayerData = MattohaUtils.ToJsonObject(jsonPlayerData)!;
+		EmitSignal(SignalName.CurrentPlayerUpdated, MattohaUtils.ToGodotDictionary(jsonPlayerData));
 #endif
 	}
 
@@ -352,7 +328,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 #if MATTOHA_CLIENT
 		var lobbyObject = MattohaUtils.ToJsonObject(jsonLobbyData);
 		_currentLobbyData = lobbyObject!;
-		EmitSignal(SignalName.NewLobbyCreated, new MattohaSignal<JsonObject> { Value = _currentLobbyData });
+		EmitSignal(SignalName.NewLobbyCreated, MattohaUtils.ToGodotDictionary(jsonLobbyData));
 #endif
 	}
 
@@ -375,7 +351,12 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	{
 #if MATTOHA_CLIENT
 		var availableLobbies = MattohaUtils.Deserialize<List<JsonObject>>(jsonListOfAvailableLobbies);
-		EmitSignal(SignalName.AvailableLobbiesRefreshed, new MattohaSignal<List<JsonObject>> { Value = availableLobbies });
+		var items = new Godot.Collections.Array<Godot.Collections.Dictionary<string, Variant>>();
+		foreach (var item in availableLobbies!)
+		{
+			items.Add(MattohaUtils.ToGodotDictionary(item));
+		}
+		EmitSignal(SignalName.AvailableLobbiesRefreshed, items);
 #endif
 	}
 
@@ -400,7 +381,8 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	{
 #if MATTOHA_CLIENT
 		_currentLobbyData = MattohaUtils.Deserialize<JsonObject>(jsonLobbyData)!;
-		EmitSignal(SignalName.JoinLobbySucceed, new MattohaSignal<JsonObject> { Value = _currentLobbyData });
+
+		EmitSignal(SignalName.JoinLobbySucceed, MattohaUtils.ToGodotDictionary(jsonLobbyData));
 #endif
 	}
 
@@ -412,8 +394,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	public void RpcNewPlayerJoinedLobby(string jsonPlayerData)
 	{
 #if MATTOHA_CLIENT
-		var player = MattohaUtils.Deserialize<JsonObject>(jsonPlayerData);
-		EmitSignal(SignalName.NewPlayerJoinedLobby, new MattohaSignal<JsonObject> { Value = player });
+		EmitSignal(SignalName.NewPlayerJoinedLobby, MattohaUtils.ToGodotDictionary(jsonPlayerData));
 #endif
 	}
 
@@ -448,7 +429,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	{
 #if MATTOHA_CLIENT
 		_currentLobbyData = MattohaUtils.Deserialize<JsonObject>(jsonLobbyData)!;
-		EmitSignal(SignalName.JoinedLobbyRefreshed, new MattohaSignal<JsonObject> { Value = _currentLobbyData });
+		EmitSignal(SignalName.JoinedLobbyRefreshed, MattohaUtils.ToGodotDictionary(jsonLobbyData));
 #endif
 	}
 
@@ -461,7 +442,12 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	{
 #if MATTOHA_CLIENT
 		_joinedPlayers = MattohaUtils.Deserialize<Dictionary<long, JsonObject>>(jsonPlayersDictionary)!;
-		EmitSignal(SignalName.JoinedPlayersRefreshed, new MattohaSignal<Dictionary<long, JsonObject>> { Value = _joinedPlayers });
+		Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> players = new();
+		foreach (var player in _joinedPlayers)
+		{
+			players[player.Key] = MattohaUtils.ToGodotDictionary(player.Value);
+		}
+		EmitSignal(SignalName.JoinedPlayersRefreshed, players);
 #endif
 	}
 
@@ -541,13 +527,13 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 		switch (messageType)
 		{
 			case nameof(MattohaChatMessage.Team):
-				EmitSignal(SignalName.TeamMessageReceived, new MattohaSignal<string> { Value = message }, new MattohaSignal<JsonObject> { Value = playerData });
+				EmitSignal(SignalName.TeamMessageReceived, message, MattohaUtils.ToGodotDictionary(playerData!));
 				break;
 			case nameof(MattohaChatMessage.Lobby):
-				EmitSignal(SignalName.LobbyMessageReceived, new MattohaSignal<string> { Value = message }, new MattohaSignal<JsonObject> { Value = playerData });
+				EmitSignal(SignalName.LobbyMessageReceived, message, MattohaUtils.ToGodotDictionary(playerData!));
 				break;
 			case nameof(MattohaChatMessage.Global):
-				EmitSignal(SignalName.GlobalMessageReceived, new MattohaSignal<string> { Value = message }, new MattohaSignal<JsonObject> { Value = playerData });
+				EmitSignal(SignalName.GlobalMessageReceived, message, MattohaUtils.ToGodotDictionary(playerData!));
 				break;
 		}
 #endif
@@ -619,7 +605,7 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 	{
 #if MATTOHA_CLIENT
 		var playerData = MattohaUtils.Deserialize<JsonObject>(jsonPlayerData);
-		EmitSignal(SignalName.PlayerLeftLobby, new MattohaSignal<JsonObject> { Value = playerData });
+		EmitSignal(SignalName.PlayerLeftLobby, MattohaUtils.ToGodotDictionary(playerData!));
 #endif
 	}
 
@@ -798,9 +784,9 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 			default:
 				EmitSignal(
 					SignalName.UnhandledClientRpcReceived,
-					new MattohaSignal<string> { Value = method },
-					new MattohaSignal<string> { Value = payload },
-					new MattohaSignal<long> { Value = Multiplayer.GetRemoteSenderId() }
+					method,
+					payload,
+					Multiplayer.GetRemoteSenderId()
 				);
 				break;
 		}
@@ -814,37 +800,37 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 		switch (mattohaFailType)
 		{
 			case nameof(MattohaFailType.CreateLobby):
-				EmitSignal(SignalName.CreateLobbyFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.CreateLobbyFailed, failCause);
 				break;
 			case nameof(MattohaFailType.SendLobbyMessage):
-				EmitSignal(SignalName.LobbyMessageFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.LobbyMessageFailed, failCause);
 				break;
 			case nameof(MattohaFailType.SendTeamMessage):
-				EmitSignal(SignalName.TeamMessageFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.TeamMessageFailed, failCause);
 				break;
 			case nameof(MattohaFailType.SendGlobalMessage):
-				EmitSignal(SignalName.GlobalMessageFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.GlobalMessageFailed, failCause);
 				break;
 			case nameof(MattohaFailType.JoinLobby):
-				EmitSignal(SignalName.JoinLobbyFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.JoinLobbyFailed, failCause);
 				break;
 			case nameof(MattohaFailType.SetLobbyData):
-				EmitSignal(SignalName.SetLobbyDataFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.SetLobbyDataFailed, failCause);
 				break;
 			case nameof(MattohaFailType.SetPlayerData):
-				EmitSignal(SignalName.SetPlayerDataFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.SetPlayerDataFailed, failCause);
 				break;
 			case nameof(MattohaFailType.StartGame):
-				EmitSignal(SignalName.StartGameFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.StartGameFailed, failCause);
 				break;
 			case nameof(MattohaFailType.SpawnNode):
-				EmitSignal(SignalName.SpawnNodeFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.SpawnNodeFailed, failCause);
 				break;
 			case nameof(MattohaFailType.DespawnNode):
-				EmitSignal(SignalName.DespawnNodeFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.DespawnNodeFailed, failCause);
 				break;
 			case nameof(MattohaFailType.EndGame):
-				EmitSignal(SignalName.EndGameFailed, new MattohaSignal<string> { Value = failCause });
+				EmitSignal(SignalName.EndGameFailed, failCause);
 				break;
 		}
 #endif

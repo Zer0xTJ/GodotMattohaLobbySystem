@@ -18,7 +18,6 @@ public partial class MainMenu : Control
 
 	private void OnConnectedToServer()
 	{
-		MyLobbyManager.System?.Client?.SendUnhandledServerRpc("foo", "wowow");
 		GetTree().ChangeSceneToFile("res://addons/mattoha_lobby_system/demo_example/scenes/user_dialog.tscn");
 	}
 

@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://ejnt53rqx4td"]
+[gd_scene load_steps=2 format=3 uid="uid://ejnt53rqx4td"]
+
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/main_menu.gd" id="1_t03v6"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_t03v6")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -33,3 +36,6 @@ text = "SERVER"
 [node name="ClientButton" type="Button" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 text = "CLIENT"
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ServerButton" to="." method="_on_server_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ClientButton" to="." method="_on_client_button_pressed"]

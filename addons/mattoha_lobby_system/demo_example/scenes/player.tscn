@@ -1,14 +1,13 @@
-[gd_scene load_steps=9 format=3 uid="uid://c1xsajn74al37"]
+[gd_scene load_steps=8 format=3 uid="uid://c1xsajn74al37"]
 
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/demo_example/scripts/Player.cs" id="1_oncya"]
-[ext_resource type="PackedScene" uid="uid://7otegvmwvo74" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/projectile.tscn" id="2_am8ug"]
 [ext_resource type="Texture2D" uid="uid://wcxowoxvkef7" path="res://icon.svg" id="2_pxpn8"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaReplicator.cs" id="3_or1ej"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/models/MattohaReplicationItem.cs" id="5_f5b4p"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4d5lc"]
 
-[sub_resource type="Resource" id="Resource_dfv6y"]
+[sub_resource type="Resource" id="Resource_13v12"]
 script = ExtResource("5_f5b4p")
 NodePath = ".."
 PropertyPath = "position"
@@ -17,7 +16,7 @@ IsTeamOnly = false
 IsSmooth = true
 SmoothTime = 0.1
 
-[sub_resource type="Resource" id="Resource_a6o1x"]
+[sub_resource type="Resource" id="Resource_s0tky"]
 script = ExtResource("5_f5b4p")
 NodePath = ".."
 PropertyPath = "scale"
@@ -29,7 +28,6 @@ SmoothTime = 0.05
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 2
 script = ExtResource("1_oncya")
-ProjectileScene = ExtResource("2_am8ug")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
@@ -40,4 +38,4 @@ shape = SubResource("CircleShape2D_4d5lc")
 
 [node name="MattohaReplicator" type="Node" parent="."]
 script = ExtResource("3_or1ej")
-ReplicationItems = [SubResource("Resource_dfv6y"), SubResource("Resource_a6o1x")]
+ReplicationItems = [SubResource("Resource_13v12"), SubResource("Resource_s0tky")]

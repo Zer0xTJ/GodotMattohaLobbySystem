@@ -15,21 +15,17 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <summary>
 	/// Emmited when a client called unhandled RPC
 	/// </summary>
-	/// <param name="method">unhandled method name</param>
-	/// <param name="payload"></param>
-	/// <param name="sender"></param>
-	[Signal] public delegate void UnhandledServerRpcReceivedEventHandler(MattohaSignal<string> method, MattohaSignal<string> payload, MattohaSignal<long> sender);
+	[Signal] public delegate void UnhandledServerRpcReceivedEventHandler(string method, string payload, long sender);
 
 	/// <summary>
 	/// Emmited when start game failed when trying to start game from server (not owner request)
 	/// </summary>
-	/// <param name="failCause"></param>
-	[Signal] public delegate void StartGameFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void StartGameFailedEventHandler(string failCause);
 
 	/// <summary>
 	/// Emmited when end game failed when trying to end game from server (not owner request)
 	/// </summary>
-	[Signal] public delegate void EndGameFailedEventHandler(MattohaSignal<string> failCause);
+	[Signal] public delegate void EndGameFailedEventHandler(string failCause);
 
 
 	[Export] MattohaServerMiddleware? Middleware { get; set; }
@@ -37,6 +33,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 
 	private readonly Dictionary<long, JsonObject> _players = new();
 	private readonly Dictionary<long, JsonObject> _lobbies = new();
+
 
 	/// <summary>
 	/// Spawned nodes in each lobby, every key has a value of List<MattohaSpawnNodeInfo>.
@@ -92,6 +89,21 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
+	/// Get Players dictionary, but as Godot Dictionaries instead of JsonObjects.
+	/// </summary>
+	/// <returns></returns>
+	public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> GetPlayers()
+	{
+		Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> players = new();
+		foreach (var player in _players)
+		{
+			players[player.Key] = MattohaUtils.ToGodotDictionary(player.Value);
+		}
+		return players;
+	}
+
+
+	/// <summary>
 	/// Get lobbies dictionary, but cast it to custom concrete objects instead of JsonObject,
 	/// where key is the id of lobby, and the value is the lobby object.
 	/// </summary>
@@ -109,6 +121,21 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			items.Add(kvp.Key, MattohaUtils.Deserialize<T>(kvp.Value)!);
 		}
 		return items;
+	}
+
+
+	/// <summary>
+	/// Get lobbies dictionary, but as Godot Dictionaries instead of JsonObjects.
+	/// </summary>
+	/// <returns></returns>
+	public Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> GetLobbies()
+	{
+		Godot.Collections.Dictionary<long, Godot.Collections.Dictionary<string, Variant>> lobbies = new();
+		foreach (var lobby in _lobbies)
+		{
+			lobbies[lobby.Key] = MattohaUtils.ToGodotDictionary(lobby.Value);
+		}
+		return lobbies;
 	}
 
 
@@ -132,6 +159,21 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
+	/// Get Player from players dictionary but as Godot Dictionary.
+	/// </summary>
+	/// <param name="playerId"></param>
+	/// <returns></returns>
+	public Godot.Collections.Dictionary<string, Variant>? GetPlayer(long playerId)
+	{
+		if (_players.Keys.Contains(playerId))
+		{
+			return MattohaUtils.ToGodotDictionary(_players[playerId]);
+		}
+		return null;
+	}
+
+
+	/// <summary>
 	/// Get Lobby from lobbies dictionary but casted to custom type.
 	/// </summary>
 	/// <param name="lobbyId"></param>
@@ -147,6 +189,21 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			return MattohaUtils.Deserialize<T>(_players[lobbyId])!;
 		}
 		return default;
+	}
+
+
+	/// <summary>
+	/// Get Lobby from lobbies dictionary but as Godot Dictionary.
+	/// </summary>
+	/// <param name="lobbyId"></param>
+	/// <returns></returns>
+	public Godot.Collections.Dictionary<string, Variant>? GetLobby(long lobbyId)
+	{
+		if (_lobbies.Keys.Contains(lobbyId))
+		{
+			return MattohaUtils.ToGodotDictionary(_lobbies[lobbyId]);
+		}
+		return null;
 	}
 
 
@@ -217,7 +274,6 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 #if MATTOHA_SERVER
 		var playerId = (long)Multiplayer.GetRemoteSenderId();
 		var playerData = MattohaUtils.ToJsonObject(jsonPlayerData);
-		MattohaUtils.AddMissingPlayerKeys(playerData);
 		playerData![MattohaPlayerKeys.JoinedLobbyId] = (long)0;
 		var player = GetPlayer<JsonObject>(playerId);
 
@@ -297,7 +353,6 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			return;
 		}
 		var lobbyData = MattohaUtils.ToJsonObject(jsonLobbyData);
-		MattohaUtils.AddMissingLobbyKeys(lobbyData);
 		if (lobbyData![MattohaLobbyKeys.MaxPlayers]!.GetValue<long>() > _sysetm!.MaxPlayersPerLobby)
 		{
 			RpcId(playerId, nameof(ClientRpcFail), nameof(MattohaFailType.CreateLobby), $"invalid-max-players,{_sysetm!.MaxPlayersPerLobby}");
@@ -583,7 +638,6 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			return;
 		}
 		var lobbyData = MattohaUtils.ToJsonObject(jsonLobbyData);
-		MattohaUtils.AddMissingLobbyKeys(lobbyData);
 		var playersCount = lobby[MattohaLobbyKeys.PlayersCount]!.GetValue<int>();
 		var isGameStarted = lobby[MattohaLobbyKeys.IsGameStarted]!.GetValue<bool>();
 		lobbyData![MattohaLobbyKeys.PlayersCount] = playersCount;
@@ -784,7 +838,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		}
 		else
 		{
-			EmitSignal(SignalName.StartGameFailed, new MattohaSignal<string> { Value = resp.Message });
+			EmitSignal(SignalName.StartGameFailed, resp.Message);
 		}
 #endif
 	}
@@ -858,7 +912,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 		}
 		else
 		{
-			EmitSignal(SignalName.EndGameFailed, new MattohaSignal<string> { Value = resp.Message });
+			EmitSignal(SignalName.EndGameFailed, resp.Message);
 		}
 #endif
 	}
@@ -1104,7 +1158,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 					RpcId(
 						player[MattohaPlayerKeys.Id]!.GetValue<long>(),
 						nameof(ClientRpc), nameof(MattohaClientRpcMethods.DespawnNode),
-						$"{info!.ParentPath}/{info!.NodeName}"
+						nodePath
 					);
 				}
 			}
@@ -1204,9 +1258,9 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 			default:
 				EmitSignal(
 					SignalName.UnhandledServerRpcReceived,
-					new MattohaSignal<string> { Value = method },
-					new MattohaSignal<string> { Value = payload },
-					new MattohaSignal<long> { Value = Multiplayer.GetRemoteSenderId() }
+					method,
+					payload,
+					Multiplayer.GetRemoteSenderId()
 				);
 				break;
 		}

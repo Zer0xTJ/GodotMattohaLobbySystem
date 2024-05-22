@@ -1,12 +1,16 @@
-[gd_scene format=3 uid="uid://ckxna1a8ju0xy"]
+[gd_scene load_steps=2 format=3 uid="uid://ckxna1a8ju0xy"]
 
-[node name="UserDialog" type="Control"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/user_dialog.gd" id="1_t47xg"]
+
+[node name="UserDialog" type="Control" node_paths=PackedStringArray("username_input")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_t47xg")
+username_input = NodePath("PanelContainer/MarginContainer/VBoxContainer/UsernameLineEdit")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -61,3 +65,5 @@ size_flags_horizontal = 3
 layout_mode = 2
 focus_mode = 0
 text = "Continue"
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]

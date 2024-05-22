@@ -14,8 +14,8 @@ public partial class MattohaReplicatorBase : MattohaSystemFinder
 
 	public override void _EnterTree()
 	{
-		_lastReplicationTime = Time.GetTicksMsec() - (ReplicationIntervalSeconds * 1000);
 		base._EnterTree();
+		_lastReplicationTime = Time.GetTicksMsec() - (ReplicationIntervalSeconds * 1000);
 	}
 
 	public override void _ExitTree()
