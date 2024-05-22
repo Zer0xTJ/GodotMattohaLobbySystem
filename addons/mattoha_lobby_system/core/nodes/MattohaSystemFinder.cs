@@ -13,7 +13,7 @@ public partial class MattohaSystemFinder : Node
 		InitReplicateListener();
 		base._EnterTree();
 	}
-	
+
 	/// <summary>
 	/// return the MattohaSystem from node tree if found.
 	/// </summary>
@@ -22,7 +22,7 @@ public partial class MattohaSystemFinder : Node
 	{
 		return _system;
 	}
-	
+
 	/// <summary>
 	/// Return the replicate listener.
 	/// </summary>

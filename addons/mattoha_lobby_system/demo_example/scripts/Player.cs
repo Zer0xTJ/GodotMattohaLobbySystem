@@ -1,5 +1,4 @@
 using Godot;
-using System;
 
 namespace MattohaLobbySystem.Demo;
 public partial class Player : CharacterBody2D
