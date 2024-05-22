@@ -40,7 +40,8 @@ enabled=PackedStringArray("res://addons/mattoha_lobby_system/plugin.cfg")
 
 folder_colors={
 "res://addons/mattoha_lobby_system/core/": "red",
-"res://addons/mattoha_lobby_system/demo_example/": "purple"
+"res://addons/mattoha_lobby_system/demo_example/": "purple",
+"res://addons/mattoha_lobby_system/gd_demo_example/": "green"
 }
 
 [input]

@@ -2,10 +2,10 @@
 
 namespace MattohaLobbySystem.Core.Interfaces;
 
-public interface IMattohaPlayer: IMattohaChatProps, IMattohaPrivateProps
+public interface IMattohaPlayer : IMattohaChatProps, IMattohaPrivateProps
 {
 	public long Id { get; set; }
-	
+
 	/// <summary>
 	/// Currently joined lobby Id, 0 if not joined.
 	/// </summary>
