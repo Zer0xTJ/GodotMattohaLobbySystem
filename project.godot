@@ -11,14 +11,14 @@ config_version=5
 [application]
 
 config/name="mattoha_lobby_system"
-run/main_scene="res://addons/mattoha_lobby_system/demo_example/scenes/main_menu.tscn"
+run/main_scene="res://addons/mattoha_lobby_system/gd_demo_example/scenes/main_menu.tscn"
 config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
 
-MyLobbyManager="*res://addons/mattoha_lobby_system/demo_example/autoload/my_lobby_manager.tscn"
 LobbyManager="*res://addons/mattoha_lobby_system/gd_demo_example/autoload/lobby_manager.tscn"
+MyLobbyManager="*res://addons/mattoha_lobby_system/demo_example/autoload/my_lobby_manager.tscn"
 
 [display]
 

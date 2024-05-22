@@ -10,6 +10,5 @@ func _on_continue_button_pressed():
 	player.Username = username_input.text
 	LobbyManager.system.Client.SetPlayerData(player.to_dict())
 
-func _on_current_player_updated(player, d):
-	var x = player
-	print("Created: ", d)
+func _on_current_player_updated(player):
+	get_tree().change_scene_to_file("res://addons/mattoha_lobby_system/gd_demo_example/scenes/lobbies.tscn")

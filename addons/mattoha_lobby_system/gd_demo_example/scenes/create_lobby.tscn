@@ -1,12 +1,16 @@
-[gd_scene format=3 uid="uid://najc1uun72o3"]
+[gd_scene load_steps=2 format=3 uid="uid://najc1uun72o3"]
 
-[node name="CreateLobby" type="Control"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/create_lobby.gd" id="1_vbjxf"]
+
+[node name="CreateLobby" type="Control" node_paths=PackedStringArray("lobby_name")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_vbjxf")
+lobby_name = NodePath("PanelContainer/MarginContainer/VBoxContainer/LobbyNameLineEdit")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -61,3 +65,5 @@ size_flags_horizontal = 3
 [node name="CreateButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Continue"
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/CreateButton" to="." method="_on_create_button_pressed"]
