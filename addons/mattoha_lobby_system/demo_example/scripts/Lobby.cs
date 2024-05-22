@@ -90,6 +90,7 @@ public partial class Lobby : Control
 
 	private void OnNewPlayerJoined(MattohaSignal<JsonObject> player)
 	{
+		GD.Print(player.Value);
 	}
 
 

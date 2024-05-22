@@ -223,6 +223,14 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 		return MattohaUtils.Deserialize<T>(_currentPlayerData)!;
 	}
 
+	/// <summary>
+	/// Get current player object as JsonObject.
+	/// </summary>
+	public JsonObject GetCurrentPlayerData()
+	{
+		return _currentPlayerData;
+	}
+
 
 	/// <summary>
 	/// Get current lobby object casted to concrete type instead of JsonObject.
@@ -236,6 +244,16 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 			return _currentLobbyData as T;
 		}
 		return MattohaUtils.Deserialize<T>(_currentLobbyData)!;
+	}
+
+
+	/// <summary>
+	/// Get current lobby object as JsonObject.
+	/// </summary>
+	/// <returns>LobbyData as JsonObject</returns>
+	public JsonObject GetCurrentLobbyData()
+	{
+		return _currentLobbyData;
 	}
 
 
@@ -257,6 +275,16 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 			items.Add(item.Key, MattohaUtils.Deserialize<T>(item.Value)!);
 		}
 		return items;
+	}
+
+
+	/// <summary>
+	/// Return list of joined players as List<JsonObject>.
+	/// </summary>
+	/// <returns></returns>
+	public Dictionary<long, JsonObject> GetJoinedPlayers()
+	{
+		return _joinedPlayers;
 	}
 
 
@@ -439,9 +467,9 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
-	/// Update Joined Lobby data (only owner can update it), note that Id, PlayersCount & IsGameStarted cant be updated.
+	/// Update Joined Lobby data (only owner can update it), note that Id, PlayersCount and IsGameStarted cant be updated.
 	/// </summary>
-	/// <param name="lobby">lobby object</param>
+	/// <param name="lobby"></param>
 	public void SetLobbyData(Godot.Collections.Dictionary<string, Variant> lobby)
 	{
 #if MATTOHA_CLIENT

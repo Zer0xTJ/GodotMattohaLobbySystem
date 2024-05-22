@@ -613,7 +613,7 @@ public partial class MattohaServerBase : Node, IMattohaClientRpc, IMattohaServer
 	/// <summary>
 	/// Server RPC sent by client to send a messgage.
 	/// </summary>
-	/// <param name="jsonPayload">Json payload that contains "Message" & "MessageType".</param>
+	/// <param name="jsonPayload">Json payload that contains "Message" and "MessageType".</param>
 	private void RpcSendMessage(string jsonPayload)
 	{
 #if MATTOHA_SERVER

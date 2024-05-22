@@ -40,6 +40,6 @@ public partial class UserDialog : Control
 		{
 			Username = UsernameLineEdit!.Text,
 		};
-		MyLobbyManager.System?.Client?.SetPlayerData(new Dictionary<string, Variant> { { "Username", player.Username } });
+		MyLobbyManager.System?.Client?.SetPlayerData(player.ToDict());
 	}
 }

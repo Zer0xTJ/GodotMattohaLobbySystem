@@ -12,7 +12,6 @@ public partial class PlayerModel
 	public Array<string> ChatProps { get; set; } = new() { nameof(Id), nameof(Username) };
 	public Array<string> PrivateProps { get; set; } = new();
 
-
 	public Dictionary<string, Variant> ToDict()
 	{
 		return new Dictionary<string, Variant>()
@@ -21,6 +20,8 @@ public partial class PlayerModel
 			{ nameof(JoinedLobbyId), JoinedLobbyId },
 			{ nameof(TeamId), TeamId },
 			{ nameof(Username), Username },
+			{ nameof(ChatProps), ChatProps },
+			{ nameof(PrivateProps), PrivateProps },
 		};
 	}
 
