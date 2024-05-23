@@ -304,5 +304,5 @@ When you export your game for the server, insure to remove MATTOHA_CLIENT from c
 # TODO:
 
 -   ADD an option to replicator to set "despawn" type to => server / direct peers
--   GDScript binding
+-   complete the GDScript binding
 -	Detailed documentation
