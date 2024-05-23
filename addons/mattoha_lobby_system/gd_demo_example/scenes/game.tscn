@@ -1,10 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://bf5pnbm0fm7qi"]
+[gd_scene load_steps=6 format=3 uid="uid://bf5pnbm0fm7qi"]
 
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/game.gd" id="1_v65bw"]
+[ext_resource type="PackedScene" uid="uid://c1xsajn74al37" path="res://addons/mattoha_lobby_system/demo_example/scenes/player.tscn" id="2_hyu6m"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSpawnListener.cs" id="3_t53uo"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaReplicateListener.cs" id="4_bjuvp"]
-[ext_resource type="PackedScene" uid="uid://hnnapidqk1th" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/coin.tscn" id="5_li1le"]
+[ext_resource type="PackedScene" uid="uid://hnnapidqk1th" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/coin.tscn" id="5_odusx"]
 
 [node name="Game" type="Node2D"]
+script = ExtResource("1_v65bw")
+PlayerScene = ExtResource("2_hyu6m")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(74, 44)
@@ -15,11 +19,14 @@ script = ExtResource("3_t53uo")
 [node name="MattohaReplicateListener" type="Node" parent="."]
 script = ExtResource("4_bjuvp")
 
-[node name="Coin" parent="." instance=ExtResource("5_li1le")]
-position = Vector2(104, 105)
+[node name="Coin" parent="." instance=ExtResource("5_odusx")]
+position = Vector2(-178, -77)
 
-[node name="Coin2" parent="." instance=ExtResource("5_li1le")]
-position = Vector2(-130, 128)
+[node name="Coin2" parent="." instance=ExtResource("5_odusx")]
+position = Vector2(-187, 101)
 
-[node name="Coin3" parent="." instance=ExtResource("5_li1le")]
-position = Vector2(-136, -91)
+[node name="Coin3" parent="." instance=ExtResource("5_odusx")]
+position = Vector2(237, 74)
+
+[node name="Coin4" parent="." instance=ExtResource("5_odusx")]
+position = Vector2(188, -102)

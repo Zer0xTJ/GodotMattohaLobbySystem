@@ -295,6 +295,20 @@ public partial class MattohaClientBase : Node, IMattohaClientRpc, IMattohaServer
 
 
 	/// <summary>
+	/// Change joined team.
+	/// </summary>
+	/// <param name="teamId"></param>
+	public void SetTeam(int teamId)
+	{
+#if MATTOHA_CLIENT
+		if (teamId < 0) { return; }
+		_currentPlayerData[MattohaPlayerKeys.TeamId] = teamId;
+		SetPlayerData(MattohaUtils.ToGodotDictionary(_currentPlayerData));
+#endif
+	}
+
+
+	/// <summary>
 	/// Client Rpc sent by server to client with new player data.
 	/// </summary>
 	/// <param name="jsonPlayerData">player data as json string.</param>

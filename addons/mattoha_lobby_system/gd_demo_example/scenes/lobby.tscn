@@ -1,12 +1,19 @@
-[gd_scene format=3 uid="uid://o2w6vlld31yd"]
+[gd_scene load_steps=2 format=3 uid="uid://o2w6vlld31yd"]
 
-[node name="Lobby" type="Control"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/lobby.gd" id="1_j33pg"]
+
+[node name="Lobby" type="Control" node_paths=PackedStringArray("LobbyName", "PlayersContainer", "ChatInput", "MessagesContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_j33pg")
+LobbyName = NodePath("PanelContainer/MarginContainer/VBoxContainer/TopBar/LobbyNameLabel")
+PlayersContainer = NodePath("PanelContainer/MarginContainer/VBoxContainer/Content/PlayersScrollContainer/PlayersContainer")
+ChatInput = NodePath("PanelContainer/MarginContainer/VBoxContainer/BottomBar/MessageLineEdit")
+MessagesContainer = NodePath("PanelContainer/MarginContainer/VBoxContainer/Content/ChatSection/MarginContainer/VBoxContainer/ScrollContainer/MessagesContainer")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -145,3 +152,14 @@ text = "START GAME"
 layout_mode = 2
 focus_mode = 0
 text = "LEAVE LOBBY"
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/RandomNameButton" to="." method="_on_random_name_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/RefreshLobbyButton" to="." method="_on_refresh_lobby_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/Team1Button" to="." method="_on_team_1_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/Team2Button" to="." method="_on_team_2_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/RefreshPlayersButton" to="." method="_on_refresh_players_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBar/TeamMessageButton" to="." method="_on_team_message_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBar/LobbyMessageButton" to="." method="_on_lobby_message_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBar/GlobalMessageButton" to="." method="_on_global_message_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/StartGameButton" to="." method="_on_start_game_button_pressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LeaveLobbyButton" to="." method="_on_leave_lobby_button_pressed"]
