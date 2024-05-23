@@ -1,6 +1,6 @@
 ( !! Pray for Gaza / Israeli occupation is doing genocide against Innocent Gaza People and children !!)
 
-# Multi-Lobby System for Godot Engine (C#)
+# Multi-Lobby System for Godot Engine
 
 Mattoha Lobby System is an addon designed to simplify multiplayer game development in Godot using C#! This addon offers a robust framework for managing multiple lobbies with a single server instance, allowing for dynamic and engaging multiplayer experiences.
 
