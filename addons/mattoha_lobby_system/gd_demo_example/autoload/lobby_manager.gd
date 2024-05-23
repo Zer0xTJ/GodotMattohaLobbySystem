@@ -1,5 +1,5 @@
 extends Node
 
-var system;
+var system
 func _ready() -> void:
 	system = get_node("MattohaSystem")
