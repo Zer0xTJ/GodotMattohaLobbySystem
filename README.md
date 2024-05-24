@@ -15,6 +15,8 @@ Mattoha Lobby System is an addon designed to simplify multiplayer game developme
 -   **ServerMiddleware:** customize your Before & After almost all server events.
 -   **UnhandledRpc:** MattohaLobbySystem allows you to send a custom RPC and handle it at your own, for both client & server.
 
+## Development
+This addon is still in devlopment stage and new versions may have a breaking changes, it needs some performance optimization too, We welcome any contributions that helps in "documentations, demos, optimizations, improvement and bug fixes" .
 ## Have any ideas ?
 
 DM me on X-platform - https://x.com/zer0xtj , It would be appreciated if you write in Arabic.
