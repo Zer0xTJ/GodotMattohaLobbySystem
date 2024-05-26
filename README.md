@@ -1,6 +1,6 @@
 ( !! Pray for Gaza / Israeli occupation is doing genocide against Innocent Gaza People and children !!)
 
-# Multi-Lobby System for Godot Engine (C#)
+# Multi-Lobby System for Godot Engine
 
 Mattoha Lobby System is an addon designed to simplify multiplayer game development in Godot using C#! This addon offers a robust framework for managing multiple lobbies with a single server instance, allowing for dynamic and engaging multiplayer experiences.
 
@@ -14,6 +14,13 @@ Mattoha Lobby System is an addon designed to simplify multiplayer game developme
 -   **Extensibility:** Customize and extend functionality to suit your game's needs.
 -   **ServerMiddleware:** customize your Before & After almost all server events.
 -   **UnhandledRpc:** MattohaLobbySystem allows you to send a custom RPC and handle it at your own, for both client & server.
+
+## Development
+This addon is still in devlopment stage and new versions may have a breaking changes, it needs some performance optimization too, We welcome any contributions that helps in "documentations, demos, optimizations, improvement and bug fixes" .
+
+## Demo
+MattohaLobbySystem comes with demos for c# & gdscript , you can watch the demo on youtube too:
+Youtube demo: https://www.youtube.com/watch?v=9CdeYuuKfWo
 
 ## Have any ideas ?
 
@@ -298,11 +305,11 @@ The following table describe the server node methods :
 
 ## Export
 
-When you export your game for the server, insure to remove MATTOHA_CLIENT from csproject constants values for conditional compilation, same for client version, you should remove MATTOHA_SERVER for security reasons.
+When you export your game for the server, ensure to remove MATTOHA_CLIENT from csproject constants values for conditional compilation, same for client version, you should remove MATTOHA_SERVER for security reasons.
 
 
 # TODO:
 
 -   ADD an option to replicator to set "despawn" type to => server / direct peers
--   GDScript binding
+-   complete the GDScript binding
 -	Detailed documentation
