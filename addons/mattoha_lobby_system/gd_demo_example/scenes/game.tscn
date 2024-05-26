@@ -1,7 +1,7 @@
 [gd_scene load_steps=6 format=3 uid="uid://bf5pnbm0fm7qi"]
 
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/game.gd" id="1_v65bw"]
-[ext_resource type="PackedScene" uid="uid://c1xsajn74al37" path="res://addons/mattoha_lobby_system/demo_example/scenes/player.tscn" id="2_hyu6m"]
+[ext_resource type="PackedScene" uid="uid://c1xsajn74al37" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/player.tscn" id="2_hyu6m"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSpawnListener.cs" id="3_t53uo"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaReplicateListener.cs" id="4_bjuvp"]
 [ext_resource type="PackedScene" uid="uid://hnnapidqk1th" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/coin.tscn" id="5_odusx"]

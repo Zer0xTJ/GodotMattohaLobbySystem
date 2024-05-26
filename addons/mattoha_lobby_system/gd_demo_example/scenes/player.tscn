@@ -1,24 +1,286 @@
-[gd_scene load_steps=7 format=3 uid="uid://c1xsajn74al37"]
+[gd_scene load_steps=37 format=3 uid="uid://c1xsajn74al37"]
 
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/gd_demo_example/scenes/player.gd" id="1_7olnf"]
 [ext_resource type="Texture2D" uid="uid://wcxowoxvkef7" path="res://icon.svg" id="2_pxpn8"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaReplicator.cs" id="3_or1ej"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/models/MattohaReplicationItem.cs" id="5_f5b4p"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4d5lc"]
 
-[sub_resource type="Resource" id="Resource_80cfy"]
+[sub_resource type="Resource" id="Resource_pnto0"]
 script = ExtResource("5_f5b4p")
 NodePath = ".."
 PropertyPath = "position"
 IsActive = true
 IsTeamOnly = false
 IsSmooth = true
-SmoothTime = 0.1
+SmoothTime = 0.05
 
-[sub_resource type="Resource" id="Resource_il1gb"]
+[sub_resource type="Resource" id="Resource_ehp3l"]
 script = ExtResource("5_f5b4p")
 NodePath = ".."
-PropertyPath = "scale"
+PropertyPath = "global_position"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_darce"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "position"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_ojycj"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "global_position"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_hi34d"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "position"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_84wgf"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "global_position"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_6np4v"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "rotation_degrees"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_55b5g"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "rotation"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_v7bk8"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "global_rotation"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_4ymtp"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "global_rotation_degrees"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_xeelm"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "rotation"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_ao0ge"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "rotation_degrees"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_m4ai3"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "global_rotation"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_b78hd"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "global_rotation_degrees"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_p40pd"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "rotation"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_tehtr"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "rotation_degrees"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_mbdvt"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "global_rotation"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_tb4wv"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "global_rotation_degrees"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_ylwxl"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "modulate"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_oqse7"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "self_modulate"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_8a7ei"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "modulate"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_axgor"]
+script = ExtResource("5_f5b4p")
+NodePath = "../Sprite2D"
+PropertyPath = "self_modulate"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_8124r"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "modulate"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_gla3y"]
+script = ExtResource("5_f5b4p")
+NodePath = "../CollisionShape2D"
+PropertyPath = "self_modulate"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_04qgr"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "speed"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_sx2vb"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "floor_constant_speed"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_250cl"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "multiplayer"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_43y24"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "process_mode"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_e5a2u"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "process_priority"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_r55wm"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "process_physics_priority"
+IsActive = true
+IsTeamOnly = false
+IsSmooth = true
+SmoothTime = 0.05
+
+[sub_resource type="Resource" id="Resource_5h8bg"]
+script = ExtResource("5_f5b4p")
+NodePath = ".."
+PropertyPath = "process_thread_group"
 IsActive = true
 IsTeamOnly = false
 IsSmooth = true
@@ -26,6 +288,8 @@ SmoothTime = 0.05
 
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 2
+script = ExtResource("1_7olnf")
+speed = 300.0
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
@@ -36,4 +300,4 @@ shape = SubResource("CircleShape2D_4d5lc")
 
 [node name="MattohaReplicator" type="Node" parent="."]
 script = ExtResource("3_or1ej")
-ReplicationItems = [SubResource("Resource_80cfy"), SubResource("Resource_il1gb")]
+ReplicationItems = [SubResource("Resource_pnto0"), SubResource("Resource_ehp3l"), SubResource("Resource_darce"), SubResource("Resource_ojycj"), SubResource("Resource_hi34d"), SubResource("Resource_84wgf"), SubResource("Resource_6np4v"), SubResource("Resource_55b5g"), SubResource("Resource_v7bk8"), SubResource("Resource_4ymtp"), SubResource("Resource_xeelm"), SubResource("Resource_ao0ge"), SubResource("Resource_m4ai3"), SubResource("Resource_b78hd"), SubResource("Resource_p40pd"), SubResource("Resource_tehtr"), SubResource("Resource_mbdvt"), SubResource("Resource_tb4wv"), SubResource("Resource_ylwxl"), SubResource("Resource_oqse7"), SubResource("Resource_8a7ei"), SubResource("Resource_axgor"), SubResource("Resource_8124r"), SubResource("Resource_gla3y"), SubResource("Resource_04qgr"), SubResource("Resource_sx2vb"), SubResource("Resource_250cl"), SubResource("Resource_43y24"), SubResource("Resource_e5a2u"), SubResource("Resource_r55wm"), SubResource("Resource_5h8bg")]
