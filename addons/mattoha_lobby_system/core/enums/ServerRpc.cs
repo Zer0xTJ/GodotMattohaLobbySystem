@@ -4,4 +4,5 @@ internal enum ServerRpc
 {
 	SetPlayerData,
 	CreateLobby,
+	LoadAvailableLobbies,
 }

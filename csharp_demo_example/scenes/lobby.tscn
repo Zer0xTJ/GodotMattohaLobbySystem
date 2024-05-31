@@ -1,4 +1,6 @@
-[gd_scene format=3 uid="uid://o2w6vlld31yd"]
+[gd_scene load_steps=2 format=3 uid="uid://o2w6vlld31yd"]
+
+[ext_resource type="Script" path="res://csharp_demo_example/scripts/Lobby.cs" id="1_7hjd2"]
 
 [node name="Lobby" type="Control"]
 layout_mode = 3
@@ -7,6 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_7hjd2")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1

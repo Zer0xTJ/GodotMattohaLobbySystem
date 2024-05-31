@@ -9,4 +9,6 @@ internal enum ClientRpc
 	
 	CreateLobby,
 	CreateLobbyFailed,
+
+	LoadAvailableLobbies,
 }

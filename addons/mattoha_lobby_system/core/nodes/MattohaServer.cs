@@ -90,11 +90,25 @@ public partial class MattohaServer : Node
 			maxPlayers = Math.Min(lobbyData[MattohaLobbyKeys.MaxPlayers].AsInt32(), _system.MaxPlayers);
 		}
 		lobbyData[MattohaLobbyKeys.MaxPlayers] = maxPlayers;
-		
 		player[MattohaPlayerKeys.JoinedLobbyId] = lobbyId;
+
+		Lobbies.Add(lobbyId, lobbyData);
+
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.CreateLobby), lobbyData);
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
 		// todo: refresh lobbies list for all
+#endif
+	}
+
+
+	private void RpcLoadAvailableLobbies(long sender)
+	{
+#if MATTOHA_SERVER
+		Dictionary<string, Variant> payload = new()
+		{
+			{ "Lobbies", Lobbies.Values as Array<Dictionary<string, Variant>> }
+		};
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.LoadAvailableLobbies), payload);
 #endif
 	}
 
@@ -110,7 +124,11 @@ public partial class MattohaServer : Node
 			case nameof(ServerRpc.CreateLobby):
 				RpcCreateLobby(payload, sender);
 				break;
+			case nameof(ServerRpc.LoadAvailableLobbies):
+				RpcLoadAvailableLobbies(sender);
+				break;
 		}
 #endif
 	}
+
 }
