@@ -1,6 +1,6 @@
-[gd_scene format=3 uid="uid://d3eq615lver5l"]
+[gd_scene format=3 uid="uid://ckxna1a8ju0xy"]
 
-[node name="CreateLobby" type="Control"]
+[node name="UserDialog" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -35,7 +35,7 @@ layout_mode = 2
 [node name="Label" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"HeaderMedium"
-text = "Create New Lobby"
+text = "User info"
 
 [node name="Spacer" type="Control" parent="PanelContainer/MarginContainer/VBoxContainer"]
 custom_minimum_size = Vector2(0, 10)
@@ -43,12 +43,12 @@ layout_mode = 2
 
 [node name="Label2" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Lobby Name:"
+text = "Username :"
 
-[node name="LobbyNameLineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer"]
+[node name="UsernameLineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-placeholder_text = "Enter lobby name ..."
+placeholder_text = "Enter a susername"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
@@ -58,7 +58,8 @@ size_flags_vertical = 10
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="CreateButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
+[node name="ContinueButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
 text = "Continue"

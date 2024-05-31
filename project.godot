@@ -15,11 +15,6 @@ run/main_scene="res://addons/mattoha_lobby_system/gd_demo_example/scenes/main_me
 config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[autoload]
-
-LobbyManager="*res://addons/mattoha_lobby_system/gd_demo_example/autoload/lobby_manager.tscn"
-MyLobbyManager="*res://addons/mattoha_lobby_system/demo_example/autoload/my_lobby_manager.tscn"
-
 [display]
 
 window/size/viewport_width=800
@@ -40,9 +35,9 @@ enabled=PackedStringArray("res://addons/mattoha_lobby_system/plugin.cfg")
 [file_customization]
 
 folder_colors={
-"res://addons/mattoha_lobby_system/core/": "red",
-"res://addons/mattoha_lobby_system/demo_example/": "purple",
-"res://addons/mattoha_lobby_system/gd_demo_example/": "green"
+"res://addons/mattoha_lobby_system/core/": "gray",
+"res://addons/mattoha_lobby_system/csharp_demo_example/": "teal",
+"res://addons/mattoha_lobby_system/gd_demo_example/": "purple"
 }
 
 [input]

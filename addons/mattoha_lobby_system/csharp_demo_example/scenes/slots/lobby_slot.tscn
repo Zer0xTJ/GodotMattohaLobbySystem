@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://bmar0sccrq7y5"]
+[gd_scene format=3 uid="uid://dlcdjul4fk705"]
 
 [node name="LobbySlot" type="HBoxContainer"]
 scale = Vector2(-0.149272, 0.73052)
