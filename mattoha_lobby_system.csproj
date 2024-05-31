@@ -11,4 +11,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='ExportRelease|AnyCPU'">
     <DefineConstants>$(DefineConstants);MATTOHA_CLIENT,MATTOHA_SERVER</DefineConstants>
   </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="addons\mattoha_lobby_system\core\models\" />
+  </ItemGroup>
 </Project>
