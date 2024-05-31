@@ -3,5 +3,10 @@
 internal enum ClientRpc
 {
 	RegisterPlayer,
-	SetPlayerData
+	
+	SetPlayerData,
+	SetPlayerDataFailed,
+	
+	CreateLobby,
+	CreateLobbyFailed,
 }

@@ -8,7 +8,13 @@ public partial class MattohaClient : Node
 {
 	[Signal] public delegate void ConnectedToServerEventHandler();
 	[Signal] public delegate void PlayerRegisteredEventHandler(Dictionary<string, Variant> playerData);
+	
 	[Signal] public delegate void SetPlayerDataSucceedEventHandler(Dictionary<string, Variant> playerData);
+	[Signal] public delegate void SetPlayerDataFailedEventHandler(string cause);
+
+
+	[Signal] public delegate void CreateLobbySucceedEventHandler(Dictionary<string, Variant> lobbyData);
+	[Signal] public delegate void CreateLobbyFailedEventHandler(string cause);
 
 	public Dictionary<string, Variant> CurrentPlayer { get; set; } = new();
 	public Dictionary<string, Variant> CurrentLobby { get; set; } = new();
@@ -39,10 +45,10 @@ public partial class MattohaClient : Node
 	}
 
 	
-	public void SetPlayerData(Dictionary<string, Variant> data)
+	public void SetPlayerData(Dictionary<string, Variant> playerData)
 	{
 #if MATTOHA_CLIENT
-		_system.SendReliableServerRpc(nameof(ServerRpc.SetPlayerData), data);
+		_system.SendReliableServerRpc(nameof(ServerRpc.SetPlayerData), playerData);
 #endif
 	}
 	
@@ -52,6 +58,23 @@ public partial class MattohaClient : Node
 #if MATTOHA_CLIENT
 		CurrentPlayer = playerData;
 		EmitSignal(SignalName.SetPlayerDataSucceed, CurrentPlayer);
+#endif
+	}
+
+
+	public void CreateLobby(Dictionary<string, Variant> lobbyData)
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.CreateLobby), lobbyData);
+#endif
+	}
+
+	
+	private void RpcCreateLobby(Dictionary<string, Variant> lobbyData)
+	{
+#if MATTOHA_CLIENT
+		CurrentLobby = lobbyData;
+		EmitSignal(SignalName.CreateLobbySucceed, CurrentLobby);
 #endif
 	}
 
@@ -67,7 +90,11 @@ public partial class MattohaClient : Node
 			case nameof(ClientRpc.SetPlayerData):
 				RpcSetPlayerData(payload);
 				break;
+			case nameof(ClientRpc.CreateLobby):
+				RpcCreateLobby(payload);
+				break;
 		}
 #endif
 	}
+
 }

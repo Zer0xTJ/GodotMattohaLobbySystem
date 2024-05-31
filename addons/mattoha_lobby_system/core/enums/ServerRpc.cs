@@ -2,5 +2,6 @@
 
 internal enum ServerRpc
 {
-	SetPlayerData
+	SetPlayerData,
+	CreateLobby,
 }

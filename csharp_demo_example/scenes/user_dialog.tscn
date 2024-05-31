@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://ckxna1a8ju0xy"]
 
-[ext_resource type="Script" path="res://csharp_demo_example/scenes/UserDialog.cs" id="1_v5uge"]
+[ext_resource type="Script" path="res://csharp_demo_example/scripts/UserDialog.cs" id="1_v5uge"]
 
 [node name="UserDialog" type="Control"]
 layout_mode = 3
