@@ -2,8 +2,7 @@
 extends EditorPlugin
 
 func _enter_tree():
-	# Initialization of the plugin goes here.
-	pass
+	add_autoload_singleton("MattohaSystem", "res://addons/mattoha_lobby_system/core/autoload/MattohaSystem.tscn")
 
 func _exit_tree():
 	# Clean-up of the plugin goes here.

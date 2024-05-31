@@ -1,0 +1,3 @@
+[gd_scene format=3 uid="uid://ddr2vmfusqyqg"]
+
+[node name="GameHolder" type="Node2D"]

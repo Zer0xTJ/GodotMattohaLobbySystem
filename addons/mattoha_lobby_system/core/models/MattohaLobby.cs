@@ -4,7 +4,7 @@ using Godot.Collections;
 namespace MattohaLobbySystem.Core.Models;
 public partial class MattohaLobby
 {
-    public long Id { get; set; }
+    public int Id { get; set; }
     public long OwnerId { get; set; }
     public string Name { get; set; } = "New Lobby";
     public int MaxPlayers { get; set; }

@@ -6,7 +6,7 @@ public class MattohaPlayer
 {
     public long Id { get; set; }
     public string Username { get; set; } = "New Player";
-    public long JoinedLobbyId { get; set; }
+    public int JoinedLobbyId { get; set; }
     public int TeamId { get; set; }
     public Array<string> PrivateProps { get; set; } = new();
     public Array<string> ChatProps { get; set; } = new Array<string> { nameof(Id), nameof(Username) };
