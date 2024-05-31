@@ -1,7 +1,8 @@
 ﻿using Godot;
+using Godot.Collections;
+using MattohaLobbySystem.Core.Utils;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -13,48 +14,48 @@ public class MattohaUtils
 	/// <summary>
 	/// Return JsonObject without Props that exists in "PrivateProps" list property, used when sending player data to other players.
 	/// </summary>
-	/// <param name="obj">object to copy from.</param>
+	/// <param name="dict">object to copy from.</param>
 	/// <returns>new object without PrivateProps properties.</returns>
-	public static JsonObject ToHiddenPrivatePropsObject(JsonObject obj)
+	public static Dictionary<string, Variant> ToHiddenPrivateProps(Dictionary<string, Variant> dict)
 	{
-		JsonObject newObj = new();
-		var privateProps = GetPrivateProps(obj);
-		foreach (var kvp in obj)
+		Dictionary<string, Variant> newObj = new();
+		var privateProps = GetPrivateProps(dict);
+		foreach (var kvp in dict)
 		{
-			if (kvp.Value == null)
+			if (kvp.Value.Obj == null)
 			{
 				continue;
 			}
 			if (IsPrimitive(kvp.Value) && !privateProps.Contains(kvp.Key))
 			{
-				newObj.Add(kvp.Key, ToJsonNode(kvp.Value));
+				newObj.Add(kvp.Key, kvp.Value);
 			}
 			else if (IsEnumerable(kvp.Value) && !privateProps.Contains(kvp.Key))
 			{
-				List<object> items = new();
-				foreach (var item in kvp.Value.AsArray())
+				Array<Variant> items = new();
+				foreach (var item in kvp.Value.AsGodotArray())
 				{
-					if (item != null)
+					if (item.Obj != null)
 					{
 						if (IsPrimitive(item))
 						{
-							items.Add(ToJsonNode(item)!);
+							items.Add(item);
 						}
 						else
 						{
-							items.Add(ToHiddenPrivatePropsObject(ToJsonObject(item)));
+							items.Add(ToHiddenPrivateProps(item.AsGodotDictionary<string, Variant>()));
 						}
 					}
 				}
 				if (items.Count > 0)
 				{
-					newObj.Add(kvp.Key, ToJsonNode(items));
+					newObj.Add(kvp.Key, items);
 				}
 			}
-			// its an object
+			// its a dictionary
 			else if (!privateProps.Contains(kvp.Key))
 			{
-				JsonObject val = ToHiddenPrivatePropsObject(ToJsonObject(kvp.Value));
+				Dictionary<string, Variant> val = ToHiddenPrivateProps(kvp.Value.AsGodotDictionary<string, Variant>());
 				if (val != null)
 				{
 					if (val.Count > 0)
@@ -71,32 +72,32 @@ public class MattohaUtils
 	/// <summary>
 	/// Convert JsonObject to a  new object that has only ChatProps fields.
 	/// </summary>
-	/// <param name="obj">object to copy from.</param>
+	/// <param name="dict">object to copy from.</param>
 	/// <returns>JsonObject with ChatProps only.</returns>
-	public static JsonObject ToChatObject(JsonObject obj)
+	public static Dictionary<string, Variant> ToChatObject(Dictionary<string, Variant> dict)
 	{
 
-		JsonObject newObj = new();
-		var chatProps = GetChatProps(obj);
+		Dictionary<string, Variant> newObj = new();
+		var chatProps = GetChatProps(dict);
 
-		foreach (var kvp in obj)
+		foreach (var kvp in dict)
 		{
-			if (kvp.Value == null)
+			if (kvp.Value.Obj == null)
 			{
 				continue;
 			}
 
 			if (IsPrimitive(kvp.Value) && chatProps.Contains(kvp.Key))
 			{
-				newObj[kvp.Key] = ToJsonNode(kvp.Value);
+				newObj[kvp.Key] = kvp.Value;
 			}
 			else if (IsEnumerable(kvp.Value))
 			{
 				bool shouldAddItems = true;
-				List<object> items = new();
-				foreach (var item in kvp.Value.AsArray())
+				Array<Variant> items = new();
+				foreach (var item in kvp.Value.AsGodotArray())
 				{
-					if (item != null)
+					if (item.Obj != null)
 					{
 						if (IsPrimitive(item) && chatProps.Contains(kvp.Key))
 						{
@@ -105,22 +106,22 @@ public class MattohaUtils
 						}
 						else if (IsPrimitive(item) && chatProps.Contains(kvp.Key))
 						{
-							items.Add(ToJsonNode(item)!);
+							items.Add(item);
 						}
 						else if (!IsPrimitive(item))
 						{
-							items.Add(ToChatObject(ToJsonObject(item)));
+							items.Add(ToChatObject(item.AsGodotDictionary<string, Variant>()));
 						}
 					}
 				}
 				if (shouldAddItems && items.Count > 0)
 				{
-					newObj.Add(kvp.Key, ToJsonNode(items));
+					newObj.Add(kvp.Key, items);
 				}
 			}
 			else if (!IsPrimitive(kvp.Value))
 			{
-				JsonObject val = ToChatObject(ToJsonObject(kvp.Value));
+				var val = ToChatObject(kvp.Value.AsGodotDictionary<string, Variant>());
 				if (val != null)
 				{
 					if (val.Count > 0)
@@ -138,19 +139,19 @@ public class MattohaUtils
 	/// <summary>
 	/// Get A PrivateProps property value as List<string> from JsonObject.
 	/// </summary>
-	/// <param name="obj">JsonObject to check if it has PrivateProps.</param>
+	/// <param name="dict">JsonObject to check if it has PrivateProps.</param>
 	/// <returns>List of private properties names.</returns>
-	public static List<String> GetPrivateProps(JsonObject obj)
+	public static Array<string> GetPrivateProps(Dictionary<string, Variant> dict)
 	{
-		List<string> privateProps = new() { "ChatProps", "PrivateProps" };
-		if (obj.ContainsKey("PrivateProps"))
+		Array<string> privateProps = new() { nameof(MattohaPlayerKeys.ChatProps), nameof(MattohaPlayerKeys.PrivateProps) };
+		if (dict.ContainsKey("PrivateProps"))
 		{
-			var node = obj["PrivateProps"];
-			if (node != null)
+			var node = dict["PrivateProps"];
+			if (node.Obj != null)
 			{
-				foreach (var item in node.AsArray())
+				foreach (var item in node.AsGodotArray())
 				{
-					if (item != null && !privateProps.Contains($"{item}"))
+					if (item.Obj != null && !privateProps.Contains($"{item.AsString()}"))
 					{
 						privateProps.Add(item.ToString());
 					}
@@ -165,19 +166,19 @@ public class MattohaUtils
 	/// <summary>
 	/// Get A ChatProps property value as List<string> from JsonObject.
 	/// </summary>
-	/// <param name="obj">JsonObject to check if it has ChatProps.</param>
+	/// <param name="dict">JsonObject to check if it has ChatProps.</param>
 	/// <returns>List of chat properties names.</returns>
-	public static List<String> GetChatProps(JsonObject obj)
+	public static Array<String> GetChatProps(Dictionary<string, Variant> dict)
 	{
-		List<string> chatProps = new();
-		if (obj.ContainsKey("ChatProps"))
+		Array<string> chatProps = new();
+		if (dict.ContainsKey("ChatProps"))
 		{
-			var node = obj["ChatProps"];
-			if (node != null)
+			var node = dict["ChatProps"];
+			if (node.Obj != null)
 			{
-				foreach (var item in node.AsArray())
+				foreach (var item in node.AsGodotArray())
 				{
-					if (item != null && !chatProps.Contains($"{item}"))
+					if (item.Obj != null && !chatProps.Contains($"{item.AsString()}"))
 					{
 						chatProps.Add(item.ToString());
 					}
@@ -191,132 +192,19 @@ public class MattohaUtils
 	/// <summary>
 	/// Check if an object is primitive.
 	/// </summary>
-	public static bool IsPrimitive(object obj)
+	public static bool IsPrimitive(Variant obj)
 	{
-		return obj.GetType().IsPrimitive ||
-			   obj.GetType() == typeof(string) ||
-			   obj.GetType() == typeof(decimal) ||
-			   obj is JsonValue;
+		return obj.Obj.GetType().IsPrimitive ||
+			   obj.Obj.GetType() == typeof(string) ||
+			   obj.Obj.GetType() == typeof(decimal);
 	}
 
 
 	/// <summary>
 	/// Check if an object is enumerbale.
 	/// </summary>
-	public static bool IsEnumerable(object obj)
+	public static bool IsEnumerable(Variant obj)
 	{
-		return obj is IEnumerable && obj is not JsonObject;
-	}
-
-
-	/// <summary>
-	/// Used to convert any object to JsonObject.
-	/// </summary>
-	/// <param name="obj">Object to converts.</param>
-	/// <returns>JsonObject</returns>
-	public static JsonObject ToJsonObject(dynamic obj)
-	{
-		return JsonSerializer.Deserialize<JsonObject>(JsonSerializer.Serialize(obj));
-	}
-
-
-	/// <summary>
-	/// Used to convert any json string to a JsonObject.
-	/// </summary>
-	/// <param name="jsonString">json string to converts.</param>
-	/// <returns>JsonObject</returns>
-	public static JsonObject? ToJsonObject(string jsonString)
-	{
-		return JsonSerializer.Deserialize<JsonObject>(jsonString);
-	}
-
-
-	/// <summary>
-	/// Convert any object to a JsonNode object.
-	/// </summary>
-	/// <param name="obj">object to convert.</param>
-	/// <returns>JsonNode</returns>
-	public static JsonNode? ToJsonNode(object obj)
-	{
-		return JsonSerializer.Deserialize<JsonNode>(JsonSerializer.Serialize(obj));
-	}
-
-
-	/// <summary>
-	/// Used to convert any json string to concrete object, usefull for working with custom datatypes in your project.
-	/// </summary>
-	/// <typeparam name="T">Object type</typeparam>
-	/// <param name="json">json string to convert</param>
-	/// <returns>new Object of Type T</returns>
-	public static T? Deserialize<T>(string json)
-	{
-		return JsonSerializer.Deserialize<T>(json);
-	}
-
-
-	/// <summary>
-	/// Used to convert any JsonObject to concrete object, usefull for working with custom datatypes in your project.
-	/// </summary>
-	/// <typeparam name="T">Object type</typeparam>
-	/// <param name="jsonObject">json string to convert</param>
-	/// <returns>new Object of Type T</returns>
-	public static T? Deserialize<T>(JsonObject jsonObject)
-	{
-		return JsonSerializer.Deserialize<T>(jsonObject);
-	}
-
-
-	/// <summary>
-	/// Used to convert any Dictionary<string, Variant> to concrete object, usefull for working with custom datatypes in your project.
-	/// </summary>
-	/// <typeparam name="T">Object type</typeparam>
-	/// <param name="jsonObject">json string to convert</param>
-	/// <returns>new Object of Type T</returns>
-	public static T? Deserialize<T>(Godot.Collections.Dictionary<string, Variant> jsonObject)
-	{
-		return JsonSerializer.Deserialize<T>(Serialize(jsonObject));
-	}
-
-
-	/// <summary>
-	/// Serialize any object to json string.
-	/// </summary>
-	/// <param name="obj">object to serialize</param>
-	/// <returns>object in json string format</returns>
-	public static string Serialize(object obj)
-	{
-		return JsonSerializer.Serialize(obj);
-	}
-
-
-	/// <summary>
-	/// Serialize any Dictionary<string, Variant> to json string.
-	/// </summary>
-	/// <param name="obj">object to serialize</param>
-	/// <returns>object in json string format</returns>
-	public static string Serialize(Godot.Collections.Dictionary<string, Variant> obj)
-	{
-		return obj.ToString();
-	}
-
-	/// <summary>
-	/// Convert a JsonObject to a Dictionary<string, Variant>.
-	/// </summary>
-	/// <param name="obj"></param>
-	/// <returns></returns>
-	public static Godot.Collections.Dictionary<string, Variant> ToGodotDictionary(JsonObject obj)
-	{
-		var jsonString = Serialize(obj);
-		return ToGodotDictionary(jsonString);
-	}
-
-	/// <summary>
-	/// Convert a json string to a Dictionary<string, Variant>.
-	/// </summary>
-	/// <param name="jsonString"></param>
-	/// <returns></returns>
-	public static Godot.Collections.Dictionary<string, Variant> ToGodotDictionary(string jsonString)
-	{
-		return Json.ParseString(jsonString).AsGodotDictionary<string, Variant>();
+		return obj.Obj is IEnumerable && obj.Obj is not JsonObject;
 	}
 }

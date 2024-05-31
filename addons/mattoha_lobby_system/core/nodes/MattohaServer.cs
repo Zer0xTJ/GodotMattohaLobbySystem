@@ -95,7 +95,6 @@ public partial class MattohaServer : Node
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.CreateLobby), lobbyData);
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
 		// todo: refresh lobbies list for all
-
 #endif
 	}
 
