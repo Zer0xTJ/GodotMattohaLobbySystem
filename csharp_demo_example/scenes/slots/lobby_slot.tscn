@@ -1,7 +1,10 @@
-[gd_scene format=3 uid="uid://dlcdjul4fk705"]
+[gd_scene load_steps=2 format=3 uid="uid://dlcdjul4fk705"]
+
+[ext_resource type="Script" path="res://csharp_demo_example/scripts/LobbySlot.cs" id="1_rmpdp"]
 
 [node name="LobbySlot" type="HBoxContainer"]
 scale = Vector2(-0.149272, 0.73052)
+script = ExtResource("1_rmpdp")
 
 [node name="LobbyNameLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -17,7 +20,8 @@ size_flags_stretch_ratio = 1.5
 text = "Lobby Name"
 
 [node name="JoinButton" type="Button" parent="."]
-unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "JOIN"
+
+[connection signal="pressed" from="JoinButton" to="." method="JoinLobby"]

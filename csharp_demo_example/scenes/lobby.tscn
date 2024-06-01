@@ -146,3 +146,5 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "LEAVE LOBBY"
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/StartGameButton" to="." method="StartGame"]

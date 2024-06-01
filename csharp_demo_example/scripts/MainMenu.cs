@@ -1,7 +1,6 @@
 using Godot;
 using Godot.Collections;
 using Mattoha.Nodes;
-using System;
 
 namespace Mattoha.Demo;
 public partial class MainMenu : Control
@@ -21,7 +20,7 @@ public partial class MainMenu : Control
 	public void StartServer()
 	{
 		MattohaSystem.Instance.StartServer();
-		QueueFree();
+		GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/game_holder.tscn");
 	}
 
 	public void StartClient()

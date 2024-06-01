@@ -21,11 +21,13 @@ public partial class CreateLobby : Control
 
 	public void OnCreateLobbyButtonPressed()
 	{
-		var lobbyData = new Godot.Collections.Dictionary<string, Variant>
+		var lobbyData = new Dictionary<string, Variant>
 		{
+			{ "Password", "123123" },
 			{ "Name", _lineEdit.Text },
+			{ "PrivateProps", new Array<string> { "Password" } }
 		};
-		MattohaSystem.Instance.Client.CreateLobby(lobbyData);
+		MattohaSystem.Instance.Client.CreateLobby(lobbyData, "res://csharp_demo_example/scenes/game.tscn");
 	}
 
 	public override void _ExitTree()

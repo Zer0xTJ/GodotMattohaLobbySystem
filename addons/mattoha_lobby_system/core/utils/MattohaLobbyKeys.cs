@@ -11,6 +11,7 @@ public static class MattohaLobbyKeys
 	public static string PlayersCount { get; set; } = "PlayersCount";
 	public static string IsGameStarted { get; set; } = "IsGameStarted";
 	public static string PrivateProps { get; set; } = "PrivateProps";
+	public static string LobbySceneFile { get; set; } = "LobbySceneFile";
 
 	public static List<string> FreezedProperties = new() { Id, OwnerId, MaxPlayers, PlayersCount, IsGameStarted };
 

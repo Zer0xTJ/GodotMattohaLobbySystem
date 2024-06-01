@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using MattohaLobbySystem.Core;
 
 namespace Mattoha.Nodes;
 public partial class MattohaSystem : Node
@@ -8,17 +9,24 @@ public partial class MattohaSystem : Node
 	[Signal] public delegate void ServerRpcRecievedEventHandler(string methodName, Dictionary<string, Variant> payload, long sender);
 	[Signal] public delegate void ClientRpcRecievedEventHandler(string methodName, Dictionary<string, Variant> payload, long sender);
 
-	[Export] public string Address { get; set; } = "127.0.0.1";
-	[Export] public int Port { get; set; } = 7001;
-	[Export] public int MaxChannels { get; set; } = 5;
-	[Export] public int MaxPlayers { get; set; } = 4000;
-	[Export] public int MaxPlayersPerLobby { get; set; } = 10;
+	[ExportGroup("Server Configuration"), Export] public string Address { get; set; } = "127.0.0.1";
+	[ExportGroup("Server Configuration"), Export] public int Port { get; set; } = 7001;
+	[ExportGroup("Server Configuration"), Export] public int MaxChannels { get; set; } = 5;
+	[ExportGroup("Server Configuration"), Export] public int MaxPlayers { get; set; } = 4000;
+	[ExportGroup("Server Configuration"), Export] public int MaxPlayersPerLobby { get; set; } = 10;
 	public int MaxLobbies => MaxPlayers / MaxPlayersPerLobby;
-	[Export] public int LobbySize { get; set; } = 2500;
-	[Export] public MattohaServer Server { get; set; }
-	[Export] public MattohaClient Client { get; set; }
+
+	[ExportGroup("Server Configuration"), Export] public bool AutoLoadAvailableLobbies { get; set; } = true;
+	[ExportGroup("Server Configuration"), Export] public bool DespawnPlayerNodesOnLeave { get; set; } = true;
+
+	[ExportGroup("System Nodes"), Export] public MattohaServer Server { get; set; }
+	[ExportGroup("System Nodes"), Export] public MattohaClient Client { get; set; }
+	
+	[ExportGroup("Lobby Configuration"), Export] public long LobbySize { get; set; } = 2500;
+
 	
 	public static MattohaSystem Instance { get; set; }
+
 
 	public override void _Ready()
 	{

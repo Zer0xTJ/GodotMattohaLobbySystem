@@ -1,6 +1,17 @@
-[gd_scene format=3 uid="uid://bf5pnbm0fm7qi"]
+[gd_scene load_steps=2 format=3 uid="uid://bf5pnbm0fm7qi"]
+
+[ext_resource type="PackedScene" uid="uid://hnnapidqk1th" path="res://csharp_demo_example/scenes/coin.tscn" id="1_bcx0l"]
 
 [node name="Game" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(74, 44)
+
+[node name="Coin" parent="." instance=ExtResource("1_bcx0l")]
+position = Vector2(290, 138)
+
+[node name="Coin2" parent="." instance=ExtResource("1_bcx0l")]
+position = Vector2(-239, 161)
+
+[node name="Coin3" parent="." instance=ExtResource("1_bcx0l")]
+position = Vector2(-132, -84)

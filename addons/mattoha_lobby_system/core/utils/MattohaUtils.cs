@@ -16,7 +16,7 @@ public class MattohaUtils
 	/// </summary>
 	/// <param name="dict">object to copy from.</param>
 	/// <returns>new object without PrivateProps properties.</returns>
-	public static Dictionary<string, Variant> ToHiddenPrivateProps(Dictionary<string, Variant> dict)
+	public static Dictionary<string, Variant> ToSecuredDict(Dictionary<string, Variant> dict)
 	{
 		Dictionary<string, Variant> newObj = new();
 		var privateProps = GetPrivateProps(dict);
@@ -43,7 +43,7 @@ public class MattohaUtils
 						}
 						else
 						{
-							items.Add(ToHiddenPrivateProps(item.AsGodotDictionary<string, Variant>()));
+							items.Add(ToSecuredDict(item.AsGodotDictionary<string, Variant>()));
 						}
 					}
 				}
@@ -55,7 +55,7 @@ public class MattohaUtils
 			// its a dictionary
 			else if (!privateProps.Contains(kvp.Key))
 			{
-				Dictionary<string, Variant> val = ToHiddenPrivateProps(kvp.Value.AsGodotDictionary<string, Variant>());
+				Dictionary<string, Variant> val = ToSecuredDict(kvp.Value.AsGodotDictionary<string, Variant>());
 				if (val != null)
 				{
 					if (val.Count > 0)
@@ -74,8 +74,10 @@ public class MattohaUtils
 	/// </summary>
 	/// <param name="dict">object to copy from.</param>
 	/// <returns>JsonObject with ChatProps only.</returns>
-	public static Dictionary<string, Variant> ToChatObject(Dictionary<string, Variant> dict)
+	public static Dictionary<string, Variant> ToChatDict(Dictionary<string, Variant> dict)
 	{
+		if(dict == null)
+			return null;
 
 		Dictionary<string, Variant> newObj = new();
 		var chatProps = GetChatProps(dict);
@@ -110,7 +112,7 @@ public class MattohaUtils
 						}
 						else if (!IsPrimitive(item))
 						{
-							items.Add(ToChatObject(item.AsGodotDictionary<string, Variant>()));
+							items.Add(ToChatDict(item.AsGodotDictionary<string, Variant>()));
 						}
 					}
 				}
@@ -121,7 +123,7 @@ public class MattohaUtils
 			}
 			else if (!IsPrimitive(kvp.Value))
 			{
-				var val = ToChatObject(kvp.Value.AsGodotDictionary<string, Variant>());
+				var val = ToChatDict(kvp.Value.AsGodotDictionary<string, Variant>());
 				if (val != null)
 				{
 					if (val.Count > 0)
@@ -143,6 +145,8 @@ public class MattohaUtils
 	/// <returns>List of private properties names.</returns>
 	public static Array<string> GetPrivateProps(Dictionary<string, Variant> dict)
 	{
+		if(dict == null)
+			return null;
 		Array<string> privateProps = new() { nameof(MattohaPlayerKeys.ChatProps), nameof(MattohaPlayerKeys.PrivateProps) };
 		if (dict.ContainsKey("PrivateProps"))
 		{

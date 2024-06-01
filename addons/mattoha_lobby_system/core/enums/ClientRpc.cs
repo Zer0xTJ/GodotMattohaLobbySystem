@@ -11,4 +11,12 @@ internal enum ClientRpc
 	CreateLobbyFailed,
 
 	LoadAvailableLobbies,
+	
+	JoinLobby,
+	JoinLobbyFailed,
+	
+	StartGame,
+	StartGameFailed,
+
+	LoadLobbyPlayers,
 }

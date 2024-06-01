@@ -5,4 +5,7 @@ internal enum ServerRpc
 	SetPlayerData,
 	CreateLobby,
 	LoadAvailableLobbies,
+	JoinLobby,
+	StartGame,
+	LoadLobbyPlayers,
 }
