@@ -2,6 +2,7 @@ using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
 using Mattoha.Core.Utils;
+using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaClient : Node
@@ -231,6 +232,22 @@ public partial class MattohaClient : Node
 	}
 
 
+	public void DespawnRemovedLobbyNodes()
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.DespawnRemovedLobbyNodes), null);
+#endif
+	}
+
+
+	private void RpcDespawnNode(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.DespawnNodeSucceed, payload[MattohaSpawnKeys.NodePath].AsString());
+#endif
+	}
+
+
 	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -262,6 +279,9 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.SpawnLobbyNodes):
 				RpcSpawnLobbyNodes(payload);
+				break;
+			case nameof(ClientRpc.DespawnNode):
+				RpcDespawnNode(payload);
 				break;
 		}
 #endif

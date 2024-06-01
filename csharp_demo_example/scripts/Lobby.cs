@@ -21,4 +21,10 @@ public partial class Lobby : Control
 	{
 		MattohaSystem.Instance.Client.StartGame();
 	}
+
+	public override void _ExitTree()
+	{
+		MattohaSystem.Instance.Client.StartGameSucceed -= OnStartGame;
+		base._ExitTree();
+	}
 }

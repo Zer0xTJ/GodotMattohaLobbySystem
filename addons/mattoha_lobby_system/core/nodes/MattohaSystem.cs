@@ -34,6 +34,7 @@ public partial class MattohaSystem : Node
 	public override void _Ready()
 	{
 		Client.SpawnNodeSucceed += OnSpawnNode;
+		Client.DespawnNodeSucceed += OnDespawnNode;
 		Instance = this;
 		base._Ready();
 	}
@@ -70,7 +71,7 @@ public partial class MattohaSystem : Node
 	}
 
 
-	public void SpawnNode(Node node)
+	public void SpawnNode(Node node, bool spawnByServer = false)
 	{
 		Dictionary<string, Variant> payload = new()
 		{
@@ -89,8 +90,15 @@ public partial class MattohaSystem : Node
 			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
 			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
 		}
+		if(lobbyId == 0)
+		{
+			payload[MattohaSpawnKeys.LobbyId] = Client.CurrentPlayer[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
+		}
 
-		SendReliableServerRpc(nameof(ServerRpc.SpawnNode), payload);
+		if (!Multiplayer.IsServer())
+		{
+			SendReliableServerRpc(nameof(ServerRpc.SpawnNode), payload);
+		}
 	}
 
 
@@ -124,9 +132,21 @@ public partial class MattohaSystem : Node
 	}
 
 
-	public void DespawnNode(string nodePath)
+	public void DespawnNode(Node node)
 	{
-		Dictionary<string, Variant> spawnPayload = new() { };
+		Dictionary<string, Variant> despawnPayload = new() {
+			{ MattohaSpawnKeys.NodeName, node.Name },
+			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() }
+		};
+		SendReliableServerRpc(nameof(ServerRpc.DespawnNode), despawnPayload);
+	}
+
+	private void OnDespawnNode(string nodePath)
+	{
+		if (GetTree().Root.HasNode(nodePath))
+		{
+			GetNode(nodePath).QueueFree();
+		}
 	}
 
 

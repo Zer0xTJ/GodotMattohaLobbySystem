@@ -10,4 +10,6 @@ internal enum ServerRpc
 	LoadLobbyPlayers,
 	SpawnNode,
 	SpawnLobbyNodes,
+	DespawnNode,
+	DespawnRemovedLobbyNodes,
 }

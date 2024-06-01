@@ -17,6 +17,5 @@ public partial class Game : Node2D
 		instance.Rotation = 15;
 		instance.Position = new Vector2(GD.Randi() % 100, GD.Randi() % 100);
 		AddChild(instance);
-		MattohaSystem.Instance.SpawnNode(instance);
 	}
 }

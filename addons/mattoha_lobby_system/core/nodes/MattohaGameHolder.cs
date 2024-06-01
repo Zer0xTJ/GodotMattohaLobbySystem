@@ -9,9 +9,10 @@ public partial class MattohaGameHolder : Node
 		if (Multiplayer.IsServer())
 			return;
 
-		MattohaSystem.Instance.Client.LoadLobbyPlayers();
-		MattohaSystem.Instance.Client.SpawnLobbyNodes();
 		AddGameScene();
+		MattohaSystem.Instance.Client.LoadLobbyPlayers();
+		MattohaSystem.Instance.Client.DespawnRemovedLobbyNodes();
+		MattohaSystem.Instance.Client.SpawnLobbyNodes();
 		base._Ready();
 	}
 

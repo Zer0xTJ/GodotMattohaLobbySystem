@@ -8,6 +8,7 @@
 script = ExtResource("1_ii6u1")
 Server = NodePath("MattohaServer")
 Client = NodePath("MattohaClient")
+LobbySize = 100
 
 [node name="MattohaServer" type="Node" parent="."]
 script = ExtResource("2_y71mf")
