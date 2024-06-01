@@ -138,6 +138,7 @@ public partial class MattohaClient : Node
 	}
 
 
+
 	private void RpcLoadAvailableLobbies(Dictionary<string, Variant> lobbiesPayload)
 	{
 #if MATTOHA_CLIENT
@@ -200,6 +201,27 @@ public partial class MattohaClient : Node
 #endif
 	}
 
+	public void SpawnLobbyNodes()
+	{
+#if MATTOHA_CLIENT
+		DisableReplication();
+		_system.SendReliableServerRpc(nameof(ServerRpc.SpawnLobbyNodes), null);
+#endif
+	}
+
+
+	private void RpcSpawnLobbyNodes(Dictionary<string, Variant> nodesPayload)
+	{
+#if MATTOHA_CLIENT
+		var spawnedNodes = nodesPayload["Nodes"].AsGodotArray<Dictionary<string, Variant>>();
+		foreach (var nodePayload in spawnedNodes)
+		{
+			EmitSignal(SignalName.SpawnNodeSucceed, nodePayload);
+		}
+		EnableReplication();
+#endif
+	}
+
 
 	private void RpcSpawnNode(Dictionary<string, Variant> payload)
 	{
@@ -237,6 +259,9 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.SpawnNode):
 				RpcSpawnNode(payload);
+				break;
+			case nameof(ClientRpc.SpawnLobbyNodes):
+				RpcSpawnLobbyNodes(payload);
 				break;
 		}
 #endif

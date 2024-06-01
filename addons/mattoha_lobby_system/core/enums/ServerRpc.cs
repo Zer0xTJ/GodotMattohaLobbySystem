@@ -9,4 +9,5 @@ internal enum ServerRpc
 	StartGame,
 	LoadLobbyPlayers,
 	SpawnNode,
+	SpawnLobbyNodes,
 }

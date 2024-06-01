@@ -271,6 +271,19 @@ public partial class MattohaServer : Node
 #endif
 	}
 
+	private void RpcSpawnLobbyNodes(long sender)
+	{
+#if MATTOHA_SERVER
+		if (!Players.TryGetValue(sender, out var player))
+			return;
+		if (!SpawnedNodes.TryGetValue(player[MattohaPlayerKeys.JoinedLobbyId].AsInt32(), out var nodes))
+			return;
+		var payload = new Dictionary<string, Variant>(){
+				{ "Nodes", nodes }
+			};
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SpawnLobbyNodes), payload);
+#endif
+	}
 
 	private void RpcSpawnNode(Dictionary<string, Variant> payload, long sender)
 	{
@@ -313,7 +326,11 @@ public partial class MattohaServer : Node
 			case nameof(ServerRpc.SpawnNode):
 				RpcSpawnNode(payload, sender);
 				break;
+			case nameof(ServerRpc.SpawnLobbyNodes):
+				RpcSpawnLobbyNodes(sender);
+				break;
 		}
 #endif
 	}
+
 }

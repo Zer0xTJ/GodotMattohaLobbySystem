@@ -3,26 +3,27 @@
 internal enum ClientRpc
 {
 	RegisterPlayer,
-	
+
 	SetPlayerData,
 	SetPlayerDataFailed,
-	
+
 	CreateLobby,
 	CreateLobbyFailed,
 
 	LoadAvailableLobbies,
-	
+
 	JoinLobby,
 	JoinLobbyFailed,
-	
+
 	StartGame,
 	StartGameFailed,
 
 	LoadLobbyPlayers,
-	
+
 	SpawnNode,
 	SpawnNodeFailed,
 
 	DespawnNode,
 	DespawnNodeFailed,
+	SpawnLobbyNodes,
 }

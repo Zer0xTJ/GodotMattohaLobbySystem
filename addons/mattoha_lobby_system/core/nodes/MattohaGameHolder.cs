@@ -10,8 +10,8 @@ public partial class MattohaGameHolder : Node
 			return;
 
 		MattohaSystem.Instance.Client.LoadLobbyPlayers();
+		MattohaSystem.Instance.Client.SpawnLobbyNodes();
 		AddGameScene();
-		MattohaSystem.Instance.Client.EnableReplication();
 		base._Ready();
 	}
 
