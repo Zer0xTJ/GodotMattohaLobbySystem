@@ -1,5 +1,6 @@
 using Godot;
 using Godot.Collections;
+using Mattoha.Core.Utils;
 using Mattoha.Nodes;
 
 namespace Mattoha.Demo;
@@ -20,18 +21,25 @@ public partial class Lobbies : Control
 	private void OnJoinLobby(Dictionary<string, Variant> lobbyData)
 	{
 		GD.Print("Lobby Joined: ", lobbyData);
-		GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/lobby.tscn");
+		if (lobbyData[MattohaLobbyKeys.IsGameStarted].AsBool())
+		{
+			GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/game_holder.tscn");
+		}
+		else
+		{
+			GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/lobby.tscn");
+		}
 	}
 
 	private void OnLoadLobbies(Array<Dictionary<string, Variant>> lobbies)
 	{
 		GD.Print("Lobbies loaded: ", lobbies);
-		foreach(var slot in _lobbiesContainer.GetChildren())
+		foreach (var slot in _lobbiesContainer.GetChildren())
 		{
 			slot.QueueFree();
 		}
 
-		foreach(var lobby in lobbies)
+		foreach (var lobby in lobbies)
 		{
 			var lobbySlot = LobbySlot.Instantiate<LobbySlot>();
 			lobbySlot.LobbyData = lobby;

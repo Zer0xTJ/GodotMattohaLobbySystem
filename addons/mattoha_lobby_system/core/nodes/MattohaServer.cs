@@ -282,6 +282,7 @@ public partial class MattohaServer : Node
 		payload[MattohaSpawnKeys.Owner] = sender;
 		SpawnedNodes[lobbyId].Add(payload);
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SpawnNode), payload);
+		_system.OnSpawnNode(payload);
 #endif
 	}
 

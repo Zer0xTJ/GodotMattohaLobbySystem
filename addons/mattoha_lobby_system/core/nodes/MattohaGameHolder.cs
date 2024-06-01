@@ -10,10 +10,15 @@ public partial class MattohaGameHolder : Node
 			return;
 
 		MattohaSystem.Instance.Client.LoadLobbyPlayers();
-		
-		var sceneFile = MattohaSystem.Instance.Client.CurrentLobby[MattohaLobbyKeys.LobbySceneFile].ToString();
-		AddChild(GD.Load<PackedScene>(sceneFile).Instantiate());
-
+		AddGameScene();
 		base._Ready();
+	}
+
+	private void AddGameScene()
+	{
+		var sceneFile = MattohaSystem.Instance.Client.CurrentLobby[MattohaLobbyKeys.LobbySceneFile].ToString();
+		var gameScene = GD.Load<PackedScene>(sceneFile).Instantiate();
+		gameScene.Name = $"Lobby{MattohaSystem.Instance.Client.CurrentLobby[MattohaLobbyKeys.Id].AsString()}";
+		AddChild(gameScene);
 	}
 }

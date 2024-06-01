@@ -94,13 +94,20 @@ public partial class MattohaSystem : Node
 	}
 
 
-	private void OnSpawnNode(Dictionary<string, Variant> payload)
+	public void OnSpawnNode(Dictionary<string, Variant> payload)
 	{
 		GD.Print("Im gonna spawn: ", payload);
 		var parentPath = payload[MattohaSpawnKeys.ParentPath].AsString();
 		var scene = GD.Load<PackedScene>(payload[MattohaSpawnKeys.SceneFile].AsString());
+		var instanceName = payload[MattohaSpawnKeys.NodeName].AsString(); ;
+
+		if (!GetTree().Root.HasNode(parentPath))
+			return;
+		if (GetNode(parentPath).HasNode(instanceName))
+			return;
+
 		var instance = scene.Instantiate();
-		instance.Name = payload[MattohaSpawnKeys.NodeName].AsString();
+		instance.Name = instanceName;
 		instance.SetMultiplayerAuthority(payload[MattohaSpawnKeys.Owner].AsInt32());
 		if (instance is Node2D)
 		{
@@ -113,9 +120,7 @@ public partial class MattohaSystem : Node
 			(instance as Node3D).Rotation = payload[MattohaSpawnKeys.Rotation].AsVector3();
 		}
 
-		if (!Client.LobbyNode.HasNode(parentPath))
-			return;
-		Client.LobbyNode.GetNode(parentPath).AddChild(instance);
+		GetNode(parentPath).AddChild(instance);
 	}
 
 
