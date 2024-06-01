@@ -2,7 +2,6 @@ using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
 using Mattoha.Core.Utils;
-using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaClient : Node

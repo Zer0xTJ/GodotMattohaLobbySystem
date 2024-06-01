@@ -1,9 +1,10 @@
 using Godot;
 
+namespace Mattoha.Demo;
 public partial class Coin : Area2D
 {
 
-	public void BodyEntered(Node2D body)
+	public void OnBodyEntered(Node2D body)
 	{
 		QueueFree();
 	}

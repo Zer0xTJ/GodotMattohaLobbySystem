@@ -37,11 +37,11 @@ public partial class MattohaServer : Node
 	}
 
 
-	public Dictionary<string, Variant> GetSpawnedNode(int lobbyId, string nodeName, string parenPtath)
+	public Dictionary<string, Variant> GetSpawnedNode(string nodeName, string parenPtath)
 	{
 		foreach (var node in SpawnedNodes)
 		{
-			if (node[MattohaSpawnKeys.LobbyId].AsInt32() == lobbyId && node[MattohaSpawnKeys.NodeName].AsString() == nodeName && node[MattohaSpawnKeys.ParentPath].AsString() == parenPtath)
+			if (node[MattohaSpawnKeys.NodeName].AsString() == nodeName && node[MattohaSpawnKeys.ParentPath].AsString() == parenPtath)
 			{
 				return node;
 			}
@@ -67,7 +67,7 @@ public partial class MattohaServer : Node
 		Array<Dictionary<string, Variant>> nodes = new();
 		foreach (var node in SpawnedNodes)
 		{
-			if(node[MattohaSpawnKeys.LobbyId].AsInt32() == lobbyId)
+			if (node[MattohaSpawnKeys.LobbyId].AsInt32() == lobbyId)
 			{
 				nodes.Add(node);
 			}
@@ -82,7 +82,7 @@ public partial class MattohaServer : Node
 		Array<Dictionary<string, Variant>> nodes = new();
 		foreach (var node in RemovedLobbyNodes)
 		{
-			if(node[MattohaSpawnKeys.LobbyId].AsInt32() == lobbyId)
+			if (node[MattohaSpawnKeys.LobbyId].AsInt32() == lobbyId)
 			{
 				nodes.Add(node);
 			}
@@ -363,16 +363,20 @@ public partial class MattohaServer : Node
 	private void RpcDespawnNode(Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
-		var lobby = GetPlayerLobby(sender);
-		if (lobby == null)
-			return;
+		DespawnNode(payload, sender, false);
+#endif
+	}
+
+	public void DespawnNode(Dictionary<string, Variant> payload, long sender, bool isServer = false)
+	{
+#if MATTOHA_SERVER
 		var nodeName = payload[MattohaSpawnKeys.NodeName].AsString();
 		var nodeParentPath = payload[MattohaSpawnKeys.ParentPath].AsString();
-		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
-		var spawnedNode = GetSpawnedNode(lobbyId, nodeName, nodeParentPath);
+		var spawnedNode = GetSpawnedNode(nodeName, nodeParentPath);
+		var lobbyId = MattohaSystem.ExtractLobbyId(nodeParentPath);
 		if (spawnedNode != null)
 		{
-			if (spawnedNode[MattohaSpawnKeys.Owner].AsInt64() == sender)
+			if (spawnedNode[MattohaSpawnKeys.Owner].AsInt64() == sender || isServer)
 			{
 				SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.DespawnNode), spawnedNode);
 				SpawnedNodes.Remove(spawnedNode);
@@ -383,12 +387,14 @@ public partial class MattohaServer : Node
 			var nodePath = $"{nodeParentPath}/{nodeName}";
 			if (GetRemovedNode(lobbyId, nodeName, nodeParentPath) == null)
 			{
+				payload[MattohaSpawnKeys.LobbyId] = lobbyId;
 				RemovedLobbyNodes.Add(payload);
 			}
 			var despawnPayload = new Dictionary<string, Variant>()
 			{
 				{ MattohaSpawnKeys.NodePath, nodePath }
 			};
+			GD.Print("Sending despawn payload: ", despawnPayload, " Lobby: ", lobbyId);
 			SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.DespawnNode), despawnPayload);
 		}
 #endif
@@ -406,12 +412,11 @@ public partial class MattohaServer : Node
 			{
 				{ MattohaSpawnKeys.NodePath, $"{node[MattohaSpawnKeys.ParentPath].AsString()}/{node[MattohaSpawnKeys.NodeName].AsString()}" }
 			};
+			GD.Print("WOWOW: ", despawnPayload);
 			_system.SendReliableClientRpc(sender, nameof(RpcDespawnNode), despawnPayload);
 		}
 #endif
 	}
-
-
 
 
 	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
@@ -452,5 +457,4 @@ public partial class MattohaServer : Node
 		}
 #endif
 	}
-
 }

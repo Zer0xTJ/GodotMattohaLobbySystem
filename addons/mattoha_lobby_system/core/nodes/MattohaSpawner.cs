@@ -5,41 +5,42 @@ public partial class MattohaSpawner : Node
 {
 	[Export] public bool AutoSpawn { get; set; } = true;
 	[Export] public bool AutoDespawn { get; set; } = true;
-	[Export] public bool SpawnByServer { get; set; } = true;
-	[Export] public bool DespawnByServer { get; set; } = false;
+	[Export] public bool ByServer { get; set; } = true;
 
 	public override void _Ready()
 	{
-		if (GetMultiplayerAuthority() == 1)
+		if (ByServer && Multiplayer.IsServer() && AutoSpawn)
 		{
-			if (AutoSpawn)
-			{
-				Spawn();
-			}
+			Spawn();
+		}
+		else if (AutoSpawn)
+		{
+			Spawn();
 		}
 		base._Ready();
 	}
 
 	public override void _ExitTree()
 	{
-		if (GetMultiplayerAuthority() == 1)
+		if (ByServer && Multiplayer.IsServer() && AutoDespawn)
 		{
-			if (AutoDespawn)
-			{
-				Despawn();
-			}
+			Despawn();
+		}
+		else if (AutoDespawn)
+		{
+			Despawn();
 		}
 		base._ExitTree();
 	}
 
 	private void Spawn()
 	{
-		MattohaSystem.Instance.SpawnNode(GetParent(), SpawnByServer);
+		MattohaSystem.Instance.SpawnNode(GetParent());
 	}
 
 	private void Despawn()
 	{
-		MattohaSystem.Instance.DespawnNode(GetParent(), DespawnByServer);
+		MattohaSystem.Instance.DespawnNode(GetParent());
 	}
 
 }

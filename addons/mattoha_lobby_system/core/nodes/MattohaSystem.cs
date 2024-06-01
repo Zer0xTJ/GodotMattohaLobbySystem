@@ -40,6 +40,14 @@ public partial class MattohaSystem : Node
 	}
 
 
+	public static int ExtractLobbyId(string nodePath)
+	{
+		string lobbyName = nodePath.Split("/")[2];
+		string lobbyId = lobbyName.Split("Lobby")[1];
+		return int.Parse(lobbyId);
+	}
+
+
 	public void StartServer()
 	{
 		var peer = new ENetMultiplayerPeer();
@@ -71,7 +79,7 @@ public partial class MattohaSystem : Node
 	}
 
 
-	public void SpawnNode(Node node, bool spawnByServer = false)
+	public void SpawnNode(Node node)
 	{
 		Dictionary<string, Variant> payload = new()
 		{
@@ -90,10 +98,7 @@ public partial class MattohaSystem : Node
 			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
 			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
 		}
-		if(lobbyId == 0)
-		{
-			payload[MattohaSpawnKeys.LobbyId] = Client.CurrentPlayer[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
-		}
+		payload[MattohaSpawnKeys.LobbyId] = Client.CurrentPlayer[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
 
 		if (!Multiplayer.IsServer())
 		{
@@ -104,7 +109,6 @@ public partial class MattohaSystem : Node
 
 	public void OnSpawnNode(Dictionary<string, Variant> payload)
 	{
-		GD.Print("Im gonna spawn: ", payload);
 		var parentPath = payload[MattohaSpawnKeys.ParentPath].AsString();
 		var scene = GD.Load<PackedScene>(payload[MattohaSpawnKeys.SceneFile].AsString());
 		var instanceName = payload[MattohaSpawnKeys.NodeName].AsString(); ;
@@ -138,11 +142,19 @@ public partial class MattohaSystem : Node
 			{ MattohaSpawnKeys.NodeName, node.Name },
 			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() }
 		};
-		SendReliableServerRpc(nameof(ServerRpc.DespawnNode), despawnPayload);
+		if (Multiplayer.IsServer())
+		{
+			Server.DespawnNode(despawnPayload, 1, true);
+		}
+		else
+		{
+			SendReliableServerRpc(nameof(ServerRpc.DespawnNode), despawnPayload);
+		}
 	}
 
 	private void OnDespawnNode(string nodePath)
 	{
+		GD.Print("Im: ", Multiplayer.GetUniqueId(), " Despawning: ", nodePath);
 		if (GetTree().Root.HasNode(nodePath))
 		{
 			GetNode(nodePath).QueueFree();
