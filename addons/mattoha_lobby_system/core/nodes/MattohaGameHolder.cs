@@ -19,14 +19,7 @@ public partial class MattohaGameHolder : Node
 		var sceneFile = MattohaSystem.Instance.Client.CurrentLobby[MattohaLobbyKeys.LobbySceneFile].ToString();
 		var gameScene = GD.Load<PackedScene>(sceneFile).Instantiate();
 		gameScene.Name = $"Lobby{MattohaSystem.Instance.Client.CurrentLobby[MattohaLobbyKeys.Id].AsString()}";
-		gameScene.TreeEntered += OnGameSceneEnterTree;
 		AddChild(gameScene);
-	}
-
-	private void OnGameSceneEnterTree()
-	{
-		MattohaSystem.Instance.Client.DespawnRemovedLobbyNodes();
-		MattohaSystem.Instance.Client.SpawnLobbyNodes();
 	}
 
 }

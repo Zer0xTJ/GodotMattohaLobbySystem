@@ -26,11 +26,7 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void PlayerJoinedEventHandler(Dictionary<string, Variant> playerData);
 	[Signal] public delegate void PlayerLeftEventHandler(Dictionary<string, Variant> playerData);
 
-	[Signal] public delegate void SpawnNodeSucceedEventHandler(Dictionary<string, Variant> spawnPayload);
-	[Signal] public delegate void SpawnNodeFailedEventHandler(string cause);
 
-	[Signal] public delegate void DespawnNodeSucceedEventHandler(string nodePath);
-	[Signal] public delegate void DespawnNodeFailedEventHandler(string cause);
 
 
 	public Node GameHolder => GetNode("/root/GameHolder");
@@ -55,6 +51,16 @@ public partial class MattohaClient : Node
 		Multiplayer.ConnectedToServer += () => EmitSignal(SignalName.ConnectedToServer);
 		_system.ClientRpcRecieved += OnClientRpcRecieved;
 		base._Ready();
+	}
+
+	public Array<long> GetLobbyPlayerIds()
+	{
+		var ids = new Array<long>() { 1 };
+		foreach (var pl in CurrentLobbyPlayers)
+		{
+			ids.Add(pl[MattohaPlayerKeys.Id].AsInt64());
+		}
+		return ids;
 	}
 
 	public bool IsPlayerInLobby(long playerId)
@@ -201,50 +207,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	public void SpawnLobbyNodes()
-	{
-#if MATTOHA_CLIENT
-		DisableReplication();
-		_system.SendReliableServerRpc(nameof(ServerRpc.SpawnLobbyNodes), null);
-#endif
-	}
 
-
-	private void RpcSpawnLobbyNodes(Dictionary<string, Variant> nodesPayload)
-	{
-#if MATTOHA_CLIENT
-		var spawnedNodes = nodesPayload["Nodes"].AsGodotArray<Dictionary<string, Variant>>();
-		foreach (var nodePayload in spawnedNodes)
-		{
-			EmitSignal(SignalName.SpawnNodeSucceed, nodePayload);
-		}
-		EnableReplication();
-#endif
-	}
-
-
-	private void RpcSpawnNode(Dictionary<string, Variant> payload)
-	{
-#if MATTOHA_CLIENT
-		EmitSignal(SignalName.SpawnNodeSucceed, payload);
-#endif
-	}
-
-
-	public void DespawnRemovedLobbyNodes()
-	{
-#if MATTOHA_CLIENT
-		_system.SendReliableServerRpc(nameof(ServerRpc.DespawnRemovedLobbyNodes), null);
-#endif
-	}
-
-
-	private void RpcDespawnNode(Dictionary<string, Variant> payload)
-	{
-#if MATTOHA_CLIENT
-		EmitSignal(SignalName.DespawnNodeSucceed, payload[MattohaSpawnKeys.NodePath].AsString());
-#endif
-	}
 
 
 	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
@@ -272,15 +235,6 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.LoadLobbyPlayers):
 				RpcLoadLobbyPlayers(payload);
-				break;
-			case nameof(ClientRpc.SpawnNode):
-				RpcSpawnNode(payload);
-				break;
-			case nameof(ClientRpc.SpawnLobbyNodes):
-				RpcSpawnLobbyNodes(payload);
-				break;
-			case nameof(ClientRpc.DespawnNode):
-				RpcDespawnNode(payload);
 				break;
 		}
 #endif

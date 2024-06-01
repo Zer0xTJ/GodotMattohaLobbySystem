@@ -20,7 +20,6 @@ public partial class MattohaSystem : Node
 	public int MaxLobbies => MaxPlayers / MaxPlayersPerLobby;
 
 	[ExportGroup("Server Configuration"), Export] public bool AutoLoadAvailableLobbies { get; set; } = true;
-	[ExportGroup("Server Configuration"), Export] public bool DespawnPlayerNodesOnLeave { get; set; } = true;
 
 	[ExportGroup("System Nodes"), Export] public MattohaServer Server { get; private set; }
 	[ExportGroup("System Nodes"), Export] public MattohaClient Client { get; private set; }
@@ -33,8 +32,6 @@ public partial class MattohaSystem : Node
 
 	public override void _Ready()
 	{
-		Client.SpawnNodeSucceed += OnSpawnNode;
-		Client.DespawnNodeSucceed += OnDespawnNode;
 		Instance = this;
 		base._Ready();
 	}
@@ -64,101 +61,18 @@ public partial class MattohaSystem : Node
 	}
 
 
-	public Node CreateInstance(PackedScene scene)
+	public Node CreateInstance(PackedScene scene, int owner)
 	{
 		var instance = scene.Instantiate();
 		instance.Name = instance.Name.ToString().Replace("@", "_");
-		instance.Name += $"_{Multiplayer.GetUniqueId()}_{Client.CurrentLobby[MattohaLobbyKeys.Id]}_{Time.GetTicksMsec()}";
-		instance.SetMultiplayerAuthority(Multiplayer.GetUniqueId());
+		instance.Name += $"_{owner}_{Time.GetTicksMsec()}";
+		instance.SetMultiplayerAuthority(owner);
 		return instance;
 	}
 
-	public Node CreateInstance(string sceneFile)
+	public Node CreateInstance(string sceneFile, int owner)
 	{
-		return CreateInstance(GD.Load<PackedScene>(sceneFile));
-	}
-
-
-	public void SpawnNode(Node node)
-	{
-		Dictionary<string, Variant> payload = new()
-		{
-			{ MattohaSpawnKeys.SceneFile, node.SceneFilePath },
-			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() },
-			{ MattohaSpawnKeys.NodeName, node.Name.ToString() },
-			{ MattohaSpawnKeys.Owner, node.GetMultiplayerAuthority() },
-		};
-		if (node is Node2D)
-		{
-			payload[MattohaSpawnKeys.Position] = (node as Node2D).Position;
-			payload[MattohaSpawnKeys.Rotation] = (node as Node2D).Rotation;
-		}
-		if (node is Node3D)
-		{
-			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
-			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
-		}
-		payload[MattohaSpawnKeys.LobbyId] = Client.CurrentPlayer[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
-
-		if (!Multiplayer.IsServer())
-		{
-			SendReliableServerRpc(nameof(ServerRpc.SpawnNode), payload);
-		}
-	}
-
-
-	public void OnSpawnNode(Dictionary<string, Variant> payload)
-	{
-		var parentPath = payload[MattohaSpawnKeys.ParentPath].AsString();
-		var scene = GD.Load<PackedScene>(payload[MattohaSpawnKeys.SceneFile].AsString());
-		var instanceName = payload[MattohaSpawnKeys.NodeName].AsString(); ;
-
-		if (!GetTree().Root.HasNode(parentPath))
-			return;
-		if (GetNode(parentPath).HasNode(instanceName))
-			return;
-
-		var instance = scene.Instantiate();
-		instance.Name = instanceName;
-		instance.SetMultiplayerAuthority(payload[MattohaSpawnKeys.Owner].AsInt32());
-		if (instance is Node2D)
-		{
-			(instance as Node2D).Position = payload[MattohaSpawnKeys.Position].AsVector2();
-			(instance as Node2D).Rotation = payload[MattohaSpawnKeys.Rotation].As<float>();
-		}
-		if (instance is Node3D)
-		{
-			(instance as Node3D).Position = payload[MattohaSpawnKeys.Position].AsVector3();
-			(instance as Node3D).Rotation = payload[MattohaSpawnKeys.Rotation].AsVector3();
-		}
-
-		GetNode(parentPath).AddChild(instance);
-	}
-
-
-	public void DespawnNode(Node node)
-	{
-		Dictionary<string, Variant> despawnPayload = new() {
-			{ MattohaSpawnKeys.NodeName, node.Name },
-			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() }
-		};
-		if (Multiplayer.IsServer())
-		{
-			Server.DespawnNode(despawnPayload, 1, true);
-		}
-		else
-		{
-			SendReliableServerRpc(nameof(ServerRpc.DespawnNode), despawnPayload);
-		}
-	}
-
-	private void OnDespawnNode(string nodePath)
-	{
-		GD.Print("Im: ", Multiplayer.GetUniqueId(), " Despawning: ", nodePath);
-		if (GetTree().Root.HasNode(nodePath))
-		{
-			GetNode(nodePath).QueueFree();
-		}
+		return CreateInstance(GD.Load<PackedScene>(sceneFile), owner);
 	}
 
 
