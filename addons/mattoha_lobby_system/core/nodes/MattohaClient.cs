@@ -38,9 +38,9 @@ public partial class MattohaClient : Node
 
 
 
-	public Dictionary<string, Variant> CurrentPlayer { get; set; } = new();
-	public Dictionary<string, Variant> CurrentLobby { get; set; } = new();
-	public Array<Dictionary<string, Variant>> CurrentLobbyPlayers { get; set; } = new();
+	public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
+	public Dictionary<string, Variant> CurrentLobby { get; private set; } = new();
+	public Array<Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
 
 	public bool ShouldReplicate { get; private set; }
 	public void EnableReplication() => ShouldReplicate = true;
@@ -55,6 +55,34 @@ public partial class MattohaClient : Node
 		Multiplayer.ConnectedToServer += () => EmitSignal(SignalName.ConnectedToServer);
 		_system.ClientRpcRecieved += OnClientRpcRecieved;
 		base._Ready();
+	}
+
+	public bool IsPlayerInLobby(long playerId)
+	{
+		if (playerId == 1)
+			return true;
+		foreach (var pl in CurrentLobbyPlayers)
+		{
+			if (pl[MattohaPlayerKeys.Id].AsInt64() == playerId)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public bool IsPlayerInMyTeam(long playerId)
+	{
+		if (playerId == 1)
+			return true;
+		foreach (var pl in CurrentLobbyPlayers)
+		{
+			if (pl[MattohaPlayerKeys.Id].AsInt32() == playerId)
+			{
+				return pl[MattohaPlayerKeys.TeamId].AsInt32() == CurrentPlayer[MattohaPlayerKeys.TeamId].AsInt32();
+			}
+		}
+		return false;
 	}
 
 
@@ -168,7 +196,6 @@ public partial class MattohaClient : Node
 	{
 #if MATTOHA_CLIENT
 		CurrentLobbyPlayers = payload["Players"].AsGodotArray<Dictionary<string, Variant>>();
-		GD.Print("Lobby Players: ", CurrentLobbyPlayers);
 		EmitSignal(SignalName.LoadLobbyPlayersSucceed, CurrentLobbyPlayers);
 #endif
 	}

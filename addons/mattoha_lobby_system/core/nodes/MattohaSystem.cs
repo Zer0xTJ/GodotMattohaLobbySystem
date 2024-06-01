@@ -22,8 +22,8 @@ public partial class MattohaSystem : Node
 	[ExportGroup("Server Configuration"), Export] public bool AutoLoadAvailableLobbies { get; set; } = true;
 	[ExportGroup("Server Configuration"), Export] public bool DespawnPlayerNodesOnLeave { get; set; } = true;
 
-	[ExportGroup("System Nodes"), Export] public MattohaServer Server { get; set; }
-	[ExportGroup("System Nodes"), Export] public MattohaClient Client { get; set; }
+	[ExportGroup("System Nodes"), Export] public MattohaServer Server { get; private set; }
+	[ExportGroup("System Nodes"), Export] public MattohaClient Client { get; private set; }
 
 	[ExportGroup("Lobby Configuration"), Export] public long LobbySize { get; set; } = 2500;
 
