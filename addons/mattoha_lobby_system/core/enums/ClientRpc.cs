@@ -22,8 +22,4 @@ internal enum ClientRpc
 
 	SpawnNode,
 	SpawnNodeFailed,
-
-	DespawnNode,
-	DespawnNodeFailed,
-	SpawnLobbyNodes,
 }

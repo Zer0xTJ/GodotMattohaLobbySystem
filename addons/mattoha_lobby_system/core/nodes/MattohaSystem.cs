@@ -33,13 +33,13 @@ public partial class MattohaSystem : Node
 	public override void _Ready()
 	{
 		Instance = this;
+		Client.SpawnNodeRequested += OnSpawnNodeRequested;
 		base._Ready();
 	}
 
-
 	public static int ExtractLobbyId(string nodePath)
 	{
-		string lobbyName = nodePath.Split("/")[2];
+		string lobbyName = nodePath.Split("/")[3];
 		string lobbyId = lobbyName.Split("Lobby")[1];
 		return int.Parse(lobbyId);
 	}
@@ -61,8 +61,9 @@ public partial class MattohaSystem : Node
 	}
 
 
-	public Node CreateInstance(PackedScene scene, int owner)
+	public Node CreateInstance(PackedScene scene)
 	{
+		var owner = Multiplayer.GetUniqueId();
 		var instance = scene.Instantiate();
 		instance.Name = instance.Name.ToString().Replace("@", "_");
 		instance.Name += $"_{owner}_{Time.GetTicksMsec()}";
@@ -70,9 +71,41 @@ public partial class MattohaSystem : Node
 		return instance;
 	}
 
-	public Node CreateInstance(string sceneFile, int owner)
+	public void SpawnNodeFromPayload(Dictionary<string, Variant> payload)
 	{
-		return CreateInstance(GD.Load<PackedScene>(sceneFile), owner);
+		var sceneFile = payload[MattohaSpawnKeys.SceneFile].ToString();
+		var node = GD.Load<PackedScene>(sceneFile).Instantiate();
+		node.Name = payload[MattohaSpawnKeys.NodeName].ToString();
+		node.SetMultiplayerAuthority(payload[MattohaSpawnKeys.Owner].AsInt32());
+		var parentPath = payload[MattohaSpawnKeys.ParentPath].ToString();
+		if (node is Node2D)
+		{
+			(node as Node2D).Position = payload[MattohaSpawnKeys.Position].AsVector2();
+			(node as Node2D).Rotation = payload[MattohaSpawnKeys.Rotation].As<float>();
+		}
+		if (node is Node3D)
+		{
+			(node as Node3D).Position = payload[MattohaSpawnKeys.Position].AsVector3();
+			(node as Node3D).Rotation = payload[MattohaSpawnKeys.Rotation].As<Vector3>();
+		}
+		if (GetTree().Root.HasNode(parentPath))
+		{
+			var parent = GetNode(parentPath);
+			if (!parent.HasNode(node.Name.ToString()))
+			{
+				parent.AddChild(node);
+			}
+		}
+	}
+
+	private void OnSpawnNodeRequested(Dictionary<string, Variant> lobbyData)
+	{
+		SpawnNodeFromPayload(lobbyData);
+	}
+
+	public Node CreateInstance(string sceneFile)
+	{
+		return CreateInstance(GD.Load<PackedScene>(sceneFile));
 	}
 
 

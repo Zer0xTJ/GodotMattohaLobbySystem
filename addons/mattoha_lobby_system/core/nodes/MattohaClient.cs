@@ -1,3 +1,4 @@
+using System;
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
@@ -26,6 +27,8 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void PlayerJoinedEventHandler(Dictionary<string, Variant> playerData);
 	[Signal] public delegate void PlayerLeftEventHandler(Dictionary<string, Variant> playerData);
 
+	[Signal] public delegate void SpawnNodeRequestedEventHandler(Dictionary<string, Variant> lobbyData);
+
 
 
 
@@ -53,9 +56,9 @@ public partial class MattohaClient : Node
 		base._Ready();
 	}
 
-	public Array<long> GetLobbyPlayerIds()
+	public Array<long> GetLobbyPlayersIds()
 	{
-		var ids = new Array<long>() { 1 };
+		var ids = new Array<long>() { 1, Multiplayer.GetUniqueId() };
 		foreach (var pl in CurrentLobbyPlayers)
 		{
 			ids.Add(pl[MattohaPlayerKeys.Id].AsInt64());
@@ -208,7 +211,45 @@ public partial class MattohaClient : Node
 	}
 
 
+	public void SpawnNode(Node node)
+	{
+#if MATTOHA_CLIENT
+		var payload = new Dictionary<string, Variant>()
+		{
+			{ MattohaSpawnKeys.Owner, node.GetMultiplayerAuthority() },
+			{ MattohaSpawnKeys.SceneFile, node.SceneFilePath },
+			{ MattohaSpawnKeys.NodeName, node.Name },
+			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() },
+		};
+		if (node is Node2D)
+		{
+			payload[MattohaSpawnKeys.Position] = (node as Node2D).Position;
+			payload[MattohaSpawnKeys.Rotation] = (node as Node2D).Rotation;
+		}
 
+		if (node is Node3D)
+		{
+			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
+			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
+		}
+
+		_system.SendReliableServerRpc(nameof(ServerRpc.SpawnNode), payload);
+#endif
+	}
+
+	public void DespawnNode(Node node)
+	{
+#if MATTOHA_CLIENT
+#endif
+	}
+
+
+	private void RpcSpawnNode(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.SpawnNodeRequested, payload);
+#endif
+	}
 
 	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
@@ -235,6 +276,9 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.LoadLobbyPlayers):
 				RpcLoadLobbyPlayers(payload);
+				break;
+			case nameof(ClientRpc.SpawnNode):
+				RpcSpawnNode(payload);
 				break;
 		}
 #endif

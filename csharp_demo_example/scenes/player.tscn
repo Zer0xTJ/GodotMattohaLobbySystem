@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c1xsajn74al37"]
+[gd_scene load_steps=7 format=3 uid="uid://c1xsajn74al37"]
 
 [ext_resource type="Script" path="res://csharp_demo_example/scripts/Player.cs" id="1_14vrl"]
 [ext_resource type="Texture2D" uid="uid://wcxowoxvkef7" path="res://icon.svg" id="2_pxpn8"]
 [ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSynchronizerModifier.cs" id="3_n4xde"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSpawner.cs" id="4_brh8d"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4d5lc"]
 
@@ -28,3 +29,6 @@ replication_config = SubResource("SceneReplicationConfig_ab1fq")
 
 [node name="MattohaSynchronizerModifer" type="Node2D" parent="MultiplayerSynchronizer"]
 script = ExtResource("3_n4xde")
+
+[node name="MattohaSpawner" type="Node2D" parent="."]
+script = ExtResource("4_brh8d")

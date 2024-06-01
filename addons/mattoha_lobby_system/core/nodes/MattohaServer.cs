@@ -194,7 +194,6 @@ public partial class MattohaServer : Node
 #endif
 	}
 
-
 	private void RpcLoadAvailableLobbies(long sender)
 	{
 #if MATTOHA_SERVER
@@ -272,7 +271,6 @@ public partial class MattohaServer : Node
 #endif
 	}
 
-
 	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -296,7 +294,21 @@ public partial class MattohaServer : Node
 			case nameof(ServerRpc.LoadLobbyPlayers):
 				RpcLoadLobbyPlayers(sender);
 				break;
+			case nameof(ServerRpc.SpawnNode):
+				RpcSpawnNode(payload, sender);
+				break;
 		}
+#endif
+	}
+
+	private void RpcSpawnNode(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		if (!Lobbies.TryGetValue(lobbyId, out var lobby))
+			return;
+		_system.SpawnNodeFromPayload(payload);
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SpawnNode), payload);
 #endif
 	}
 }
