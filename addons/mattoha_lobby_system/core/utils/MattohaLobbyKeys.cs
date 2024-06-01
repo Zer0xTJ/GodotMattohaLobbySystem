@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace MattohaLobbySystem.Core.Utils;
+namespace Mattoha.Core.Utils;
 
 public static class MattohaLobbyKeys
 {

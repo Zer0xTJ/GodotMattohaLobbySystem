@@ -1,5 +1,5 @@
 using Godot;
-using MattohaLobbySystem.Core.Utils;
+using Mattoha.Core.Utils;
 
 namespace Mattoha.Nodes;
 public partial class MattohaGameHolder : Node

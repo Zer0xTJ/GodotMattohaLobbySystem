@@ -1,7 +1,7 @@
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
-using MattohaLobbySystem.Core.Utils;
+using Mattoha.Core.Utils;
 
 namespace Mattoha.Nodes;
 public partial class MattohaClient : Node
@@ -11,18 +11,14 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void LoadAvailableLobbiesSucceedEventHandler(Array<Dictionary<string, Variant>> lobbies);
 	[Signal] public delegate void LoadLobbyPlayersSucceedEventHandler(Array<Dictionary<string, Variant>> players);
 
-
 	[Signal] public delegate void SetPlayerDataSucceedEventHandler(Dictionary<string, Variant> playerData);
 	[Signal] public delegate void SetPlayerDataFailedEventHandler(string cause);
-
 
 	[Signal] public delegate void CreateLobbySucceedEventHandler(Dictionary<string, Variant> lobbyData);
 	[Signal] public delegate void CreateLobbyFailedEventHandler(string cause);
 
-
 	[Signal] public delegate void StartGameSucceedEventHandler(Dictionary<string, Variant> lobbyData);
 	[Signal] public delegate void StartGameFailedEventHandler(string cause);
-
 
 	[Signal] public delegate void JoinLobbySucceedEventHandler(Dictionary<string, Variant> lobbyData);
 	[Signal] public delegate void JoinLobbyFailedEventHandler(string cause);
@@ -30,6 +26,15 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void PlayerJoinedEventHandler(Dictionary<string, Variant> playerData);
 	[Signal] public delegate void PlayerLeftEventHandler(Dictionary<string, Variant> playerData);
 
+	[Signal] public delegate void SpawnNodeSucceedEventHandler(Dictionary<string, Variant> spawnPayload);
+	[Signal] public delegate void SpawnNodeFailedEventHandler(string cause);
+
+	[Signal] public delegate void DespawnNodeSucceedEventHandler(string nodePath);
+	[Signal] public delegate void DespawnNodeFailedEventHandler(string cause);
+
+
+	public Node GameHolder => GetNode("/root/GameHolder");
+	public Node LobbyNode => GetNode($"/root/GameHolder/Lobby{CurrentLobby[MattohaLobbyKeys.Id]}");
 
 
 
@@ -150,7 +155,7 @@ public partial class MattohaClient : Node
 		EmitSignal(SignalName.StartGameSucceed, CurrentLobby);
 #endif
 	}
-	
+
 	public void LoadLobbyPlayers()
 	{
 #if MATTOHA_CLIENT
@@ -158,12 +163,21 @@ public partial class MattohaClient : Node
 #endif
 	}
 
+
 	private void RpcLoadLobbyPlayers(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
 		CurrentLobbyPlayers = payload["Players"].AsGodotArray<Dictionary<string, Variant>>();
 		GD.Print("Lobby Players: ", CurrentLobbyPlayers);
 		EmitSignal(SignalName.LoadLobbyPlayersSucceed, CurrentLobbyPlayers);
+#endif
+	}
+
+
+	private void RpcSpawnNode(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.SpawnNodeSucceed, payload);
 #endif
 	}
 
@@ -193,6 +207,9 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.LoadLobbyPlayers):
 				RpcLoadLobbyPlayers(payload);
+				break;
+			case nameof(ClientRpc.SpawnNode):
+				RpcSpawnNode(payload);
 				break;
 		}
 #endif

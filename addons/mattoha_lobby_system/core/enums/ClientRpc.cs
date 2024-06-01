@@ -19,4 +19,10 @@ internal enum ClientRpc
 	StartGameFailed,
 
 	LoadLobbyPlayers,
+	
+	SpawnNode,
+	SpawnNodeFailed,
+
+	DespawnNode,
+	DespawnNodeFailed,
 }

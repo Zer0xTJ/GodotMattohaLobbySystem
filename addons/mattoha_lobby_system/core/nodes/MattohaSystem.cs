@@ -1,6 +1,9 @@
 using Godot;
 using Godot.Collections;
-using MattohaLobbySystem.Core;
+using Mattoha.Core;
+using Mattoha.Core.Demo;
+using Mattoha.Core.Utils;
+using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaSystem : Node
@@ -21,18 +24,20 @@ public partial class MattohaSystem : Node
 
 	[ExportGroup("System Nodes"), Export] public MattohaServer Server { get; set; }
 	[ExportGroup("System Nodes"), Export] public MattohaClient Client { get; set; }
-	
+
 	[ExportGroup("Lobby Configuration"), Export] public long LobbySize { get; set; } = 2500;
 
-	
+
 	public static MattohaSystem Instance { get; set; }
 
 
 	public override void _Ready()
 	{
+		Client.SpawnNodeSucceed += OnSpawnNode;
 		Instance = this;
 		base._Ready();
 	}
+
 
 	public void StartServer()
 	{
@@ -49,13 +54,83 @@ public partial class MattohaSystem : Node
 		Multiplayer.MultiplayerPeer = peer;
 	}
 
-	
+
+	public Node CreateInstance(PackedScene scene)
+	{
+		var instance = scene.Instantiate();
+		instance.Name = instance.Name.ToString().Replace("@", "_");
+		instance.Name += $"_{Multiplayer.GetUniqueId()}_{Client.CurrentLobby[MattohaLobbyKeys.Id]}_{Time.GetTicksMsec()}";
+		instance.SetMultiplayerAuthority(Multiplayer.GetUniqueId());
+		return instance;
+	}
+
+	public Node CreateInstance(string sceneFile)
+	{
+		return CreateInstance(GD.Load<PackedScene>(sceneFile));
+	}
+
+
+	public void SpawnNode(Node node)
+	{
+		Dictionary<string, Variant> payload = new()
+		{
+			{ MattohaSpawnKeys.SceneFile, node.SceneFilePath },
+			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() },
+			{ MattohaSpawnKeys.NodeName, node.Name.ToString() },
+			{ MattohaSpawnKeys.Owner, node.GetMultiplayerAuthority() },
+		};
+		if (node is Node2D)
+		{
+			payload[MattohaSpawnKeys.Position] = (node as Node2D).Position;
+			payload[MattohaSpawnKeys.Rotation] = (node as Node2D).Rotation;
+		}
+		if (node is Node3D)
+		{
+			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
+			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
+		}
+
+		SendReliableServerRpc(nameof(ServerRpc.SpawnNode), payload);
+	}
+
+
+	private void OnSpawnNode(Dictionary<string, Variant> payload)
+	{
+		GD.Print("Im gonna spawn: ", payload);
+		var parentPath = payload[MattohaSpawnKeys.ParentPath].AsString();
+		var scene = GD.Load<PackedScene>(payload[MattohaSpawnKeys.SceneFile].AsString());
+		var instance = scene.Instantiate();
+		instance.Name = payload[MattohaSpawnKeys.NodeName].AsString();
+		instance.SetMultiplayerAuthority(payload[MattohaSpawnKeys.Owner].AsInt32());
+		if (instance is Node2D)
+		{
+			(instance as Node2D).Position = payload[MattohaSpawnKeys.Position].AsVector2();
+			(instance as Node2D).Rotation = payload[MattohaSpawnKeys.Rotation].As<float>();
+		}
+		if (instance is Node3D)
+		{
+			(instance as Node3D).Position = payload[MattohaSpawnKeys.Position].AsVector3();
+			(instance as Node3D).Rotation = payload[MattohaSpawnKeys.Rotation].AsVector3();
+		}
+
+		if (!Client.LobbyNode.HasNode(parentPath))
+			return;
+		Client.LobbyNode.GetNode(parentPath).AddChild(instance);
+	}
+
+
+	public void DespawnNode(string nodePath)
+	{
+		Dictionary<string, Variant> spawnPayload = new() { };
+	}
+
+
 	public void SendReliableServerRpc(string methodName, Dictionary<string, Variant> payload)
 	{
 		RpcId(1, nameof(ServerReliableRpc), methodName, payload);
 	}
 
-	
+
 	public void SendReliableClientRpc(long peer, string methodName, Dictionary<string, Variant> payload)
 	{
 		RpcId(peer, nameof(ClientReliableRpc), methodName, payload);

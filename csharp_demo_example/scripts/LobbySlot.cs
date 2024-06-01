@@ -1,7 +1,7 @@
 using Godot;
 using Godot.Collections;
 using Mattoha.Nodes;
-using MattohaLobbySystem.Core.Utils;
+using Mattoha.Core.Utils;
 
 
 namespace Mattoha.Demo;

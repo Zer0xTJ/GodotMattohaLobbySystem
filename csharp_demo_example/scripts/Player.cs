@@ -1,6 +1,6 @@
 using Godot;
 
-namespace MattohaLobbySystem.Demo;
+namespace Mattoha.Demo;
 public partial class Player : CharacterBody2D
 {
 	[Export] public PackedScene ProjectileScene;

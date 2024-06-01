@@ -1,12 +1,11 @@
 ﻿using Godot;
 using Godot.Collections;
-using MattohaLobbySystem.Core.Utils;
+using Mattoha.Core.Utils;
 using System;
 using System.Collections;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 
-namespace MattohaLobbySystem.Core;
+namespace Mattoha.Core;
 
 public class MattohaUtils
 {

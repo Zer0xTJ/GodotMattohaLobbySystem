@@ -1,8 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://bf5pnbm0fm7qi"]
+[gd_scene load_steps=3 format=3 uid="uid://bf5pnbm0fm7qi"]
 
 [ext_resource type="PackedScene" uid="uid://hnnapidqk1th" path="res://csharp_demo_example/scenes/coin.tscn" id="1_bcx0l"]
+[ext_resource type="Script" path="res://csharp_demo_example/scripts/game.cs" id="1_hdtfs"]
 
 [node name="Game" type="Node2D"]
+script = ExtResource("1_hdtfs")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(74, 44)
