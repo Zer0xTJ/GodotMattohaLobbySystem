@@ -21,11 +21,13 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.TeamMessageRecieved += OnTeamMessage;
 		MattohaSystem.Instance.Client.LobbyMessageRecieved += OnLobbyMessage;
 		MattohaSystem.Instance.Client.GlobalMessageRecieved += OnGlobalMessage;
+		MattohaSystem.Instance.Client.PlayerLeft += OnPlayerLeft;
 
 		MattohaSystem.Instance.Client.LoadLobbyPlayers();
 		RefreshLobbyName();
 		base._Ready();
 	}
+
 
 	private void OnGlobalMessage(Dictionary<string, Variant> senderData, string message)
 	{
@@ -52,6 +54,12 @@ public partial class Lobby : Control
 			Text = $"Team({senderData[MattohaPlayerKeys.Username].AsString()}, {message})"
 		};
 		MessagesContainer.AddChild(label);
+	}
+
+	private void OnPlayerLeft(Dictionary<string, Variant> playerData)
+	{
+		GD.Print("Player left: ", playerData);
+		UpdateJoinedPlayers();
 	}
 
 	private void OnPlayerChangedHisTeam(Dictionary<string, Variant> playerData)
@@ -151,7 +159,10 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.SendGlobalMessage(MessageInput.Text);
 		MessageInput.Text = "";
 	}
-	public void OnLeaveButtonPressed() { }
+	public void OnLeaveButtonPressed()
+	{
+		MattohaSystem.Instance.Client.LeaveLobby();
+	}
 
 	public override void _ExitTree()
 	{
@@ -163,6 +174,7 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.TeamMessageRecieved -= OnTeamMessage;
 		MattohaSystem.Instance.Client.LobbyMessageRecieved -= OnLobbyMessage;
 		MattohaSystem.Instance.Client.GlobalMessageRecieved -= OnGlobalMessage;
+		MattohaSystem.Instance.Client.PlayerLeft -= OnPlayerLeft;
 		base._ExitTree();
 	}
 }
