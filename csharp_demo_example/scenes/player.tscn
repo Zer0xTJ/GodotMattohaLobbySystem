@@ -26,6 +26,7 @@ shape = SubResource("CircleShape2D_4d5lc")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_ab1fq")
+public_visibility = false
 
 [node name="MattohaSynchronizerModifer" type="Node2D" parent="MultiplayerSynchronizer"]
 script = ExtResource("3_n4xde")

@@ -157,6 +157,7 @@ public partial class MattohaServer : Node
 					{ MattohaPlayerKeys.Username, $"Player{id}" },
 					{ MattohaPlayerKeys.JoinedLobbyId, 0 },
 					{ MattohaPlayerKeys.TeamId, 0 },
+					{ MattohaPlayerKeys.IsInGamae, false },
 					{ MattohaPlayerKeys.PrivateProps, new Array<string>() },
 					{ MattohaPlayerKeys.ChatProps, new Array<string>(){ MattohaPlayerKeys.Id, MattohaPlayerKeys.Username } },
 				};
@@ -179,7 +180,8 @@ public partial class MattohaServer : Node
 			player[pair.Key] = pair.Value;
 		}
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
-		// tood: send that a player updated his data to all joined players in lobby
+		var lobbyId = player[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.JoinedPlayerUpdated), player);
 #endif
 	}
 
@@ -277,9 +279,8 @@ public partial class MattohaServer : Node
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinLobby), MattohaUtils.ToSecuredDict(lobby));
 
-		// todo: refresh joined players for all joined players in lobby
 		RefreshAvailableLobbiesForAll();
-
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.NewPlayerJoined), MattohaUtils.ToSecuredDict(player));
 #endif
 	}
 
@@ -300,6 +301,16 @@ public partial class MattohaServer : Node
 #endif
 	}
 
+	public void LoadLobbyPlayersForAll(int lobbyId)
+	{
+		var players = GetLobbyPlayersSecured(lobbyId);
+		var payload = new Dictionary<string, Variant>()
+		{
+			{ "Players", players }
+		};
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.LoadLobbyPlayers), payload);
+	}
+
 
 	private void RpcLoadLobbyPlayers(long sender)
 	{
@@ -313,7 +324,7 @@ public partial class MattohaServer : Node
 		{
 			{ "Players", players }
 		};
-		SendRpcForPlayersInLobby(joinedLobbyId, nameof(ClientRpc.LoadLobbyPlayers), payload);
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.LoadLobbyPlayers), payload);
 #endif
 	}
 

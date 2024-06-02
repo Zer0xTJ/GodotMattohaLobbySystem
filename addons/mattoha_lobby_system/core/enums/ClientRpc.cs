@@ -13,6 +13,8 @@ internal enum ClientRpc
 	LoadAvailableLobbies,
 	LoadAvailableLobbiesFailed,
 
+	NewPlayerJoined,
+
 	JoinLobby,
 	JoinLobbyFailed,
 
@@ -33,4 +35,6 @@ internal enum ClientRpc
 
 	DespawnRemovedSceneNodes,
 	DespawnRemovedSceneNodesFailed,
+
+	JoinedPlayerUpdated,
 }

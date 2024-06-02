@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
@@ -23,6 +24,8 @@ public partial class MattohaClient : Node
 
 	[Signal] public delegate void JoinLobbySucceedEventHandler(Dictionary<string, Variant> lobbyData);
 	[Signal] public delegate void JoinLobbyFailedEventHandler(string cause);
+	[Signal] public delegate void NewPlayerJoinedEventHandler(Dictionary<string, Variant> playerData);
+	[Signal] public delegate void JoinedPlayerUpdatedEventHandler(Dictionary<string, Variant> playerData);
 
 	[Signal] public delegate void PlayerJoinedEventHandler(Dictionary<string, Variant> playerData);
 	[Signal] public delegate void PlayerLeftEventHandler(Dictionary<string, Variant> playerData);
@@ -40,11 +43,9 @@ public partial class MattohaClient : Node
 
 	public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
 	public Dictionary<string, Variant> CurrentLobby { get; private set; } = new();
-	public Array<Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
+	public Dictionary<long, Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
 
-	public bool ShouldReplicate { get; private set; }
-	public void EnableReplication() => ShouldReplicate = true;
-	public void DisableReplication() => ShouldReplicate = false;
+	public bool CanReplicate => CurrentPlayer[MattohaPlayerKeys.IsInGamae].AsBool();
 
 	private MattohaSystem _system;
 
@@ -60,9 +61,9 @@ public partial class MattohaClient : Node
 	public Array<long> GetLobbyPlayersIds()
 	{
 		var ids = new Array<long>() { 1, Multiplayer.GetUniqueId() };
-		foreach (var pl in CurrentLobbyPlayers)
+		foreach (var id in CurrentLobbyPlayers.Keys)
 		{
-			ids.Add(pl[MattohaPlayerKeys.Id].AsInt64());
+			ids.Add(id);
 		}
 		return ids;
 	}
@@ -71,28 +72,21 @@ public partial class MattohaClient : Node
 	{
 		if (playerId == 1)
 			return true;
-		foreach (var pl in CurrentLobbyPlayers)
-		{
-			if (pl[MattohaPlayerKeys.Id].AsInt64() == playerId)
-			{
-				return true;
-			}
-		}
-		return false;
+		return CurrentLobbyPlayers.ContainsKey(playerId);
 	}
 
 	public bool IsPlayerInMyTeam(long playerId)
 	{
 		if (playerId == 1)
 			return true;
-		foreach (var pl in CurrentLobbyPlayers)
-		{
-			if (pl[MattohaPlayerKeys.Id].AsInt32() == playerId)
-			{
-				return pl[MattohaPlayerKeys.TeamId].AsInt32() == CurrentPlayer[MattohaPlayerKeys.TeamId].AsInt32();
-			}
-		}
-		return false;
+		return CurrentLobbyPlayers[playerId][MattohaPlayerKeys.TeamId].AsInt32() == CurrentPlayer[MattohaPlayerKeys.TeamId].AsInt32();
+	}
+
+	public bool IsPlayerInGame(long playerId)
+	{
+		if (playerId == 1)
+			return true;
+		return CurrentPlayer[MattohaPlayerKeys.IsInGamae].AsBool();
 	}
 
 
@@ -206,7 +200,10 @@ public partial class MattohaClient : Node
 	private void RpcLoadLobbyPlayers(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
-		CurrentLobbyPlayers = payload["Players"].AsGodotArray<Dictionary<string, Variant>>();
+		foreach (var player in payload["Players"].AsGodotArray<Dictionary<string, Variant>>())
+		{
+			CurrentLobbyPlayers[player[MattohaPlayerKeys.Id].AsInt64()] = player;
+		}
 		EmitSignal(SignalName.LoadLobbyPlayersSucceed, CurrentLobbyPlayers);
 #endif
 	}
@@ -240,13 +237,13 @@ public partial class MattohaClient : Node
 	private void RpcSpawnLobbyNodes(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
-		DisableReplication();
 		var nodes = payload["Nodes"].AsGodotArray<Dictionary<string, Variant>>();
 		foreach (var node in nodes)
 		{
 			EmitSignal(SignalName.SpawnNodeRequested, node);
 		}
-		EnableReplication();
+		// why?: because to notify other players to replicate their data, and we are sure that all nodes have been spawned
+		SetPlayerData(new Dictionary<string, Variant> { { MattohaPlayerKeys.IsInGamae, true } });
 #endif
 	}
 
@@ -287,6 +284,28 @@ public partial class MattohaClient : Node
 	}
 
 
+	private void RpcNewPlayerJoined(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		var playerId = payload[MattohaPlayerKeys.Id].AsInt64();
+		var isPlayerExists = CurrentLobbyPlayers.ContainsKey(playerId);
+		if (!isPlayerExists)
+		{
+			CurrentLobbyPlayers.Add(payload[MattohaPlayerKeys.Id].AsInt64(), payload);
+			EmitSignal(SignalName.NewPlayerJoined, CurrentLobbyPlayers[playerId]);
+		}
+#endif
+	}
+
+	private void RpcJoinedPlayerUpdated(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		var playerId = payload[MattohaPlayerKeys.Id].AsInt64();
+		CurrentLobbyPlayers[playerId] = payload;
+		EmitSignal(SignalName.JoinedPlayerUpdated, payload);
+#endif
+	}
+
 	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -306,6 +325,12 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.JoinLobby):
 				RpcJoinLobby(payload);
+				break;
+			case nameof(ClientRpc.NewPlayerJoined):
+				RpcNewPlayerJoined(payload);
+				break;
+			case nameof(ClientRpc.JoinedPlayerUpdated):
+				RpcJoinedPlayerUpdated(payload);
 				break;
 			case nameof(ClientRpc.StartGame):
 				RpcStartGame();
@@ -328,4 +353,5 @@ public partial class MattohaClient : Node
 		}
 #endif
 	}
+
 }

@@ -43,6 +43,7 @@ public partial class MattohaSystem : Node
 	{
 		string lobbyName = nodePath.Split("/")[3];
 		string lobbyId = lobbyName.Split("Lobby")[1];
+		GD.Print("LOBBBBBBYY", lobbyId);
 		return int.Parse(lobbyId);
 	}
 
