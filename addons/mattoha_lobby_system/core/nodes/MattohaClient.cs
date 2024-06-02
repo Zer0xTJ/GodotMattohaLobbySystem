@@ -2,14 +2,20 @@ using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
 using Mattoha.Core.Utils;
+using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaClient : Node
 {
 	[Signal] public delegate void ConnectedToServerEventHandler();
 	[Signal] public delegate void PlayerRegisteredEventHandler(Dictionary<string, Variant> playerData);
-	[Signal] public delegate void LoadAvailableLobbiesSucceedEventHandler(Array<Dictionary<string, Variant>> lobbies);
+	
 	[Signal] public delegate void LoadLobbyPlayersSucceedEventHandler(Array<Dictionary<string, Variant>> players);
+	[Signal] public delegate void LoadLobbyPlayersFailedEventHandler(string cause);
+
+	[Signal] public delegate void LoadAvailableLobbiesSucceedEventHandler(Array<Dictionary<string, Variant>> lobbies);
+	[Signal] public delegate void LoadAvailableLobbiesFailedEventHandler(string cause);
+
 
 	[Signal] public delegate void SetPlayerDataSucceedEventHandler(Dictionary<string, Variant> playerData);
 	[Signal] public delegate void SetPlayerDataFailedEventHandler(string cause);
@@ -44,12 +50,22 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void PlayerLeftEventHandler(Dictionary<string, Variant> playerData);
 
 	[Signal] public delegate void SpawnNodeRequestedEventHandler(Dictionary<string, Variant> nodeData);
+	[Signal] public delegate void SpawnNodeFailedEventHandler(string cause);
+	[Signal] public delegate void SpawnLobbyNodesFailedEventHandler(string cause);
+
 	[Signal] public delegate void DespawnNodeRequestedEventHandler(Dictionary<string, Variant> nodeData);
+	[Signal] public delegate void DespawnNodeFailedEventHandler(string cause);
+	[Signal] public delegate void DespawnRemovedSceneNodesFailedEventHandler(string cause);
 
 
 	[Signal] public delegate void GlobalMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void GlobalMessageFailedEventHandler(string cause);
+
 	[Signal] public delegate void LobbyMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void LobbyMessageFailedEventHandler(string cause);
+
 	[Signal] public delegate void TeamMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void TeamMessageFailedEventHandler(string cause);
 
 
 
@@ -132,12 +148,27 @@ public partial class MattohaClient : Node
 #endif
 	}
 
+	private void RpcSetPlayerDataFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.SetPlayerDataFailed, payload["Message"].AsString());
+#endif
+	}
+
 
 	public void CreateLobby(Dictionary<string, Variant> lobbyData, string lobbySceneFile)
 	{
 #if MATTOHA_CLIENT
 		lobbyData[MattohaLobbyKeys.LobbySceneFile] = lobbySceneFile;
 		_system.SendReliableServerRpc(nameof(ServerRpc.CreateLobby), lobbyData);
+#endif
+	}
+	
+
+	public void SetLobbyData(Dictionary<string, Variant> lobbyData)
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.SetLobbyData), lobbyData);
 #endif
 	}
 
@@ -150,13 +181,13 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-
-	public void SetLobbyData(Dictionary<string, Variant> lobbyData)
+	private void RpcCreateLobbyFailed(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
-		_system.SendReliableServerRpc(nameof(ServerRpc.SetLobbyData), lobbyData);
+		EmitSignal(SignalName.CreateLobbyFailed, payload["Message"].AsString());
 #endif
 	}
+
 
 	public void SetLobbyOwner(int newOwnerId)
 	{
@@ -166,11 +197,20 @@ public partial class MattohaClient : Node
 #endif
 	}
 
+
 	private void RpcSetLobbyOwner(Dictionary<string, Variant> lobbyData)
 	{
 #if MATTOHA_SERVER
 		CurrentLobby = lobbyData;
 		EmitSignal(SignalName.SetLobbyOwnerSucceed, CurrentLobby);
+#endif
+	}
+
+	
+	private void RpcSetLobbyOwnerFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_SERVER
+		EmitSignal(SignalName.SetLobbyOwnerFailed, payload["Message"].AsString());
 #endif
 	}
 
@@ -180,6 +220,14 @@ public partial class MattohaClient : Node
 #if MATTOHA_CLIENT
 		CurrentLobby = lobbyData;
 		EmitSignal(SignalName.SetLobbyDataSucceed, CurrentLobby);
+#endif
+	}
+
+
+	public void RpcSetLobbyDataFailed(Dictionary<string, Variant> lobbyData)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.SetLobbyDataFailed, lobbyData["Message"].AsString());
 #endif
 	}
 
@@ -197,6 +245,13 @@ public partial class MattohaClient : Node
 #if MATTOHA_CLIENT
 		Array<Dictionary<string, Variant>> lobbies = lobbiesPayload["Lobbies"].AsGodotArray<Dictionary<string, Variant>>();
 		EmitSignal(SignalName.LoadAvailableLobbiesSucceed, lobbies);
+#endif
+	}
+
+	private void RpcLoadAvailableLobbiesFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.LoadAvailableLobbiesFailed, payload["Message"].AsString());
 #endif
 	}
 
@@ -222,6 +277,14 @@ public partial class MattohaClient : Node
 	}
 
 
+	private void RpcJoinLobbyFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.JoinLobbyFailed, payload["Message"].AsString());
+#endif
+	}
+
+
 	public void StartGame()
 	{
 #if MATTOHA_CLIENT
@@ -235,6 +298,14 @@ public partial class MattohaClient : Node
 #if MATTOHA_CLIENT
 		CurrentLobby[MattohaLobbyKeys.IsGameStarted] = true;
 		EmitSignal(SignalName.StartGameSucceed, CurrentLobby);
+#endif
+	}
+
+
+	private void RpcStartGameFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.StartGameFailed, payload["Message"].AsString());
 #endif
 	}
 
@@ -261,6 +332,14 @@ public partial class MattohaClient : Node
 	}
 
 
+	private void RpcLoadLobbyPlayersFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.LoadLobbyPlayersFailed, payload["Message"].AsString());
+#endif
+	}
+
+
 	public void SpawnNode(Node node)
 	{
 #if MATTOHA_CLIENT
@@ -274,6 +353,14 @@ public partial class MattohaClient : Node
 	{
 #if MATTOHA_CLIENT
 		EmitSignal(SignalName.SpawnNodeRequested, payload);
+#endif
+	}
+
+
+	private void RpcSpawnNodeFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.SpawnNodeFailed, payload["Message"].AsString());
 #endif
 	}
 
@@ -300,6 +387,14 @@ public partial class MattohaClient : Node
 	}
 
 
+	private void RpcSpawnLobbyNodesFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.SpawnLobbyNodesFailed, payload["Message"].AsString());
+#endif
+	}
+
+
 	public void DespawnNode(Node node)
 	{
 #if MATTOHA_CLIENT
@@ -313,6 +408,14 @@ public partial class MattohaClient : Node
 	{
 #if MATTOHA_CLIENT
 		EmitSignal(SignalName.DespawnNodeRequested, payload);
+#endif
+	}
+
+
+	private void RpcDespawnNodeFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.DespawnNodeFailed, payload["Message"].AsString());
 #endif
 	}
 
@@ -332,6 +435,14 @@ public partial class MattohaClient : Node
 		{
 			EmitSignal(SignalName.DespawnNodeRequested, node);
 		}
+#endif
+	}
+
+
+	private void RpcDespawnRemovedSceneNodesFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.DespawnRemovedSceneNodesFailed, payload["Message"].AsString());
 #endif
 	}
 
@@ -377,6 +488,14 @@ public partial class MattohaClient : Node
 	}
 
 
+	private void RpcJoinTeamFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.JoinTeamFailed, payload["Message"].AsString());
+#endif
+	}
+
+
 	private void RpcPlayerChangedHisTeam(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
@@ -402,6 +521,14 @@ public partial class MattohaClient : Node
 	}
 
 
+	private void RpcSendTeamMessageFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.TeamMessageFailed, payload["Message"].AsString());
+#endif
+	}
+
+
 	public void SendLobbyMessage(string message)
 	{
 #if MATTOHA_CLIENT
@@ -418,6 +545,14 @@ public partial class MattohaClient : Node
 	}
 
 
+	private void RpcSendGlobalMessageFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.GlobalMessageFailed, payload["Message"].AsString());
+#endif
+	}
+
+
 	public void SendGlobalMessage(string message)
 	{
 #if MATTOHA_CLIENT
@@ -429,6 +564,14 @@ public partial class MattohaClient : Node
 	{
 #if MATTOHA_CLIENT
 		EmitSignal(SignalName.LobbyMessageRecieved, payload["Player"], payload["Message"]);
+#endif
+	}
+
+
+	private void RpcSendLobbyMessageFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.LobbyMessageFailed, payload["Message"].ToString());
 #endif
 	}
 
@@ -467,27 +610,64 @@ public partial class MattohaClient : Node
 			case nameof(ClientRpc.RegisterPlayer):
 				RpcRegisterPlayer(payload);
 				break;
+
+			
 			case nameof(ClientRpc.SetPlayerData):
 				RpcSetPlayerData(payload);
 				break;
+			case nameof(ClientRpc.SetPlayerDataFailed):
+				RpcSetPlayerDataFailed(payload);
+				break;
+
+			
 			case nameof(ClientRpc.CreateLobby):
 				RpcCreateLobby(payload);
 				break;
+			case nameof(ClientRpc.CreateLobbyFailed):
+				RpcCreateLobbyFailed(payload);
+				break;
+
+			
 			case nameof(ClientRpc.SetLobbyData):
 				RpcSetLobbyData(payload);
 				break;
+			case nameof(ClientRpc.SetLobbyDataFailed):
+				RpcSetLobbyDataFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.SetLobbyOwner):
 				RpcSetLobbyOwner(payload);
 				break;
+			case nameof(ClientRpc.SetLobbyOwnerFailed):
+				RpcSetLobbyOwnerFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.LoadAvailableLobbies):
 				RpcLoadAvailableLobbies(payload);
 				break;
+			case nameof(ClientRpc.LoadAvailableLobbiesFailed):
+				RpcLoadAvailableLobbiesFailed(payload);
+				break;
+
+			
 			case nameof(ClientRpc.JoinLobby):
 				RpcJoinLobby(payload);
 				break;
+			case nameof(ClientRpc.JoinLobbyFailed):
+				RpcJoinLobbyFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.JoinTeam):
 				RpcJoinTeam(payload);
 				break;
+			case nameof(ClientRpc.JoinTeamFailed):
+				RpcJoinTeamFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.PlayerChangedHisTeam):
 				RpcPlayerChangedHisTeam(payload);
 				break;
@@ -497,33 +677,80 @@ public partial class MattohaClient : Node
 			case nameof(ClientRpc.JoinedPlayerUpdated):
 				RpcJoinedPlayerUpdated(payload);
 				break;
+			
+			
 			case nameof(ClientRpc.StartGame):
 				RpcStartGame();
 				break;
+			case nameof(ClientRpc.StartGameFailed):
+				RpcStartGameFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.LoadLobbyPlayers):
 				RpcLoadLobbyPlayers(payload);
 				break;
+			case nameof(ClientRpc.LoadLobbyPlayersFailed):
+				RpcLoadLobbyPlayersFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.SpawnNode):
 				RpcSpawnNode(payload);
 				break;
+			case nameof(ClientRpc.SpawnNodeFailed):
+				RpcSpawnNodeFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.DespawnNode):
 				RpcDespawnNode(payload);
 				break;
+			case nameof(ClientRpc.DespawnNodeFailed):
+				RpcDespawnNodeFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.SpawnLobbyNodes):
 				RpcSpawnLobbyNodes(payload);
 				break;
+			case nameof(ClientRpc.SpawnLobbyNodesFailed):
+				RpcSpawnLobbyNodesFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.DespawnRemovedSceneNodes):
 				RpcDespawnRemovedSceneNodes(payload);
 				break;
+			case nameof(ClientRpc.DespawnRemovedSceneNodesFailed):
+				RpcDespawnRemovedSceneNodesFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.SendGlobalMessage):
 				RpcSendGlobalMessage(payload);
 				break;
+			case nameof(ClientRpc.SendGlobalMessageFailed):
+				RpcSendGlobalMessageFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.SendLobbyMessage):
 				RpcSendLobbyMessage(payload);
 				break;
+			case nameof(ClientRpc.SendLobbyMessageFailed):
+				RpcSendLobbyMessageFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.SendTeamMessage):
 				RpcSendTeamMessage(payload);
 				break;
+			case nameof(ClientRpc.SendTeamMessageFailed):
+				RpcSendTeamMessageFailed(payload);
+				break;
+
+
 			case nameof(ClientRpc.LeaveLobby):
 				RpcLeaveLobby();
 				break;

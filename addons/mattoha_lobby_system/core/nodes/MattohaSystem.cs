@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Utils;
+using System.Linq;
 
 namespace Mattoha.Nodes;
 public partial class MattohaSystem : Node
@@ -175,7 +176,10 @@ public partial class MattohaSystem : Node
 		}
 		else
 		{
-			RpcId(peer, nameof(ClientReliableRpc), methodName, payload);
+			if (Multiplayer.GetPeers().ToList().Contains((int)peer))
+			{
+				RpcId(peer, nameof(ClientReliableRpc), methodName, payload);
+			}
 		}
 	}
 
