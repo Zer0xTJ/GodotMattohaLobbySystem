@@ -31,7 +31,16 @@ public partial class MattohaSpawner : Node
             }
             else
             {
-                MattohaSystem.Instance.Client.DespawnNode(GetParent());
+                if (Multiplayer.IsServer())
+                {
+#if MATTOHA_SERVER
+                MattohaSystem.Instance.Server.DespawnNode(MattohaSystem.Instance.GenerateNodePayloadData(GetParent()));
+#endif
+				}
+				else
+                {
+					MattohaSystem.Instance.Client.DespawnNode(GetParent());
+                }
             }
         }
         base._ExitTree();
