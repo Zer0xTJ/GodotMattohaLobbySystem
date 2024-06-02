@@ -20,7 +20,6 @@ public partial class Lobbies : Control
 
 	private void OnJoinLobby(Dictionary<string, Variant> lobbyData)
 	{
-		GD.Print("Lobby Joined: ", lobbyData);
 		if (lobbyData[MattohaLobbyKeys.IsGameStarted].AsBool())
 		{
 			GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/game_holder.tscn");
@@ -33,7 +32,6 @@ public partial class Lobbies : Control
 
 	private void OnLoadLobbies(Array<Dictionary<string, Variant>> lobbies)
 	{
-		GD.Print("Lobbies loaded: ", lobbies);
 		foreach (var slot in _lobbiesContainer.GetChildren())
 		{
 			slot.QueueFree();

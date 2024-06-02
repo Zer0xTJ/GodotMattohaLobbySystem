@@ -13,7 +13,6 @@ public partial class MainMenu : Control
 
 	private void OnRegistered(Dictionary<string, Variant> playerData)
 	{
-		GD.Print("Registered as: ", playerData);
 		GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/user_dialog.tscn");
 	}
 

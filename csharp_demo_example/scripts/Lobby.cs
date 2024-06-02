@@ -13,7 +13,6 @@ public partial class Lobby : Control
 
 	private void OnStartGame(Dictionary<string, Variant> lobbyData)
 	{
-		GD.Print("Game Started: ", lobbyData);
 		GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/game_holder.tscn");
 	}
 

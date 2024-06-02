@@ -15,7 +15,6 @@ public partial class CreateLobby : Control
 
 	private void OnCreateLobby(Dictionary<string, Variant> lobbyData)
 	{
-		GD.Print("Lobby created: ", lobbyData);
 		GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/lobby.tscn");
 	}
 

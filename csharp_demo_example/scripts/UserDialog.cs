@@ -5,7 +5,7 @@ using Mattoha.Nodes;
 namespace Mattoha.Core;
 public partial class UserDialog : Control
 {
-	private LineEdit _usernameInput; 
+	private LineEdit _usernameInput;
 	public override void _Ready()
 	{
 		_usernameInput = GetNode<LineEdit>("%UsernameLineEdit");
@@ -15,7 +15,6 @@ public partial class UserDialog : Control
 
 	private void OnSetPlayerData(Dictionary<string, Variant> playerData)
 	{
-		GD.Print("New Player data: ", playerData);
 		GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/lobbies.tscn");
 	}
 
