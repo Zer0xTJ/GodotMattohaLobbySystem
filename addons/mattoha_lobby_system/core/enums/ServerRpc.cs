@@ -12,4 +12,7 @@ internal enum ServerRpc
 	SpawnLobbyNodes,
 	DespawnNode,
 	DespawnRemovedSceneNodes,
+	SetLobbyData,
+	SetLobbyOwner,
+	JoinTeam,
 }

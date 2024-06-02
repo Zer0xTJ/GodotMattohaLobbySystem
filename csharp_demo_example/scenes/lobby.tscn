@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://csharp_demo_example/scripts/Lobby.cs" id="1_7hjd2"]
 
-[node name="Lobby" type="Control"]
+[node name="Lobby" type="Control" node_paths=PackedStringArray("LobbyNameLabel", "MessagesContainer", "MessageInput", "PlayersContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,6 +10,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_7hjd2")
+LobbyNameLabel = NodePath("PanelContainer/MarginContainer/VBoxContainer/TopBar/LobbyNameLabel")
+MessagesContainer = NodePath("PanelContainer/MarginContainer/VBoxContainer/Content/ChatSection/MarginContainer/VBoxContainer/ScrollContainer/MessagesContainer")
+MessageInput = NodePath("PanelContainer/MarginContainer/VBoxContainer/BottomBar/MessageLineEdit")
+PlayersContainer = NodePath("PanelContainer/MarginContainer/VBoxContainer/Content/PlayersScrollContainer/PlayersContainer")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -147,4 +151,11 @@ layout_mode = 2
 focus_mode = 0
 text = "LEAVE LOBBY"
 
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/RandomNameButton" to="." method="OnRandomLobbyNamePressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/Team1Button" to="." method="OnJoinTeam1ButtonPressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/TopBar/Team2Button" to="." method="OnJoinTeam2ButtonPressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBar/TeamMessageButton" to="." method="OnTeamMessageButtonPressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBar/LobbyMessageButton" to="." method="OnLobbyMessageButtonPressed"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/BottomBar/GlobalMessageButton" to="." method="OnGlobalMessageButtonPressed"]
 [connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/StartGameButton" to="." method="StartGame"]
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/LeaveLobbyButton" to="." method="OnLeaveButtonPressed"]

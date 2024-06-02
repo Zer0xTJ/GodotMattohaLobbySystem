@@ -4,6 +4,7 @@ using Mattoha.Core.Demo;
 using Mattoha.Core;
 using Mattoha.Core.Utils;
 using System;
+using Mattoha.Demo;
 
 namespace Mattoha.Nodes;
 public partial class MattohaServer : Node
@@ -119,12 +120,14 @@ public partial class MattohaServer : Node
 	}
 
 
-	public void SendRpcForPlayersInLobby(int lobbyId, string methodName, Dictionary<string, Variant> payload, bool secureDict = false, long superPeer = 0)
+	public void SendRpcForPlayersInLobby(int lobbyId, string methodName, Dictionary<string, Variant> payload, bool secureDict = false, long superPeer = 0, long ignorePeer = 0)
 	{
 		var players = GetLobbyPlayers(lobbyId);
 		foreach (var player in players)
 		{
 			var playerId = player[MattohaPlayerKeys.Id].AsInt64();
+			if (playerId == ignorePeer)
+				continue;
 			if (superPeer != 0 && playerId == superPeer)
 			{
 				_system.SendReliableClientRpc(playerId, methodName, payload);
@@ -229,6 +232,41 @@ public partial class MattohaServer : Node
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.CreateLobby), lobbyData);
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
 		RefreshAvailableLobbiesForAll();
+#endif
+	}
+
+
+	private void RpcSetLobbyData(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var lobby = GetPlayerLobby(sender);
+		if (lobby == null)
+			return;
+		if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() != sender)
+			return;
+
+		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
+		foreach (var pair in payload)
+		{
+			if (MattohaLobbyKeys.FreezedProperties.Contains(pair.Key))
+				continue;
+			lobby[pair.Key] = pair.Value;
+		}
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SetLobbyData), lobby, true, sender);
+#endif
+	}
+
+
+	private void RpcSetLobbyOwner(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var lobby = GetPlayerLobby(sender);
+		if (lobby == null)
+			return;
+		if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() != sender)
+			return;
+		lobby[MattohaLobbyKeys.OwnerId] = payload[MattohaLobbyKeys.OwnerId];
+		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.SetLobbyOwner), lobby, true, lobby[MattohaLobbyKeys.OwnerId].AsInt64());
 #endif
 	}
 
@@ -440,11 +478,20 @@ public partial class MattohaServer : Node
 			case nameof(ServerRpc.CreateLobby):
 				RpcCreateLobby(payload, sender);
 				break;
+			case nameof(ServerRpc.SetLobbyData):
+				RpcSetLobbyData(payload, sender);
+				break;
+			case nameof(ServerRpc.SetLobbyOwner):
+				RpcSetLobbyOwner(payload, sender);
+				break;
 			case nameof(ServerRpc.LoadAvailableLobbies):
 				RpcLoadAvailableLobbies(sender);
 				break;
 			case nameof(ServerRpc.JoinLobby):
 				RpcJoinLobby(payload, sender);
+				break;
+			case nameof(ServerRpc.JoinTeam):
+				RpcJoinTeam(payload, sender);
 				break;
 			case nameof(ServerRpc.StartGame):
 				RpcStartGame(sender);
@@ -465,6 +512,18 @@ public partial class MattohaServer : Node
 				RpcDespawnRemovedSceneNodes(sender);
 				break;
 		}
+#endif
+	}
+
+	private void RpcJoinTeam(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var player = GetPlayer(sender);
+		if (player == null)
+			return;
+		player[MattohaPlayerKeys.TeamId] = payload[MattohaPlayerKeys.TeamId];
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinTeam), payload);
+		SendRpcForPlayersInLobby(player[MattohaPlayerKeys.JoinedLobbyId].AsInt32(), nameof(ClientRpc.PlayerChangedHisTeam), player);
 #endif
 	}
 }

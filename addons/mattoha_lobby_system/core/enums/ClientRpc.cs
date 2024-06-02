@@ -14,6 +14,7 @@ internal enum ClientRpc
 	LoadAvailableLobbiesFailed,
 
 	NewPlayerJoined,
+	PlayerLeft,
 
 	JoinLobby,
 	JoinLobbyFailed,
@@ -37,4 +38,23 @@ internal enum ClientRpc
 	DespawnRemovedSceneNodesFailed,
 
 	JoinedPlayerUpdated,
+
+	SetLobbyData,
+	SetLobbyDataFailed,
+
+	SetLobbyOwner,
+	SetLobbyOwnerFailed,
+
+	JoinTeam,
+	JoinTeamFailed,
+
+	SendTeamMessage,
+	SendTeamMessageFailed,
+
+	SendLobbyMessage,
+	SendLobbyMessageFailed,
+
+	SendGlobalMessage,
+	SendGlobalMessageFailed,
+	PlayerChangedHisTeam,
 }

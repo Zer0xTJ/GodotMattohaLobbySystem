@@ -18,6 +18,7 @@ public partial class MattohaSynchronizerModifier : Node
         MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed += OnLoadLobbyPlayers;
         MattohaSystem.Instance.Client.NewPlayerJoined += OnPlayerJoined;
         MattohaSystem.Instance.Client.JoinedPlayerUpdated += OnJoinedPLayerUpdated;
+        MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
         // todo: on player left
         ApplyMattohaReplicationFilter();
         base._Ready();
@@ -33,6 +34,12 @@ public partial class MattohaSynchronizerModifier : Node
             _synchronizer.SetVisibilityFor(playerId, isInGame && (isSameTeam && ReplicateForTeamOnly || !ReplicateForTeamOnly));
         }
         _synchronizer.SetVisibilityFor(1, true);
+    }
+
+
+    private void OnPlayerChangedHisTeam(Dictionary<string, Variant> playerData)
+    {
+        SetupReplicationVisibility();
     }
 
 
@@ -79,6 +86,7 @@ public partial class MattohaSynchronizerModifier : Node
         MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed -= OnLoadLobbyPlayers;
         MattohaSystem.Instance.Client.NewPlayerJoined -= OnPlayerJoined;
         MattohaSystem.Instance.Client.JoinedPlayerUpdated -= OnJoinedPLayerUpdated;
+        MattohaSystem.Instance.Client.PlayerChangedHisTeam -= OnPlayerChangedHisTeam;
         base._ExitTree();
     }
 }
