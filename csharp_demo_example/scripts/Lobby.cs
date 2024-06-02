@@ -162,6 +162,7 @@ public partial class Lobby : Control
 	public void OnLeaveButtonPressed()
 	{
 		MattohaSystem.Instance.Client.LeaveLobby();
+		GetTree().ChangeSceneToFile("res://csharp_demo_example/scenes/lobbies.tscn");
 	}
 
 	public override void _ExitTree()

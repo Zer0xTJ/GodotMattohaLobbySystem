@@ -561,20 +561,33 @@ public partial class MattohaServer : Node
 		var player = GetPlayer(playerId);
 		if (player == null)
 			return;
-		
+
 		if (player[MattohaPlayerKeys.JoinedLobbyId].AsInt32() == 0)
 			return;
 
 		var lobby = GetPlayerLobby(playerId);
 		if (lobby == null)
 			return;
-		
+
 		player[MattohaPlayerKeys.JoinedLobbyId] = 0;
+		lobby[MattohaLobbyKeys.PlayersCount] = lobby[MattohaLobbyKeys.PlayersCount].AsInt32() - 1;
+		if (lobby[MattohaLobbyKeys.PlayersCount].AsInt32() == 0)
+		{
+			Lobbies.Remove(lobby[MattohaLobbyKeys.Id].AsInt32());
+		}
+		else if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() == playerId)
+		{
+			var lobbyPlayers = GetLobbyPlayers(lobby[MattohaLobbyKeys.Id].AsInt32());
+			lobby[MattohaLobbyKeys.OwnerId] = lobbyPlayers[0][MattohaPlayerKeys.Id].AsInt64();
+		}
 		_system.SendReliableClientRpc(playerId, nameof(ClientRpc.LeaveLobby), player);
 		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.PlayerLeft), player, true);
+		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.SetLobbyData), lobby, true, lobby[MattohaLobbyKeys.OwnerId].AsInt64());
 		RefreshAvailableLobbiesForAll();
 #endif
 	}
+
+
 	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
