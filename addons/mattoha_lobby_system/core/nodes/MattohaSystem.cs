@@ -172,7 +172,14 @@ public partial class MattohaSystem : Node
 
 	public void SendReliableClientRpc(long peer, string methodName, Dictionary<string, Variant> payload)
 	{
-		RpcId(peer, nameof(ClientReliableRpc), methodName, payload);
+		if (peer == 0)
+		{
+			Rpc(nameof(ClientReliableRpc), methodName, payload);
+		}
+		else
+		{
+			RpcId(peer, nameof(ClientReliableRpc), methodName, payload);
+		}
 	}
 
 

@@ -480,6 +480,53 @@ public partial class MattohaServer : Node
 	}
 
 
+	private void RpcSendGlobalMessage(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		payload["Player"] = MattohaUtils.ToChatDict(GetPlayer(sender));
+		_system.SendReliableClientRpc(0, nameof(ClientRpc.SendGlobalMessage), payload);
+#endif
+	}
+
+	private void RpcSendLobbyMessage(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		payload["Player"] = MattohaUtils.ToChatDict(GetPlayer(sender));
+		var lobby = GetPlayerLobby(sender);
+		if (lobby == null)
+			return;
+		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
+		var chatDictPlayer = MattohaUtils.ToChatDict(GetPlayer(sender));
+		payload["Player"] = chatDictPlayer;
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SendLobbyMessage), payload);
+#endif
+	}
+
+	private void RpcSendTeamMessage(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var playerDict = GetPlayer(sender);
+		payload["Player"] = MattohaUtils.ToChatDict(playerDict);
+		var lobby = GetPlayerLobby(sender);
+		if (lobby == null)
+			return;
+
+		var chatDictPlayer = MattohaUtils.ToChatDict(playerDict);
+		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
+		var teamId = playerDict[MattohaPlayerKeys.TeamId].AsInt32();
+
+		payload["Player"] = chatDictPlayer;
+		var players = GetLobbyPlayers(lobbyId);
+		foreach (var player in players)
+		{
+			if (player[MattohaPlayerKeys.TeamId].AsInt32() != teamId)
+				continue;
+			_system.SendReliableClientRpc(player[MattohaPlayerKeys.Id].AsInt64(), nameof(ClientRpc.SendTeamMessage), payload);
+		}
+#endif
+	}
+
+
 	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -524,8 +571,16 @@ public partial class MattohaServer : Node
 			case nameof(ServerRpc.DespawnRemovedSceneNodes):
 				RpcDespawnRemovedSceneNodes(sender);
 				break;
+			case nameof(ServerRpc.SendTeamMessage):
+				RpcSendTeamMessage(payload, sender);
+				break;
+			case nameof(ServerRpc.SendLobbyMessage):
+				RpcSendLobbyMessage(payload, sender);
+				break;
+			case nameof(ServerRpc.SendGlobalMessage):
+				RpcSendGlobalMessage(payload, sender);
+				break;
 		}
 #endif
 	}
-
 }

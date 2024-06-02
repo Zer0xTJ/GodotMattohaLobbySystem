@@ -48,6 +48,11 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void DespawnNodeRequestedEventHandler(Dictionary<string, Variant> nodeData);
 
 
+	[Signal] public delegate void GlobalMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void LobbyMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void TeamMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+
+
 
 
 	public Node GameHolder => GetNode("/root/GameHolder");
@@ -383,6 +388,52 @@ public partial class MattohaClient : Node
 #endif
 	}
 
+
+	public void SendTeamMessage(string message)
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.SendTeamMessage), new Dictionary<string, Variant> { { "Message", message } });
+#endif
+	}
+
+	private void RpcSendTeamMessage(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.TeamMessageRecieved, payload["Player"], payload["Message"]);
+#endif
+	}
+
+
+	public void SendLobbyMessage(string message)
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.SendLobbyMessage), new Dictionary<string, Variant> { { "Message", message } });
+#endif
+	}
+
+
+	private void RpcSendGlobalMessage(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.GlobalMessageRecieved, payload["Player"], payload["Message"]);
+#endif
+	}
+
+
+	public void SendGlobalMessage(string message)
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.SendGlobalMessage), new Dictionary<string, Variant> { { "Message", message } });
+#endif
+	}
+
+	private void RpcSendLobbyMessage(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.LobbyMessageRecieved, payload["Player"], payload["Message"]);
+#endif
+	}
+
 	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -439,7 +490,20 @@ public partial class MattohaClient : Node
 			case nameof(ClientRpc.DespawnRemovedSceneNodes):
 				RpcDespawnRemovedSceneNodes(payload);
 				break;
+			case nameof(ClientRpc.SendGlobalMessage):
+				RpcSendGlobalMessage(payload);
+				break;
+			case nameof(ClientRpc.SendLobbyMessage):
+				RpcSendLobbyMessage(payload);
+				break;
+			case nameof(ClientRpc.SendTeamMessage):
+				RpcSendTeamMessage(payload);
+				break;
+
 		}
 #endif
 	}
+
+
+
 }

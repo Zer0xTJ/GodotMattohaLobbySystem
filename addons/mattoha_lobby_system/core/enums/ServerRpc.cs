@@ -15,4 +15,7 @@ internal enum ServerRpc
 	SetLobbyData,
 	SetLobbyOwner,
 	JoinTeam,
+	SendTeamMessage,
+	SendLobbyMessage,
+	SendGlobalMessage,
 }

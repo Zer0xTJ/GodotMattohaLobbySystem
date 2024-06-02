@@ -18,9 +18,40 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.NewPlayerJoined += OnNewPlayerJoiend;
 		MattohaSystem.Instance.Client.SetLobbyDataSucceed += OnSetLobbyData;
 		MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
+		MattohaSystem.Instance.Client.TeamMessageRecieved += OnTeamMessage;
+		MattohaSystem.Instance.Client.LobbyMessageRecieved += OnLobbyMessage;
+		MattohaSystem.Instance.Client.GlobalMessageRecieved += OnGlobalMessage;
+
 		MattohaSystem.Instance.Client.LoadLobbyPlayers();
 		RefreshLobbyName();
 		base._Ready();
+	}
+
+	private void OnGlobalMessage(Dictionary<string, Variant> senderData, string message)
+	{
+		var label = new Label()
+		{
+			Text = $"Global({senderData[MattohaPlayerKeys.Username].AsString()}, {message})"
+		};
+		MessagesContainer.AddChild(label);
+	}
+
+	private void OnLobbyMessage(Dictionary<string, Variant> senderData, string message)
+	{
+		var label = new Label()
+		{
+			Text = $"Lobby({senderData[MattohaPlayerKeys.Username].AsString()}, {message})"
+		};
+		MessagesContainer.AddChild(label);
+	}
+
+	private void OnTeamMessage(Dictionary<string, Variant> senderData, string message)
+	{
+		var label = new Label()
+		{
+			Text = $"Team({senderData[MattohaPlayerKeys.Username].AsString()}, {message})"
+		};
+		MessagesContainer.AddChild(label);
 	}
 
 	private void OnPlayerChangedHisTeam(Dictionary<string, Variant> playerData)
@@ -101,18 +132,37 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.JoinTeam(1);
 	}
 
-	public void OnTeamMessageButtonPressed() { }
-	public void OnLobbyMessageButtonPressed() { }
-	public void OnGlobalMessageButtonPressed() { }
+	public void OnTeamMessageButtonPressed()
+	{
+
+		MattohaSystem.Instance.Client.SendTeamMessage(MessageInput.Text);
+		MessageInput.Text = "";
+	}
+
+	public void OnLobbyMessageButtonPressed()
+	{
+		MattohaSystem.Instance.Client.SendLobbyMessage(MessageInput.Text);
+		MessageInput.Text = "";
+
+	}
+	public void OnGlobalMessageButtonPressed()
+	{
+
+		MattohaSystem.Instance.Client.SendGlobalMessage(MessageInput.Text);
+		MessageInput.Text = "";
+	}
 	public void OnLeaveButtonPressed() { }
 
 	public override void _ExitTree()
 	{
-		MattohaSystem.Instance.Client.StartGameSucceed += OnStartGame;
-		MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed += OnLoadLobbyPlayers;
-		MattohaSystem.Instance.Client.NewPlayerJoined += OnNewPlayerJoiend;
-		MattohaSystem.Instance.Client.SetLobbyDataSucceed += OnSetLobbyData;
-		MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
+		MattohaSystem.Instance.Client.StartGameSucceed -= OnStartGame;
+		MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed -= OnLoadLobbyPlayers;
+		MattohaSystem.Instance.Client.NewPlayerJoined -= OnNewPlayerJoiend;
+		MattohaSystem.Instance.Client.SetLobbyDataSucceed -= OnSetLobbyData;
+		MattohaSystem.Instance.Client.PlayerChangedHisTeam -= OnPlayerChangedHisTeam;
+		MattohaSystem.Instance.Client.TeamMessageRecieved -= OnTeamMessage;
+		MattohaSystem.Instance.Client.LobbyMessageRecieved -= OnLobbyMessage;
+		MattohaSystem.Instance.Client.GlobalMessageRecieved -= OnGlobalMessage;
 		base._ExitTree();
 	}
 }
