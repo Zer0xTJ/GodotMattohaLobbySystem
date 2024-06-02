@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Utils;
+using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaSynchronizerModifier : Node
@@ -19,12 +20,13 @@ public partial class MattohaSynchronizerModifier : Node
         MattohaSystem.Instance.Client.NewPlayerJoined += OnPlayerJoined;
         MattohaSystem.Instance.Client.JoinedPlayerUpdated += OnJoinedPLayerUpdated;
         MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
-        // todo: on player left
+		MattohaSystem.Instance.Client.PlayerLeft += OnPlayerLeft;
         ApplyMattohaReplicationFilter();
         base._Ready();
     }
 
-    private void SetupReplicationVisibility()
+
+	private void SetupReplicationVisibility()
     {
         foreach (var player in MattohaSystem.Instance.Client.CurrentLobbyPlayers.Values)
         {
@@ -35,6 +37,11 @@ public partial class MattohaSynchronizerModifier : Node
         }
         _synchronizer.SetVisibilityFor(1, true);
     }
+
+	private void OnPlayerLeft(Dictionary<string, Variant> playerData)
+	{
+        SetupReplicationVisibility();
+	}
 
 
     private void OnPlayerChangedHisTeam(Dictionary<string, Variant> playerData)
@@ -87,6 +94,7 @@ public partial class MattohaSynchronizerModifier : Node
         MattohaSystem.Instance.Client.NewPlayerJoined -= OnPlayerJoined;
         MattohaSystem.Instance.Client.JoinedPlayerUpdated -= OnJoinedPLayerUpdated;
         MattohaSystem.Instance.Client.PlayerChangedHisTeam -= OnPlayerChangedHisTeam;
+		MattohaSystem.Instance.Client.PlayerLeft -= OnPlayerLeft;
         base._ExitTree();
     }
 }

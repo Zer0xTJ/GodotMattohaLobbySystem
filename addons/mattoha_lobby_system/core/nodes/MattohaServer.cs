@@ -9,10 +9,11 @@ using Mattoha.Demo;
 namespace Mattoha.Nodes;
 public partial class MattohaServer : Node
 {
-	[Export] public Dictionary<long, Dictionary<string, Variant>> Players { get; set; } = new();
-	[Export] public Dictionary<int, Dictionary<string, Variant>> Lobbies { get; set; } = new();
-	[Export] public Dictionary<int, Array<Dictionary<string, Variant>>> SpawnedNodes { get; set; } = new();
-	[Export] public Dictionary<int, Array<Dictionary<string, Variant>>> RemovedSceneNodes { get; set; } = new();
+	public Dictionary<long, Dictionary<string, Variant>> Players { get; set; } = new();
+	public Dictionary<int, Dictionary<string, Variant>> Lobbies { get; set; } = new();
+	public Dictionary<int, Array<Dictionary<string, Variant>>> SpawnedNodes { get; set; } = new();
+	public Dictionary<int, Array<Dictionary<string, Variant>>> RemovedSceneNodes { get; set; } = new();
+
 
 	public Node GameHolder => GetNode("/root/GameHolder");
 
@@ -23,9 +24,20 @@ public partial class MattohaServer : Node
 		_system = GetParent<MattohaSystem>();
 		_system.ServerRpcRecieved += OnServerRpcRecieved;
 		Multiplayer.PeerConnected += OnPeerConnected;
+		Multiplayer.PeerDisconnected += OnPeerDisconnected;
 		base._Ready();
 	}
 
+	private void OnPeerDisconnected(long id)
+	{
+#if MATTOHA_SERVER
+		if (Multiplayer.IsServer())
+		{
+			RemovePlayerFromLobby(id);
+			UnRegisterPlayer(id);
+		}
+#endif
+	}
 
 	private void OnPeerConnected(long id)
 	{
@@ -33,6 +45,38 @@ public partial class MattohaServer : Node
 		if (Multiplayer.IsServer())
 		{
 			RegisterPlayer(id);
+		}
+#endif
+	}
+
+
+	private void RegisterPlayer(long id)
+	{
+#if MATTOHA_SERVER
+		if (!Players.ContainsKey(id))
+		{
+			var player = new Dictionary<string, Variant>
+				{
+					{ MattohaPlayerKeys.Id, id },
+					{ MattohaPlayerKeys.Username, $"Player{id}" },
+					{ MattohaPlayerKeys.JoinedLobbyId, 0 },
+					{ MattohaPlayerKeys.TeamId, 0 },
+					{ MattohaPlayerKeys.IsInGamae, false },
+					{ MattohaPlayerKeys.PrivateProps, new Array<string>() },
+					{ MattohaPlayerKeys.ChatProps, new Array<string>(){ MattohaPlayerKeys.Id, MattohaPlayerKeys.Username } },
+				};
+			Players.Add(id, player);
+			_system.SendReliableClientRpc(id, nameof(ClientRpc.RegisterPlayer), player);
+		}
+#endif
+	}
+
+	private void UnRegisterPlayer(long id)
+	{
+#if MATTOHA_SERVER
+		if (Players.ContainsKey(id))
+		{
+			Players.Remove(id);
 		}
 #endif
 	}
@@ -151,28 +195,6 @@ public partial class MattohaServer : Node
 		// this will lead to start positioning lobbies from 0 to LobbySize * n
 		// if we removed "-1" it will start positioning from lobbySize to LobbySize * n
 		return (Lobbies.Count - 1) * _system.LobbySize;
-	}
-
-
-	private void RegisterPlayer(long id)
-	{
-#if MATTOHA_SERVER
-		if (!Players.ContainsKey(id))
-		{
-			var player = new Dictionary<string, Variant>
-				{
-					{ MattohaPlayerKeys.Id, id },
-					{ MattohaPlayerKeys.Username, $"Player{id}" },
-					{ MattohaPlayerKeys.JoinedLobbyId, 0 },
-					{ MattohaPlayerKeys.TeamId, 0 },
-					{ MattohaPlayerKeys.IsInGamae, false },
-					{ MattohaPlayerKeys.PrivateProps, new Array<string>() },
-					{ MattohaPlayerKeys.ChatProps, new Array<string>(){ MattohaPlayerKeys.Id, MattohaPlayerKeys.Username } },
-				};
-			Players.Add(id, player);
-			_system.SendReliableClientRpc(id, nameof(ClientRpc.RegisterPlayer), player);
-		}
-#endif
 	}
 
 
@@ -526,7 +548,33 @@ public partial class MattohaServer : Node
 #endif
 	}
 
+	private void RpcLeaveLobby(long sender)
+	{
+#if MATTOHA_SERVER
+		RemovePlayerFromLobby(sender);
+#endif
+	}
 
+	public void RemovePlayerFromLobby(long playerId)
+	{
+#if MATTOHA_SERVER
+		var player = GetPlayer(playerId);
+		if (player == null)
+			return;
+		
+		if (player[MattohaPlayerKeys.JoinedLobbyId].AsInt32() == 0)
+			return;
+
+		var lobby = GetPlayerLobby(playerId);
+		if (lobby == null)
+			return;
+		
+		player[MattohaPlayerKeys.JoinedLobbyId] = 0;
+		_system.SendReliableClientRpc(playerId, nameof(ClientRpc.LeaveLobby), player);
+		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.PlayerLeft), player, true);
+		RefreshAvailableLobbiesForAll();
+#endif
+	}
 	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -579,6 +627,9 @@ public partial class MattohaServer : Node
 				break;
 			case nameof(ServerRpc.SendGlobalMessage):
 				RpcSendGlobalMessage(payload, sender);
+				break;
+			case nameof(ServerRpc.LeaveLobby):
+				RpcLeaveLobby(sender);
 				break;
 		}
 #endif

@@ -57,4 +57,6 @@ internal enum ClientRpc
 	SendGlobalMessage,
 	SendGlobalMessageFailed,
 	PlayerChangedHisTeam,
+
+	LeaveLobby,
 }

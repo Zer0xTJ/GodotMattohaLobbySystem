@@ -1,9 +1,8 @@
-using System;
-using System.Linq;
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
 using Mattoha.Core.Utils;
+using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaClient : Node
@@ -31,6 +30,7 @@ public partial class MattohaClient : Node
 
 	[Signal] public delegate void JoinLobbySucceedEventHandler(Dictionary<string, Variant> lobbyData);
 	[Signal] public delegate void JoinLobbyFailedEventHandler(string cause);
+	[Signal] public delegate void LeaveLobbySucceedEventHandler();
 
 	[Signal] public delegate void JoinTeamSucceedEventHandler(int newTeam);
 	[Signal] public delegate void JoinTeamFailedEventHandler(string cause);
@@ -54,15 +54,14 @@ public partial class MattohaClient : Node
 
 
 
-
 	public Node GameHolder => GetNode("/root/GameHolder");
 	public Node LobbyNode => GetNode($"/root/GameHolder/Lobby{CurrentLobby[MattohaLobbyKeys.Id]}");
 
 
 
-	[Export] public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
-	[Export] public Dictionary<string, Variant> CurrentLobby { get; private set; } = new();
-	[Export] public Dictionary<long, Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
+	public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
+	public Dictionary<string, Variant> CurrentLobby { get; private set; } = new();
+	public Dictionary<long, Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
 
 	public bool CanReplicate => CurrentPlayer[MattohaPlayerKeys.IsInGamae].AsBool();
 
@@ -434,6 +433,31 @@ public partial class MattohaClient : Node
 #endif
 	}
 
+	public void LeaveLobby()
+	{
+#if MATTOHA_CLIENT
+		CurrentPlayer[MattohaPlayerKeys.JoinedLobbyId] = 0;
+		_system.SendReliableServerRpc(nameof(ServerRpc.LeaveLobby), null);
+#endif
+	}
+
+	private void RpcLeaveLobby()
+	{
+#if MATTOHA_CLIENT
+		CurrentPlayer[MattohaPlayerKeys.JoinedLobbyId] = 0;
+		EmitSignal(SignalName.LeaveLobbySucceed);
+#endif
+	}
+
+	private void RpcPlayerLeft(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_SERVER
+		var playerId = payload[MattohaPlayerKeys.Id].AsInt64();
+		CurrentLobbyPlayers.Remove(playerId);
+		EmitSignal(SignalName.PlayerLeft, payload);
+#endif
+	}
+
 	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -499,11 +523,13 @@ public partial class MattohaClient : Node
 			case nameof(ClientRpc.SendTeamMessage):
 				RpcSendTeamMessage(payload);
 				break;
-
+			case nameof(ClientRpc.LeaveLobby):
+				RpcLeaveLobby();
+				break;
+			case nameof(ClientRpc.PlayerLeft):
+				RpcPlayerLeft(payload);
+				break;
 		}
 #endif
 	}
-
-
-
 }

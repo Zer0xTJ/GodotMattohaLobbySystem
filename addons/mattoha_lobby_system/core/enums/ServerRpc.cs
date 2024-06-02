@@ -18,4 +18,5 @@ internal enum ServerRpc
 	SendTeamMessage,
 	SendLobbyMessage,
 	SendGlobalMessage,
+	LeaveLobby,
 }
