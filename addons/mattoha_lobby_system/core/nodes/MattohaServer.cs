@@ -4,7 +4,6 @@ using Mattoha.Core.Demo;
 using Mattoha.Core;
 using Mattoha.Core.Utils;
 using System;
-using System.Linq;
 
 namespace Mattoha.Nodes;
 public partial class MattohaServer : Node
@@ -97,7 +96,10 @@ public partial class MattohaServer : Node
 		var players = new Array<Dictionary<string, Variant>>();
 		foreach (var pl in Players.Values)
 		{
-			players.Add(pl);
+			if (pl[MattohaPlayerKeys.JoinedLobbyId].AsInt32() == lobbyId)
+			{
+				players.Add(pl);
+			}
 		}
 		return players;
 	}
@@ -108,7 +110,10 @@ public partial class MattohaServer : Node
 		var players = new Array<Dictionary<string, Variant>>();
 		foreach (var pl in Players.Values)
 		{
-			players.Add(MattohaUtils.ToSecuredDict(pl));
+			if (pl[MattohaPlayerKeys.JoinedLobbyId].AsInt32() == lobbyId)
+			{
+				players.Add(MattohaUtils.ToSecuredDict(pl));
+			}
 		}
 		return players;
 	}
@@ -237,7 +242,6 @@ public partial class MattohaServer : Node
 			{
 				RpcLoadAvailableLobbies(playerId);
 			}
-
 		}
 #endif
 	}

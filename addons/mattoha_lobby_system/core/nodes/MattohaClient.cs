@@ -41,9 +41,9 @@ public partial class MattohaClient : Node
 
 
 
-	public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
-	public Dictionary<string, Variant> CurrentLobby { get; private set; } = new();
-	public Dictionary<long, Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
+	[Export] public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
+	[Export] public Dictionary<string, Variant> CurrentLobby { get; private set; } = new();
+	[Export] public Dictionary<long, Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
 
 	public bool CanReplicate => CurrentPlayer[MattohaPlayerKeys.IsInGamae].AsBool();
 
