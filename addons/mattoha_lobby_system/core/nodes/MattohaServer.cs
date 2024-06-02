@@ -85,6 +85,8 @@ public partial class MattohaServer : Node
 	public Dictionary<string, Variant> FindSpawnedNode(Dictionary<string, Variant> payload)
 	{
 		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		if (!SpawnedNodes.ContainsKey(lobbyId))
+			return null;
 		var nodes = SpawnedNodes[lobbyId];
 		foreach (var node in nodes)
 		{
@@ -103,6 +105,8 @@ public partial class MattohaServer : Node
 	public Dictionary<string, Variant> FindRemovedSceneNode(Dictionary<string, Variant> payload)
 	{
 		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		if(!RemovedSceneNodes.ContainsKey(lobbyId))
+			return null;
 		var nodes = RemovedSceneNodes[lobbyId];
 		foreach (var node in nodes)
 		{
@@ -459,7 +463,10 @@ public partial class MattohaServer : Node
 			spawnedNode = FindRemovedSceneNode(payload);
 			if (spawnedNode == null)
 			{
-				RemovedSceneNodes[lobbyId].Add(payload);
+				if (RemovedSceneNodes.ContainsKey(lobbyId))
+				{
+					RemovedSceneNodes[lobbyId].Add(payload);
+				}
 			}
 			_system.DespawnNodeFromPayload(payload);
 			SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.DespawnNode), payload);
@@ -576,6 +583,8 @@ public partial class MattohaServer : Node
 		{
 			Lobbies.Remove(lobby[MattohaLobbyKeys.Id].AsInt32());
 			GameHolder.GetNode($"Lobby{lobbyId}").QueueFree();
+			SpawnedNodes.Remove(lobbyId);
+			RemovedSceneNodes.Remove(lobbyId);
 		}
 		else if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() == playerId)
 		{
@@ -585,6 +594,7 @@ public partial class MattohaServer : Node
 		_system.SendReliableClientRpc(playerId, nameof(ClientRpc.LeaveLobby), player);
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.PlayerLeft), player, true);
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SetLobbyData), lobby, true, lobby[MattohaLobbyKeys.OwnerId].AsInt64());
+		LoadLobbyPlayersForAll(lobbyId);
 		RefreshAvailableLobbiesForAll();
 #endif
 	}

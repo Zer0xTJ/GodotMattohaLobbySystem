@@ -437,6 +437,8 @@ public partial class MattohaClient : Node
 	{
 #if MATTOHA_CLIENT
 		CurrentPlayer[MattohaPlayerKeys.JoinedLobbyId] = 0;
+		CurrentLobbyPlayers = new();
+		CurrentLobby = new();
 		_system.SendReliableServerRpc(nameof(ServerRpc.LeaveLobby), null);
 #endif
 	}
