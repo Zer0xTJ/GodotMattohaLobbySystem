@@ -571,18 +571,20 @@ public partial class MattohaServer : Node
 
 		player[MattohaPlayerKeys.JoinedLobbyId] = 0;
 		lobby[MattohaLobbyKeys.PlayersCount] = lobby[MattohaLobbyKeys.PlayersCount].AsInt32() - 1;
+		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
 		if (lobby[MattohaLobbyKeys.PlayersCount].AsInt32() == 0)
 		{
 			Lobbies.Remove(lobby[MattohaLobbyKeys.Id].AsInt32());
+			GameHolder.GetNode($"Lobby{lobbyId}").QueueFree();
 		}
 		else if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() == playerId)
 		{
-			var lobbyPlayers = GetLobbyPlayers(lobby[MattohaLobbyKeys.Id].AsInt32());
+			var lobbyPlayers = GetLobbyPlayers(lobbyId);
 			lobby[MattohaLobbyKeys.OwnerId] = lobbyPlayers[0][MattohaPlayerKeys.Id].AsInt64();
 		}
 		_system.SendReliableClientRpc(playerId, nameof(ClientRpc.LeaveLobby), player);
-		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.PlayerLeft), player, true);
-		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.SetLobbyData), lobby, true, lobby[MattohaLobbyKeys.OwnerId].AsInt64());
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.PlayerLeft), player, true);
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SetLobbyData), lobby, true, lobby[MattohaLobbyKeys.OwnerId].AsInt64());
 		RefreshAvailableLobbiesForAll();
 #endif
 	}
