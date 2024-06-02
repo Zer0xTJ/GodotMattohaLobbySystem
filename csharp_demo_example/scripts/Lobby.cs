@@ -17,9 +17,15 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed += OnLoadLobbyPlayers;
 		MattohaSystem.Instance.Client.NewPlayerJoined += OnNewPlayerJoiend;
 		MattohaSystem.Instance.Client.SetLobbyDataSucceed += OnSetLobbyData;
+		MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
 		MattohaSystem.Instance.Client.LoadLobbyPlayers();
 		RefreshLobbyName();
 		base._Ready();
+	}
+
+	private void OnPlayerChangedHisTeam(Dictionary<string, Variant> playerData)
+	{
+		UpdateJoinedPlayers();
 	}
 
 	private void OnSetLobbyData(Dictionary<string, Variant> lobbyData)
@@ -43,8 +49,14 @@ public partial class Lobby : Control
 
 	private void OnLoadLobbyPlayers(Array<Dictionary<string, Variant>> players)
 	{
-		GD.Print("playersssss: ", players);
-		foreach (var slot in PlayersContainer.GetChildren())
+		UpdateJoinedPlayers();
+	}
+
+	private void UpdateJoinedPlayers()
+	{
+		var players = MattohaSystem.Instance.Client.CurrentLobbyPlayers.Values;
+		var slots = PlayersContainer.GetChildren();
+		foreach (var slot in slots)
 		{
 			slot.QueueFree();
 		}
@@ -78,8 +90,17 @@ public partial class Lobby : Control
 	}
 
 
-	public void OnJoinTeam1ButtonPressed() { }
-	public void OnJoinTeam2ButtonPressed() { }
+	public void OnJoinTeam1ButtonPressed()
+	{
+		MattohaSystem.Instance.Client.JoinTeam(0);
+	}
+
+
+	public void OnJoinTeam2ButtonPressed()
+	{
+		MattohaSystem.Instance.Client.JoinTeam(1);
+	}
+
 	public void OnTeamMessageButtonPressed() { }
 	public void OnLobbyMessageButtonPressed() { }
 	public void OnGlobalMessageButtonPressed() { }
@@ -87,8 +108,11 @@ public partial class Lobby : Control
 
 	public override void _ExitTree()
 	{
-		MattohaSystem.Instance.Client.StartGameSucceed -= OnStartGame;
-		MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed -= OnLoadLobbyPlayers;
+		MattohaSystem.Instance.Client.StartGameSucceed += OnStartGame;
+		MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed += OnLoadLobbyPlayers;
+		MattohaSystem.Instance.Client.NewPlayerJoined += OnNewPlayerJoiend;
+		MattohaSystem.Instance.Client.SetLobbyDataSucceed += OnSetLobbyData;
+		MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
 		base._ExitTree();
 	}
 }

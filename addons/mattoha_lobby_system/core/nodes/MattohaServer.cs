@@ -189,7 +189,7 @@ public partial class MattohaServer : Node
 		}
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
 		var lobbyId = player[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
-		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.JoinedPlayerUpdated), player);
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.JoinedPlayerUpdated), player, true);
 #endif
 	}
 
@@ -322,7 +322,7 @@ public partial class MattohaServer : Node
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinLobby), MattohaUtils.ToSecuredDict(lobby));
 
 		RefreshAvailableLobbiesForAll();
-		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.NewPlayerJoined), MattohaUtils.ToSecuredDict(player));
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.NewPlayerJoined), player, true);
 #endif
 	}
 
@@ -467,6 +467,19 @@ public partial class MattohaServer : Node
 	}
 
 
+	private void RpcJoinTeam(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var player = GetPlayer(sender);
+		if (player == null)
+			return;
+		player[MattohaPlayerKeys.TeamId] = payload[MattohaPlayerKeys.TeamId];
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinTeam), payload);
+		SendRpcForPlayersInLobby(player[MattohaPlayerKeys.JoinedLobbyId].AsInt32(), nameof(ClientRpc.PlayerChangedHisTeam), player, true);
+#endif
+	}
+
+
 	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -515,15 +528,4 @@ public partial class MattohaServer : Node
 #endif
 	}
 
-	private void RpcJoinTeam(Dictionary<string, Variant> payload, long sender)
-	{
-#if MATTOHA_SERVER
-		var player = GetPlayer(sender);
-		if (player == null)
-			return;
-		player[MattohaPlayerKeys.TeamId] = payload[MattohaPlayerKeys.TeamId];
-		_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinTeam), payload);
-		SendRpcForPlayersInLobby(player[MattohaPlayerKeys.JoinedLobbyId].AsInt32(), nameof(ClientRpc.PlayerChangedHisTeam), player);
-#endif
-	}
 }
