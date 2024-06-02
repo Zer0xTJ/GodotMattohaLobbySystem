@@ -22,11 +22,11 @@ public partial class MattohaSynchronizerModifier : Node
     {
         if (ReplicateForTeamOnly)
         {
-            return MattohaSystem.Instance.Client.IsPlayerInMyTeam(peerId);
+            return MattohaSystem.Instance.Client.ShouldReplicate && MattohaSystem.Instance.Client.IsPlayerInMyTeam(peerId);
         }
         else
         {
-            return MattohaSystem.Instance.Client.IsPlayerInLobby(peerId);
+            return MattohaSystem.Instance.Client.ShouldReplicate && MattohaSystem.Instance.Client.IsPlayerInLobby(peerId);
         }
     }
 }

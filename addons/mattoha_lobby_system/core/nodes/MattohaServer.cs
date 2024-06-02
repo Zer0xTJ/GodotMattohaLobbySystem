@@ -11,6 +11,9 @@ public partial class MattohaServer : Node
 {
 	[Export] public Dictionary<long, Dictionary<string, Variant>> Players { get; set; } = new();
 	[Export] public Dictionary<int, Dictionary<string, Variant>> Lobbies { get; set; } = new();
+	[Export] public Dictionary<int, Array<Dictionary<string, Variant>>> SpawnedNodes { get; set; } = new();
+	[Export] public Dictionary<int, Array<Dictionary<string, Variant>>> RemovedSceneNodes { get; set; } = new();
+
 	public Node GameHolder => GetNode("/root/GameHolder");
 
 	private MattohaSystem _system;
@@ -35,7 +38,48 @@ public partial class MattohaServer : Node
 	}
 
 
+	public Dictionary<string, Variant> FindSpawnedNode(Dictionary<string, Variant> payload)
+	{
+		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		var nodes = SpawnedNodes[lobbyId];
+		foreach (var node in nodes)
+		{
+			if (
+				node[MattohaSpawnKeys.ParentPath].ToString() == payload[MattohaSpawnKeys.ParentPath].ToString() &&
+				node[MattohaSpawnKeys.NodeName].ToString() == payload[MattohaSpawnKeys.NodeName].ToString()
+			)
+			{
+				return node;
+			}
+		}
+		return null;
+	}
 
+
+	public Dictionary<string, Variant> FindRemovedSceneNode(Dictionary<string, Variant> payload)
+	{
+		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		var nodes = RemovedSceneNodes[lobbyId];
+		foreach (var node in nodes)
+		{
+			if (
+				node[MattohaSpawnKeys.ParentPath].ToString() == payload[MattohaSpawnKeys.ParentPath].ToString() &&
+				node[MattohaSpawnKeys.NodeName].ToString() == payload[MattohaSpawnKeys.NodeName].ToString()
+			)
+			{
+				return node;
+			}
+		}
+		return null;
+	}
+
+
+	public Dictionary<string, Variant> GetPlayer(long playerId)
+	{
+		if (!Players.TryGetValue(playerId, out var player))
+			return null;
+		return player;
+	}
 
 	public Dictionary<string, Variant> GetPlayerLobby(long playerId)
 	{
@@ -163,6 +207,8 @@ public partial class MattohaServer : Node
 		player[MattohaPlayerKeys.JoinedLobbyId] = lobbyId;
 
 		Lobbies.Add(lobbyId, lobbyData);
+		SpawnedNodes.Add(lobbyId, new());
+		RemovedSceneNodes.Add(lobbyId, new());
 
 		// add lobby node to game holder
 		var lobbyNode = GD.Load<PackedScene>(lobbyData[MattohaLobbyKeys.LobbySceneFile].AsString()).Instantiate();
@@ -271,6 +317,103 @@ public partial class MattohaServer : Node
 #endif
 	}
 
+
+	private void RpcSpawnNode(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		if (!Lobbies.TryGetValue(lobbyId, out var lobby))
+			return;
+		_system.SpawnNodeFromPayload(payload);
+		// add to spawned nodes
+		SpawnedNodes[lobbyId].Add(payload);
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SpawnNode), payload);
+#endif
+	}
+
+
+	private void RpcSpawnLobbyNodes(long sender)
+	{
+#if MATTOHA_SERVER
+		var lobby = GetPlayerLobby(sender);
+		if (lobby == null)
+			return;
+		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
+		var spawnedNodes = SpawnedNodes[lobbyId];
+		var payload = new Dictionary<string, Variant>()
+		{
+			{ "Nodes", spawnedNodes }
+		};
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SpawnLobbyNodes), payload);
+#endif
+	}
+
+
+	private void RpcDespawnNode(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		if (!Lobbies.TryGetValue(lobbyId, out var lobby))
+			return;
+		var spawnedNode = FindSpawnedNode(payload);
+		if (spawnedNode != null)
+		{
+			var nodeOwner = spawnedNode[MattohaSpawnKeys.Owner].AsInt64();
+			if (nodeOwner == sender)
+			{
+				DespawnNode(payload);
+			}
+		}
+#endif
+	}
+
+	public void DespawnNode(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_SERVER
+		var spawnedNode = FindSpawnedNode(payload);
+		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
+		// is spawnedNode is null then its not a scene nodes, meaning that this node spawned based on game logic from some player or from server
+		if (spawnedNode != null)
+		{
+			SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.DespawnNode), payload);
+			_system.DespawnNodeFromPayload(spawnedNode);
+			SpawnedNodes[lobbyId].Remove(payload);
+		}
+		else // now , we will assume that this node was already in scene structure, so we will add it to RemovedSceneNodes if not exists
+		{
+			spawnedNode = FindRemovedSceneNode(payload);
+			if (spawnedNode == null)
+			{
+				RemovedSceneNodes[lobbyId].Add(payload);
+			}
+			_system.DespawnNodeFromPayload(payload);
+			SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.DespawnNode), payload);
+		}
+#endif
+	}
+
+
+	private void RpcDespawnRemovedSceneNodes(long sender)
+	{
+#if MATTOHA_SERVER
+		var player = GetPlayer(sender);
+		if (player == null)
+			return;
+
+		var lobbyId = player[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
+		if (lobbyId == 0)
+			return;
+
+		var removedNodes = RemovedSceneNodes[lobbyId];
+		var payload = new Dictionary<string, Variant>()
+		{
+			{ "Nodes", removedNodes }
+		};
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.DespawnRemovedSceneNodes), payload);
+#endif
+	}
+
+
 	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
@@ -297,18 +440,16 @@ public partial class MattohaServer : Node
 			case nameof(ServerRpc.SpawnNode):
 				RpcSpawnNode(payload, sender);
 				break;
+			case nameof(ServerRpc.SpawnLobbyNodes):
+				RpcSpawnLobbyNodes(sender);
+				break;
+			case nameof(ServerRpc.DespawnNode):
+				RpcDespawnNode(payload, sender);
+				break;
+			case nameof(ServerRpc.DespawnRemovedSceneNodes):
+				RpcDespawnRemovedSceneNodes(sender);
+				break;
 		}
-#endif
-	}
-
-	private void RpcSpawnNode(Dictionary<string, Variant> payload, long sender)
-	{
-#if MATTOHA_SERVER
-		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
-		if (!Lobbies.TryGetValue(lobbyId, out var lobby))
-			return;
-		_system.SpawnNodeFromPayload(payload);
-		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SpawnNode), payload);
 #endif
 	}
 }

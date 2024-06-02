@@ -11,5 +11,5 @@ internal enum ServerRpc
 	SpawnNode,
 	SpawnLobbyNodes,
 	DespawnNode,
-	DespawnRemovedLobbyNodes,
+	DespawnRemovedSceneNodes,
 }

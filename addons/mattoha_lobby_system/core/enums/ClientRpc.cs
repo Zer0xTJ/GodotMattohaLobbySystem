@@ -11,6 +11,7 @@ internal enum ClientRpc
 	CreateLobbyFailed,
 
 	LoadAvailableLobbies,
+	LoadAvailableLobbiesFailed,
 
 	JoinLobby,
 	JoinLobbyFailed,
@@ -19,7 +20,17 @@ internal enum ClientRpc
 	StartGameFailed,
 
 	LoadLobbyPlayers,
+	LoadLobbyPlayersFailed,
 
 	SpawnNode,
 	SpawnNodeFailed,
+
+	SpawnLobbyNodes,
+	SpawnLobbyNodesFailed,
+
+	DespawnNode,
+	DespawnNodeFailed,
+
+	DespawnRemovedSceneNodes,
+	DespawnRemovedSceneNodesFailed,
 }

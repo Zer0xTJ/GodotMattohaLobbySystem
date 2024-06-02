@@ -34,8 +34,10 @@ public partial class MattohaSystem : Node
 	{
 		Instance = this;
 		Client.SpawnNodeRequested += OnSpawnNodeRequested;
+		Client.DespawnNodeRequested += OnDespawnNodeRequested;
 		base._Ready();
 	}
+
 
 	public static int ExtractLobbyId(string nodePath)
 	{
@@ -98,14 +100,67 @@ public partial class MattohaSystem : Node
 		}
 	}
 
+
+	public void DespawnNodeFromPayload(Dictionary<string, Variant> payload)
+	{
+		if (GetTree().Root.HasNode(payload[MattohaSpawnKeys.ParentPath].ToString()))
+		{
+			var parent = GetNode(payload[MattohaSpawnKeys.ParentPath].ToString());
+			if (parent.HasNode(payload[MattohaSpawnKeys.NodeName].ToString()))
+			{
+				parent.GetNode(payload[MattohaSpawnKeys.NodeName].ToString()).QueueFree();
+			}
+		}
+	}
+
 	private void OnSpawnNodeRequested(Dictionary<string, Variant> lobbyData)
 	{
 		SpawnNodeFromPayload(lobbyData);
 	}
 
+
+	private void OnDespawnNodeRequested(Dictionary<string, Variant> nodeData)
+	{
+		DespawnNodeFromPayload(nodeData);
+	}
+
 	public Node CreateInstance(string sceneFile)
 	{
 		return CreateInstance(GD.Load<PackedScene>(sceneFile));
+	}
+
+
+	public Dictionary<string, Variant> GenerateNodePayloadData(Node node, bool despawn = false)
+	{
+		if (despawn)
+		{
+			return new Dictionary<string, Variant>()
+			{
+				{ MattohaSpawnKeys.ParentPath, node.GetPath().ToString() },
+				{ MattohaSpawnKeys.NodeName, node.GetPath().ToString() },
+			};
+		}
+		var payload = new Dictionary<string, Variant>()
+		{
+			{ MattohaSpawnKeys.Owner, node.GetMultiplayerAuthority() },
+			{ MattohaSpawnKeys.SceneFile, node.SceneFilePath },
+			{ MattohaSpawnKeys.NodeName, node.Name },
+			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() },
+		};
+		if (node is Node2D)
+		{
+			payload[MattohaSpawnKeys.Position] = (node as Node2D).Position;
+			payload[MattohaSpawnKeys.Rotation] = (node as Node2D).Rotation;
+		}
+
+		if (node is Node3D)
+		{
+			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
+			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
+		}
+
+		return payload;
+
 	}
 
 
@@ -137,4 +192,5 @@ public partial class MattohaSystem : Node
 		EmitSignal(SignalName.ClientRpcRecieved, methodName, payload, Multiplayer.GetRemoteSenderId());
 #endif
 	}
+
 }

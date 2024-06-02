@@ -27,7 +27,8 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void PlayerJoinedEventHandler(Dictionary<string, Variant> playerData);
 	[Signal] public delegate void PlayerLeftEventHandler(Dictionary<string, Variant> playerData);
 
-	[Signal] public delegate void SpawnNodeRequestedEventHandler(Dictionary<string, Variant> lobbyData);
+	[Signal] public delegate void SpawnNodeRequestedEventHandler(Dictionary<string, Variant> nodeData);
+	[Signal] public delegate void DespawnNodeRequestedEventHandler(Dictionary<string, Variant> nodeData);
 
 
 
@@ -214,32 +215,8 @@ public partial class MattohaClient : Node
 	public void SpawnNode(Node node)
 	{
 #if MATTOHA_CLIENT
-		var payload = new Dictionary<string, Variant>()
-		{
-			{ MattohaSpawnKeys.Owner, node.GetMultiplayerAuthority() },
-			{ MattohaSpawnKeys.SceneFile, node.SceneFilePath },
-			{ MattohaSpawnKeys.NodeName, node.Name },
-			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() },
-		};
-		if (node is Node2D)
-		{
-			payload[MattohaSpawnKeys.Position] = (node as Node2D).Position;
-			payload[MattohaSpawnKeys.Rotation] = (node as Node2D).Rotation;
-		}
-
-		if (node is Node3D)
-		{
-			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
-			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
-		}
-
+		var payload = _system.GenerateNodePayloadData(node);
 		_system.SendReliableServerRpc(nameof(ServerRpc.SpawnNode), payload);
-#endif
-	}
-
-	public void DespawnNode(Node node)
-	{
-#if MATTOHA_CLIENT
 #endif
 	}
 
@@ -250,6 +227,65 @@ public partial class MattohaClient : Node
 		EmitSignal(SignalName.SpawnNodeRequested, payload);
 #endif
 	}
+
+
+	public void SpawnLobbyNodes()
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.SpawnLobbyNodes), null);
+#endif
+	}
+
+
+	private void RpcSpawnLobbyNodes(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		DisableReplication();
+		var nodes = payload["Nodes"].AsGodotArray<Dictionary<string, Variant>>();
+		foreach (var node in nodes)
+		{
+			EmitSignal(SignalName.SpawnNodeRequested, node);
+		}
+		EnableReplication();
+#endif
+	}
+
+
+	public void DespawnNode(Node node)
+	{
+#if MATTOHA_CLIENT
+		var payload = _system.GenerateNodePayloadData(node, true);
+		_system.SendReliableServerRpc(nameof(ServerRpc.DespawnNode), payload);
+#endif
+	}
+
+
+	private void RpcDespawnNode(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.DespawnNodeRequested, payload);
+#endif
+	}
+
+	public void DespawnRemovedSceneNodes()
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.DespawnRemovedSceneNodes), null);
+#endif
+	}
+
+
+	private void RpcDespawnRemovedSceneNodes(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		var nodes = payload["Nodes"].AsGodotArray<Dictionary<string, Variant>>();
+		foreach (var node in nodes)
+		{
+			EmitSignal(SignalName.DespawnNodeRequested, node);
+		}
+#endif
+	}
+
 
 	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
@@ -280,8 +316,16 @@ public partial class MattohaClient : Node
 			case nameof(ClientRpc.SpawnNode):
 				RpcSpawnNode(payload);
 				break;
+			case nameof(ClientRpc.DespawnNode):
+				RpcDespawnNode(payload);
+				break;
+			case nameof(ClientRpc.SpawnLobbyNodes):
+				RpcSpawnLobbyNodes(payload);
+				break;
+			case nameof(ClientRpc.DespawnRemovedSceneNodes):
+				RpcDespawnRemovedSceneNodes(payload);
+				break;
 		}
 #endif
 	}
-
 }
