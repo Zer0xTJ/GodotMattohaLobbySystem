@@ -428,17 +428,18 @@ public partial class MattohaServer : Node
 	{
 #if MATTOHA_SERVER
 
-		var result = MiddlewareNode.BeforeLoadAvailableLobbies(sender);
-		if (!result["Status"].AsBool())
-		{
-			result.Remove("Status");
-			_system.SendReliableClientRpc(sender, nameof(ClientRpc.LoadAvailableLobbiesFailed), result);
-		}
 
 		Array<Dictionary<string, Variant>> lobbies = new();
 		foreach (var lobbyData in Lobbies.Values)
 		{
 			lobbies.Add(MattohaUtils.ToSecuredDict(lobbyData));
+		}
+
+		var result = MiddlewareNode.BeforeLoadAvailableLobbies(sender, lobbies);
+		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
+			_system.SendReliableClientRpc(sender, nameof(ClientRpc.LoadAvailableLobbiesFailed), result);
 		}
 		Dictionary<string, Variant> payload = new()
 		{
