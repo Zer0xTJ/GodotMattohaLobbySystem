@@ -5,17 +5,41 @@ using Mattoha.Core;
 using Mattoha.Core.Utils;
 using System;
 using Mattoha.Misc;
+using System.Security.Authentication.ExtendedProtection;
 
 namespace Mattoha.Nodes;
 public partial class MattohaServer : Node
 {
+	/// <summary>
+	/// Server Middleware for executing logic before and after almost every event that client do,
+	/// This node should have "MattohaMiddleware" script attached to it.
+	/// </summary>
 	[Export] public MattohaServerMiddleware MiddlewareNode { get; set; }
-	public Dictionary<long, Dictionary<string, Variant>> Players { get; set; } = new();
-	public Dictionary<int, Dictionary<string, Variant>> Lobbies { get; set; } = new();
-	public Dictionary<int, Array<Dictionary<string, Variant>>> SpawnedNodes { get; set; } = new();
-	public Dictionary<int, Array<Dictionary<string, Variant>>> RemovedSceneNodes { get; set; } = new();
 
+	/// <summary>
+	/// Registered players dictionary, where the key is the id of player.
+	/// </summary>
+	public Dictionary<long, Dictionary<string, Variant>> Players { get; private set; } = new();
 
+	/// <summary>
+	/// Create lobbies by users dictionary, where the key is the id of lobby.
+	/// </summary>
+	public Dictionary<int, Dictionary<string, Variant>> Lobbies { get; private set; } = new();
+
+	/// <summary>
+	/// A dictionary that contains spawned nodes for each lobby, where the key is the lobby id.
+	/// </summary>
+	public Dictionary<int, Array<Dictionary<string, Variant>>> SpawnedNodes { get; private set; } = new();
+
+	/// <summary>
+	/// A dictionary that contains removed scene nodes that has been despawned during game play for each lobby,
+	/// where the key is the lobby id.
+	/// </summary>
+	public Dictionary<int, Array<Dictionary<string, Variant>>> RemovedSceneNodes { get; private set; } = new();
+
+	/// <summary>
+	/// The game holder node that contains lobbies nodes and game plays.
+	/// </summary>
 	public Node GameHolder => GetNode("/root/GameHolder");
 
 	private MattohaSystem _system;
@@ -49,7 +73,6 @@ public partial class MattohaServer : Node
 		}
 #endif
 	}
-
 
 	private void RegisterPlayer(long id)
 	{
@@ -86,7 +109,12 @@ public partial class MattohaServer : Node
 #endif
 	}
 
-
+	
+	/// <summary>
+	/// Given a spawn payload, find the node in spawned nodes.
+	/// </summary>
+	/// <param name="payload">generated payload from "GenerateNodePayloadData" method.</param>
+	/// <returns>null if not found.</returns>
 	public Dictionary<string, Variant> FindSpawnedNode(Dictionary<string, Variant> payload)
 	{
 		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
@@ -107,6 +135,11 @@ public partial class MattohaServer : Node
 	}
 
 
+	/// <summary>
+	/// Given a despawn payload, find the removed scene node in RemovedSceneNodes
+	/// </summary>
+	/// <param name="payload">generated payload from "GenerateNodePayloadData" method.</param>
+	/// <returns>null if not found.</returns>
 	public Dictionary<string, Variant> FindRemovedSceneNode(Dictionary<string, Variant> payload)
 	{
 		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
@@ -126,14 +159,25 @@ public partial class MattohaServer : Node
 		return null;
 	}
 
-
+	
+	/// <summary>
+	/// Get player by it's ID.
+	/// </summary>
+	/// <param name="playerId"></param>
+	/// <returns>null if not found.</returns>
 	public Dictionary<string, Variant> GetPlayer(long playerId)
 	{
 		if (!Players.TryGetValue(playerId, out var player))
 			return null;
 		return player;
 	}
+	
 
+	/// <summary>
+	/// Get lobby that player is joined to by player ID.
+	/// </summary>
+	/// <param name="playerId"></param>
+	/// <returns>null if not found.</returns>
 	public Dictionary<string, Variant> GetPlayerLobby(long playerId)
 	{
 		if (!Players.TryGetValue(playerId, out var player))
@@ -144,7 +188,12 @@ public partial class MattohaServer : Node
 
 		return lobby;
 	}
-
+	
+	/// <summary>
+	/// Get list of players that joined to a given lobby.
+	/// </summary>
+	/// <param name="lobbyId"></param>
+	/// <returns>Empty array if no players in lobby.</returns>
 	public Array<Dictionary<string, Variant>> GetLobbyPlayers(int lobbyId)
 	{
 		var players = new Array<Dictionary<string, Variant>>();
@@ -158,9 +207,16 @@ public partial class MattohaServer : Node
 		return players;
 	}
 
-
+	/// <summary>
+	/// Get list of players that joined to a given lobby but secure the dictionaries, meanining that any propert inside "PrivateProps"
+	/// will be hidden.
+	/// </summary>
+	/// <param name="lobbyId"></param>
+	/// <returns>Empty array if no players in lobby.</returns>
 	public Array<Dictionary<string, Variant>> GetLobbyPlayersSecured(int lobbyId)
 	{
+		if (!Lobbies.ContainsKey(lobbyId))
+			return new();
 		var players = new Array<Dictionary<string, Variant>>();
 		foreach (var pl in Players.Values)
 		{
@@ -172,7 +228,16 @@ public partial class MattohaServer : Node
 		return players;
 	}
 
-
+	
+	/// <summary>
+	/// Send an RPC for all players in a given lobby.
+	/// </summary>
+	/// <param name="lobbyId">The lobbyId to send the RPC for it's players.</param>
+	/// <param name="methodName">RPC method name.</param>
+	/// <param name="payload">payload to send "Dictionary"</param>
+	/// <param name="secureDict">if true, "MattohaUtils.ToSecuredDict()" will be applied on payload.</param>
+	/// <param name="superPeer">this peer id will recieve the original payload without secure it.</param>
+	/// <param name="ignorePeer">ignore this peer and dont send RPC for him, usefull if you want to ignore the sender.</param>
 	public void SendRpcForPlayersInLobby(int lobbyId, string methodName, Dictionary<string, Variant> payload, bool secureDict = false, long superPeer = 0, long ignorePeer = 0)
 	{
 		var players = GetLobbyPlayers(lobbyId);
@@ -339,11 +404,17 @@ public partial class MattohaServer : Node
 #endif
 	}
 
-
-	public void RefreshAvailableLobbiesForAll()
+	/// <summary>
+	/// Refresh all available lobbies for all peers if "AutoLoadAvailableLobbies" is enabled or "force" argument is true.
+	/// </summary>
+	/// <param name="force">
+	/// if true, then ignore the value of "AutoLoadAvailablelobbies" and force
+	/// to load available lobbies for all connected players.
+	/// </param>
+	public void RefreshAvailableLobbiesForAll(bool force = false)
 	{
 #if MATTOHA_SERVER
-		if (_system.AutoLoadAvailableLobbies)
+		if (force || _system.AutoLoadAvailableLobbies)
 		{
 			foreach (var playerId in Players.Keys)
 			{
@@ -439,7 +510,11 @@ public partial class MattohaServer : Node
 
 #endif
 	}
-
+	
+	/// <summary>
+	/// Refresh joined players list for all joined players in a given lobbyId.
+	/// </summary>
+	/// <param name="lobbyId"></param>
 	public void LoadLobbyPlayersForAll(int lobbyId)
 	{
 		var players = GetLobbyPlayersSecured(lobbyId);
@@ -580,7 +655,11 @@ public partial class MattohaServer : Node
 		}
 #endif
 	}
-
+	
+	/// <summary>
+	/// Despawn Node by a payload generated by method "GenerateNodePayloadData()".
+	/// </summary>
+	/// <param name="payload"></param>
 	public void DespawnNode(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_SERVER
@@ -745,7 +824,14 @@ public partial class MattohaServer : Node
 		RemovePlayerFromLobby(sender);
 #endif
 	}
+	
 
+	/// <summary>
+	/// Remove player from joiend lobby, this will emmit "LeaveLobby" for player removed, "SetPlayerData" for player removed, "PlayerLeft" and 
+	/// "LoadLobbyPlayersSucceed" for joined players, "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled,
+	/// in addition to sync data for players.
+	/// </summary>
+	/// <param name="playerId"></param>
 	public void RemovePlayerFromLobby(long playerId)
 	{
 #if MATTOHA_SERVER
