@@ -239,6 +239,10 @@ public partial class MattohaServer : Node
 	private void RpcCreateLobby(Dictionary<string, Variant> lobbyData, long sender)
 	{
 #if MATTOHA_SERVER
+		if(Lobbies.Count >= _system.MaxLobbiesCount)
+		{
+			_system.SendReliableClientRpc(sender, nameof(ClientRpc.CreateLobbyFailed), new Dictionary<string, Variant> { { "Message", "max-lobbies-reached" } });
+		}
 		if (!Players.TryGetValue(sender, out var player))
 			return;
 		var lobbyId = Lobbies.Count + 1;
@@ -385,7 +389,7 @@ public partial class MattohaServer : Node
 			return;
 
 		if (lobby[MattohaLobbyKeys.MaxPlayers].AsInt32() <= lobby[MattohaLobbyKeys.PlayersCount].AsInt32())
-			_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinLobbyFailed), new Dictionary<string, Variant> { { "Message", "no-seats" } });
+			_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinLobbyFailed), new Dictionary<string, Variant> { { "Message", "max-players-reached" } });
 
 
 		var result = MiddlewareNode.BeforeJoinLobby(lobby, sender);
