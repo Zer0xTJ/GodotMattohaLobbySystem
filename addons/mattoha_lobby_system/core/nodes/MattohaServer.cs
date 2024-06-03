@@ -110,7 +110,7 @@ public partial class MattohaServer : Node
 	public Dictionary<string, Variant> FindRemovedSceneNode(Dictionary<string, Variant> payload)
 	{
 		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
-		if(!RemovedSceneNodes.ContainsKey(lobbyId))
+		if (!RemovedSceneNodes.ContainsKey(lobbyId))
 			return null;
 		var nodes = RemovedSceneNodes[lobbyId];
 		foreach (var node in nodes)
@@ -212,20 +212,23 @@ public partial class MattohaServer : Node
 #if MATTOHA_SERVER
 		if (!Players.TryGetValue(sender, out var player))
 			return;
-		
+
 		var result = MiddlewareNode.BeforeSetPlayerData(payload, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerDataFailed), result);
+		}
 
-        foreach (var pair in payload)
+		foreach (var pair in payload)
 		{
 			if (MattohaPlayerKeys.FreezedProperties.Contains(pair.Key))
 				continue;
 			player[pair.Key] = pair.Value;
 		}
-		
+
 		MiddlewareNode.AfterSetPlayerData(payload, sender);
-		
+
 		var lobbyId = player[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.JoinedPlayerUpdated), player, true);
@@ -255,7 +258,10 @@ public partial class MattohaServer : Node
 		lobbyData[MattohaLobbyKeys.MaxPlayers] = maxPlayers;
 		var result = MiddlewareNode.BeforeCreateLobby(lobbyData, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.CreateLobbyFailed), result);
+		}
 
 		player[MattohaPlayerKeys.JoinedLobbyId] = lobbyId;
 		Lobbies.Add(lobbyId, lobbyData);
@@ -288,11 +294,14 @@ public partial class MattohaServer : Node
 			return;
 		if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() != sender)
 			return;
-		
+
 		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
 		var result = MiddlewareNode.BeforeSetLobbyData(lobbyId, payload, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetLobbyDataFailed), result);
+		}
 		foreach (var pair in payload)
 		{
 			if (MattohaLobbyKeys.FreezedProperties.Contains(pair.Key))
@@ -316,7 +325,10 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeSetLobbyOwner(lobby, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetLobbyOwnerFailed), result);
+		}
 		lobby[MattohaLobbyKeys.OwnerId] = payload[MattohaLobbyKeys.OwnerId];
 		MiddlewareNode.AfterSetLobbyOwner(lobby, sender);
 		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.SetLobbyOwner), lobby, true, lobby[MattohaLobbyKeys.OwnerId].AsInt64());
@@ -343,7 +355,11 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeLoadAvailableLobbies(sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.LoadAvailableLobbiesFailed), result);
+		}
+
 		Array<Dictionary<string, Variant>> lobbies = new();
 		foreach (var lobbyData in Lobbies.Values)
 		{
@@ -374,10 +390,13 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeJoinLobby(lobby, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinLobbyFailed), result);
+		}
 
 		RemovePlayerFromLobby(sender);
-			
+
 		player[MattohaPlayerKeys.JoinedLobbyId] = lobbyId;
 		lobby[MattohaLobbyKeys.PlayersCount] = lobby[MattohaLobbyKeys.PlayersCount].AsInt32() + 1;
 
@@ -404,7 +423,10 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeStartGame(lobby, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.StartGameFailed), result);
+		}
 
 		MiddlewareNode.AfterStartGame(lobby, sender);
 		lobby[MattohaLobbyKeys.IsGameStarted] = true;
@@ -433,7 +455,10 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeLoadLobbyPlayers(sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.LoadLobbyPlayersFailed), result);
+		}
 		var joinedLobbyId = player[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
 		var players = GetLobbyPlayersSecured(joinedLobbyId);
 		var payload = new Dictionary<string, Variant>()
@@ -456,23 +481,27 @@ public partial class MattohaServer : Node
 		payload[MattohaSpawnKeys.TeamId] = teamId;
 		var isTeamOnly = payload[MattohaSpawnKeys.TeamOnly].AsBool();
 
-		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());	
+		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());
 		if (!Lobbies.TryGetValue(lobbyId, out var lobby))
 			return;
 
 		var result = MiddlewareNode.BeforeSpawnNode(lobby, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
+			result["NodePath"] = $"{payload[MattohaSpawnKeys.ParentPath].AsString()}/{payload[MattohaSpawnKeys.NodeName].AsString()}";
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SpawnNodeFailed), result);
+		}
 
 		payload[MattohaSpawnKeys.Owner] = sender;
 		_system.SpawnNodeFromPayload(payload);
 		SpawnedNodes[lobbyId].Add(payload);
-		
+
 		MiddlewareNode.AfterSpawnNode(lobby, sender);
 		var players = GetLobbyPlayers(lobbyId);
 		foreach (var p in players)
 		{
-			if(isTeamOnly && teamId != p[MattohaPlayerKeys.TeamId].AsInt32())
+			if (isTeamOnly && teamId != p[MattohaPlayerKeys.TeamId].AsInt32())
 			{
 				continue;
 			}
@@ -491,14 +520,17 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeSpawnLobbyNodes(lobby, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SpawnLobbyNodesFailed), result);
+		}
 
 		var teamId = GetPlayer(sender)[MattohaPlayerKeys.TeamId].AsInt32();
 
 		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
 		var spawnedNodes = new Array<Dictionary<string, Variant>>();
-		
-		foreach(var node in SpawnedNodes[lobbyId])
+
+		foreach (var node in SpawnedNodes[lobbyId])
 		{
 			if (node[MattohaSpawnKeys.TeamOnly].AsBool() && teamId != node[MattohaSpawnKeys.TeamId].AsInt32())
 				continue;
@@ -526,7 +558,11 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeDespawnNode(lobby, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
+			result["NodePayload"] = payload;
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.DespawnNodeFailed), result);
+		}
 
 		var spawnedNode = FindSpawnedNode(payload);
 		if (spawnedNode != null)
@@ -583,7 +619,10 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeDespawnRemovedSceneNodes(lobbyId, sender);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.DespawnRemovedSceneNodesFailed), result);
+		}
 
 		var removedNodes = RemovedSceneNodes[lobbyId];
 		var payload = new Dictionary<string, Variant>()
@@ -606,7 +645,11 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeJoinTeam(sender, teamId);
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.JoinTeamFailed), result);
+		}
+
 
 		player[MattohaPlayerKeys.TeamId] = teamId;
 
@@ -623,10 +666,13 @@ public partial class MattohaServer : Node
 #if MATTOHA_SERVER
 		var result = MiddlewareNode.BeforeSendGlobalMessage(sender, payload["Message"].ToString());
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SendGlobalMessageFailed), result);
+		}
 
 		payload["Player"] = MattohaUtils.ToChatDict(GetPlayer(sender));
-		
+
 		MiddlewareNode.AfterSendGlobalMessage(sender, payload["Message"].ToString());
 		_system.SendReliableClientRpc(0, nameof(ClientRpc.SendGlobalMessage), payload);
 #endif
@@ -642,7 +688,10 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeSendLobbyMessage(lobby, sender, payload["Message"].ToString());
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SendLobbyMessageFailed), result);
+		}
 
 		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
 		var chatDictPlayer = MattohaUtils.ToChatDict(GetPlayer(sender));
@@ -668,7 +717,10 @@ public partial class MattohaServer : Node
 
 		var result = MiddlewareNode.BeforeSendTeamMessage(lobby, teamId, sender, payload["Message"].ToString());
 		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SendTeamMessageFailed), result);
+		}
 
 		payload["Player"] = chatDictPlayer;
 		var players = GetLobbyPlayers(lobbyId);
@@ -707,7 +759,7 @@ public partial class MattohaServer : Node
 		MiddlewareNode.BeforeRemovePlayerFromLobby(playerId);
 		var playerNodes = new Array<Dictionary<string, Variant>>();
 		var spawnedNodes = SpawnedNodes[lobby[MattohaLobbyKeys.Id].AsInt32()];
-		
+
 		foreach (var playerNode in spawnedNodes)
 		{
 			if (playerNode[MattohaSpawnKeys.Owner].AsInt64() == playerId)
@@ -733,7 +785,7 @@ public partial class MattohaServer : Node
 		}
 
 		// despawn player nodes
-		foreach(var node in playerNodes)
+		foreach (var node in playerNodes)
 		{
 			DespawnNode(node);
 		}

@@ -606,10 +606,11 @@ public partial class MattohaClient : Node
 
 	
 	/// <summary>
-	/// Spawn node for all joined players in same lobby.
+	/// Spawn node for all joined players in same lobby or same team, this will emmit "SpawnNodeRequested" for joined players or players in teams,
+	/// "SpawnNodeFailed" will be emmited and node will be locally despawned if spawning node failed.
 	/// </summary>
-	/// <param name="node"></param>
-	/// <param name="teamOnly"></param>
+	/// <param name="node">Node object (should be existing in tree)</param>
+	/// <param name="teamOnly">true if spawning should be for team only.</param>
 	public void SpawnNode(Node node, bool teamOnly = false)
 	{
 #if MATTOHA_CLIENT
@@ -631,11 +632,27 @@ public partial class MattohaClient : Node
 	private void RpcSpawnNodeFailed(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
+		var nodePath = payload["NodePath"].AsString();
+		CallDeferred(nameof(DespawnNodeDeferred), nodePath);
 		EmitSignal(SignalName.SpawnNodeFailed, payload["Message"].AsString());
 #endif
 	}
 
+	private void DespawnNodeDeferred(string nodePath)
+	{
+#if MATTOHA_CLIENT
+		if (GetTree().Root.HasNode(nodePath))
+		{
+			GetNode(nodePath).QueueFree();
+		}
+#endif
+	}
 
+	
+	/// <summary>
+	/// Spawn all lobby nodes tha has been spawned by other players, team only nodes will not be spawned until player in same team, 
+	/// this method will emmit "SpawnLobbyNodesSucceed" or  "SpawnLobbyNodesFailed".
+	/// </summary>
 	public void SpawnLobbyNodes()
 	{
 #if MATTOHA_CLIENT
@@ -665,15 +682,19 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-
+	
+	/// <summary>
+	/// Despawn node and sync that with all players, this will emmit "DespawnNodeRequested" for all players and "DespawnNodeFailed" for caller user
+	/// if despawning fails and then respawning the node in case if player destroyed it.
+	/// </summary>
+	/// <param name="node"></param>
 	public void DespawnNode(Node node)
 	{
 #if MATTOHA_CLIENT
-		var payload = _system.GenerateNodePayloadData(node, true);
+		var payload = _system.GenerateNodePayloadData(node);
 		_system.SendReliableServerRpc(nameof(ServerRpc.DespawnNode), payload);
 #endif
 	}
-
 
 	private void RpcDespawnNode(Dictionary<string, Variant> payload)
 	{
@@ -686,10 +707,24 @@ public partial class MattohaClient : Node
 	private void RpcDespawnNodeFailed(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
+		var nodePayload = payload["NodePayload"].AsGodotDictionary<string, Variant>();
+		CallDeferred(nameof(RespawnNodeDeferred), nodePayload);
 		EmitSignal(SignalName.DespawnNodeFailed, payload["Message"].AsString());
 #endif
 	}
+	
+	private void RespawnNodeDeferred(Dictionary<string, Variant> nodePayload)
+	{
+#if MATTOHA_CLIENT
+		_system.SpawnNodeFromPayload(nodePayload);
+#endif
+	}
+	
 
+	/// <summary>
+	/// Despawn All scene nodes that despawned during game player, used by gameholder when new player enter the game scene,
+	/// this will emmit "DespawnRemovedSceneNodesSucceed" or "DespawnRemovedSceneNodesFailed".
+	/// </summary>
 	public void DespawnRemovedSceneNodes()
 	{
 #if MATTOHA_CLIENT
@@ -740,7 +775,12 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-
+	
+	/// <summary>
+	/// Join or change a team, this will emmit "JoinTeamSucceed" or "JoinTeamFailed" if joingin failed,
+	/// in addition, "PlayerChangedHisTeam" will be emmited on all lobby players including the player itself.
+	/// </summary>
+	/// <param name="teamId">Team ID to join to.</param>
 	public void JoinTeam(int teamId)
 	{
 #if MATTOHA_CLIENT
@@ -776,7 +816,11 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-
+	
+	/// <summary>
+	/// Send a message for team members, this will emmit "TeamMessageSucceed" for all players or "TeamMessageFailed" for caller user.
+	/// </summary>
+	/// <param name="message">message to send.</param>
 	public void SendTeamMessage(string message)
 	{
 #if MATTOHA_CLIENT
@@ -800,6 +844,10 @@ public partial class MattohaClient : Node
 	}
 
 
+	/// <summary>
+	/// Send a message for lobby members, this will emmit "LobbyMessageSucceed" for all players or "LobbyMessageFailed" for caller user.
+	/// </summary>
+	/// <param name="message">message to send.</param>
 	public void SendLobbyMessage(string message)
 	{
 #if MATTOHA_CLIENT
@@ -824,6 +872,10 @@ public partial class MattohaClient : Node
 	}
 
 
+	/// <summary>
+	/// Send a global message for all online users, this will emmit "GlobalMessageSucceed" for all players or "GlobalMessageFailed" for caller user.
+	/// </summary>
+	/// <param name="message">message to send.</param>
 	public void SendGlobalMessage(string message)
 	{
 #if MATTOHA_CLIENT
@@ -845,7 +897,10 @@ public partial class MattohaClient : Node
 		EmitSignal(SignalName.LobbyMessageFailed, payload["Message"].ToString());
 #endif
 	}
-
+	
+	/// <summary>
+	/// Leave joined lobby, this will emmit "LeaveLobbySucceed" for caller user and "PlayerLeft" for all joined players.
+	/// </summary>
 	public void LeaveLobby()
 	{
 #if MATTOHA_CLIENT

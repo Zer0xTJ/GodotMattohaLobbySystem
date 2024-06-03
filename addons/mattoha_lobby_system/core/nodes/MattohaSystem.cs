@@ -128,16 +128,8 @@ public partial class MattohaSystem : Node
 	}
 
 
-	public Dictionary<string, Variant> GenerateNodePayloadData(Node node, bool despawn = false)
+	public Dictionary<string, Variant> GenerateNodePayloadData(Node node)
 	{
-		if (despawn)
-		{
-			return new Dictionary<string, Variant>()
-			{
-				{ MattohaSpawnKeys.ParentPath, node.GetPath().ToString() },
-				{ MattohaSpawnKeys.NodeName, node.GetPath().ToString() },
-			};
-		}
 		var payload = new Dictionary<string, Variant>()
 		{
 			{ MattohaSpawnKeys.Owner, node.GetMultiplayerAuthority() },
