@@ -5,16 +5,17 @@ public partial class MattohaSpawner : Node
 {
     [Export] public bool AutoSpawn { get; set; } = true;
     [Export] public bool AutoDespawn { get; set; } = true;
+    [Export] public bool SpawnForTeamOnly { get; set; } = false;
 
     // this will cause the despawning happens from server, not client, bcs despawning nodes can be from owner only
     // but scene nodes has no owner
-    [Export] public bool IsSceneNode { get; set; } = true;
+    [Export] public bool IsSceneNode { get; set; } = false;
 
     public override void _Ready()
     {
         if (AutoSpawn && IsMultiplayerAuthority() && !IsSceneNode)
         {
-            MattohaSystem.Instance.Client.SpawnNode(GetParent());
+            MattohaSystem.Instance.Client.SpawnNode(GetParent(), SpawnForTeamOnly);
         }
         base._Ready();
     }

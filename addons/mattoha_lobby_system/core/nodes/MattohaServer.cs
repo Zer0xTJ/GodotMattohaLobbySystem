@@ -63,7 +63,7 @@ public partial class MattohaServer : Node
 					{ MattohaPlayerKeys.Username, $"Player{id}" },
 					{ MattohaPlayerKeys.JoinedLobbyId, 0 },
 					{ MattohaPlayerKeys.TeamId, 0 },
-					{ MattohaPlayerKeys.IsInGamae, false },
+					{ MattohaPlayerKeys.IsInGame, false },
 					{ MattohaPlayerKeys.PrivateProps, new Array<string>() },
 					{ MattohaPlayerKeys.ChatProps, new Array<string>(){ MattohaPlayerKeys.Id, MattohaPlayerKeys.Username } },
 				};
@@ -409,6 +409,7 @@ public partial class MattohaServer : Node
 		MiddlewareNode.AfterStartGame(lobby, sender);
 		lobby[MattohaLobbyKeys.IsGameStarted] = true;
 		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.StartGame), null);
+		RefreshAvailableLobbiesForAll();
 
 #endif
 	}
@@ -448,6 +449,13 @@ public partial class MattohaServer : Node
 	private void RpcSpawnNode(Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
+		var player = GetPlayer(sender);
+		if (player == null)
+			return;
+		var teamId = player[MattohaPlayerKeys.TeamId].AsInt32();
+		payload[MattohaSpawnKeys.TeamId] = teamId;
+		var isTeamOnly = payload[MattohaSpawnKeys.TeamOnly].AsBool();
+
 		var lobbyId = MattohaSystem.ExtractLobbyId(payload[MattohaSpawnKeys.ParentPath].ToString());	
 		if (!Lobbies.TryGetValue(lobbyId, out var lobby))
 			return;
@@ -461,7 +469,15 @@ public partial class MattohaServer : Node
 		SpawnedNodes[lobbyId].Add(payload);
 		
 		MiddlewareNode.AfterSpawnNode(lobby, sender);
-		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SpawnNode), payload);
+		var players = GetLobbyPlayers(lobbyId);
+		foreach (var p in players)
+		{
+			if(isTeamOnly && teamId != p[MattohaPlayerKeys.TeamId].AsInt32())
+			{
+				continue;
+			}
+			_system.SendReliableClientRpc(p[MattohaPlayerKeys.Id].AsInt64(), nameof(ClientRpc.SpawnNode), payload);
+		}
 #endif
 	}
 
@@ -477,8 +493,18 @@ public partial class MattohaServer : Node
 		if (!result["Status"].AsBool())
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.SpawnLobbyNodesFailed), result);
 
+		var teamId = GetPlayer(sender)[MattohaPlayerKeys.TeamId].AsInt32();
+
 		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
-		var spawnedNodes = SpawnedNodes[lobbyId];
+		var spawnedNodes = new Array<Dictionary<string, Variant>>();
+		
+		foreach(var node in SpawnedNodes[lobbyId])
+		{
+			if (node[MattohaSpawnKeys.TeamOnly].AsBool() && teamId != node[MattohaSpawnKeys.TeamId].AsInt32())
+				continue;
+			spawnedNodes.Add(node);
+		}
+
 		var payload = new Dictionary<string, Variant>()
 		{
 			{ "Nodes", spawnedNodes }

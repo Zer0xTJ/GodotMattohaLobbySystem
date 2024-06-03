@@ -11,10 +11,10 @@ public partial class MattohaSynchronizerModifier : Node
 
     public override void _Ready()
     {
-        _synchronizer = GetParent<MultiplayerSynchronizer>();
-        _synchronizer.PublicVisibility = false;
         if (Multiplayer.IsServer())
             return;
+        _synchronizer = GetParent<MultiplayerSynchronizer>();
+        _synchronizer.PublicVisibility = false;
         MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed += OnLoadLobbyPlayers;
         MattohaSystem.Instance.Client.NewPlayerJoined += OnPlayerJoined;
         MattohaSystem.Instance.Client.JoinedPlayerUpdated += OnJoinedPLayerUpdated;
@@ -30,7 +30,7 @@ public partial class MattohaSynchronizerModifier : Node
         foreach (var player in MattohaSystem.Instance.Client.CurrentLobbyPlayers.Values)
         {
             var playerId = player[MattohaPlayerKeys.Id].AsInt32();
-            var isInGame = player[MattohaPlayerKeys.IsInGamae].AsBool();
+            var isInGame = player[MattohaPlayerKeys.IsInGame].AsBool();
             var isSameTeam = MattohaSystem.Instance.Client.IsPlayerInMyTeam(playerId);
             _synchronizer.SetVisibilityFor(playerId, isInGame && (isSameTeam && ReplicateForTeamOnly || !ReplicateForTeamOnly));
         }

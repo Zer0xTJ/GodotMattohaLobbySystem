@@ -8,4 +8,6 @@ public class MattohaSpawnKeys
 	public static string Position { get; set; } = "Position";
 	public static string Rotation { get; set; } = "Rotation";
 	public static string Owner { get; set; } = "Owner";
+	public static string TeamOnly { get; set; } = "TeamOnly";
+	public static string TeamId { get; set; } = "TeamId";
 }
