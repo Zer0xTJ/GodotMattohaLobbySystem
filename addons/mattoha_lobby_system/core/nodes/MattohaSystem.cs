@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Utils;
+using System;
 using System.Linq;
 
 namespace Mattoha.Nodes;
@@ -96,28 +97,38 @@ public partial class MattohaSystem : Node
 	/// Used to create an instance from scene, use this method to initialize instance if the instance 
 	/// will be spawned for all players or has MattohaSpawner node.
 	/// </summary>
-	/// <param name="scene">PackedScene to initialize from.</param>
+	/// <param name="sceneFile">Scene file to initialize from.</param>
 	/// <returns>Created node instance.</returns>
-	public Node CreateInstance(PackedScene scene)
+	public Node CreateInstance(string sceneFile)
 	{
-		var owner = Multiplayer.GetUniqueId();
-		var instance = scene.Instantiate();
-		instance.Name = instance.Name.ToString().Replace("@", "_");
-		instance.Name += $"_{owner}_{Time.GetTicksMsec()}";
-		instance.SetMultiplayerAuthority(owner);
-		return instance;
+		GD.Print("SCENNNN: ", sceneFile);
+		return CreateInstance(GD.Load<PackedScene>(sceneFile));
 	}
 
 	/// <summary>
 	/// Used to create an instance from scene, use this method to initialize instance if the instance 
 	/// will be spawned for all players or has MattohaSpawner node.
 	/// </summary>
-	/// <param name="sceneFile">Scene file to initialize from.</param>
+	/// <param name="scene">PackedScene to initialize from.</param>
 	/// <returns>Created node instance.</returns>
-	public Node CreateInstance(string sceneFile)
+	public Node CreateInstance(PackedScene scene)
 	{
-		return CreateInstance(GD.Load<PackedScene>(sceneFile));
+		GD.Print("PPPPPPPPPP: ", scene);
+		var owner = Multiplayer.GetUniqueId();
+		GD.Print("1");
+		var instance = scene.Instantiate();
+		GD.Print("2");
+		instance.Name = instance.Name.ToString().Replace("@", "_");
+		GD.Print("3");
+		instance.Name += $"_{owner}_{Time.GetTicksMsec()}";
+		GD.Print("4");
+		instance.SetMultiplayerAuthority(owner);
+		GD.Print("5");
+		GD.Print("Instance: ", instance);
+		GD.Print("6");
+		return instance;
 	}
+
 
 
 	/// <summary>
