@@ -1,6 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://ygga3sx03tvc"]
+[gd_scene load_steps=5 format=3 uid="uid://ygga3sx03tvc"]
 
 [ext_resource type="Texture2D" uid="uid://wcxowoxvkef7" path="res://icon.svg" id="1_2yae6"]
+[ext_resource type="Script" path="res://gd_demo_example/scripts/coin.gd" id="1_5vqah"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSpawner.cs" id="2_tbg5o"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_snnoe"]
 radius = 66.0
@@ -10,6 +12,7 @@ modulate = Color(0.856132, 0.708794, 0, 1)
 position = Vector2(1, 1)
 scale = Vector2(0.25, 0.25)
 collision_layer = 2
+script = ExtResource("1_5vqah")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("1_2yae6")
@@ -18,4 +21,9 @@ texture = ExtResource("1_2yae6")
 shape = SubResource("CircleShape2D_snnoe")
 debug_color = Color(0.851468, 0.000855187, 0.896501, 0.42)
 
-[connection signal="body_entered" from="." to="." method="OnBodyEntered"]
+[node name="MattohaSpawner" type="Node2D" parent="."]
+script = ExtResource("2_tbg5o")
+AutoSpawn = false
+IsSceneNode = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

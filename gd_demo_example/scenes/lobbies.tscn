@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://bdp2tx37ko74k"]
+[gd_scene load_steps=3 format=3 uid="uid://bdp2tx37ko74k"]
 
 [ext_resource type="Script" path="res://gd_demo_example/scripts/lobbies.gd" id="1_uba3j"]
+[ext_resource type="PackedScene" uid="uid://bmar0sccrq7y5" path="res://gd_demo_example/scenes/slots/lobby_slot.tscn" id="2_krk85"]
 
-[node name="Lobbies" type="Control" node_paths=PackedStringArray("lobbyList")]
+[node name="Lobbies" type="Control" node_paths=PackedStringArray("LobbiesContainer")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -10,7 +11,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_uba3j")
-lobbyList = NodePath("PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/LobbiesContainer")
+LobbiesContainer = NodePath("PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/LobbiesContainer")
+LobbySlot = ExtResource("2_krk85")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1

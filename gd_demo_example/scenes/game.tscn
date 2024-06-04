@@ -1,6 +1,19 @@
-[gd_scene format=3 uid="uid://cd65j8bhy2x2h"]
+[gd_scene load_steps=3 format=3 uid="uid://cd65j8bhy2x2h"]
+
+[ext_resource type="PackedScene" uid="uid://ygga3sx03tvc" path="res://gd_demo_example/scenes/coin.tscn" id="1_dw144"]
+[ext_resource type="Script" path="res://gd_demo_example/scripts/game.gd" id="1_xmhaj"]
 
 [node name="Game" type="Node2D"]
+script = ExtResource("1_xmhaj")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(74, 44)
+
+[node name="Coin" parent="." instance=ExtResource("1_dw144")]
+position = Vector2(-128, -67)
+
+[node name="Coin2" parent="." instance=ExtResource("1_dw144")]
+position = Vector2(-153, 40)
+
+[node name="Coin3" parent="." instance=ExtResource("1_dw144")]
+position = Vector2(-137, 130)

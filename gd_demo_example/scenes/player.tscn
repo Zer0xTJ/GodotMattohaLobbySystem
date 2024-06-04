@@ -1,11 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://h7gvgkn0k2pd"]
+[gd_scene load_steps=7 format=3 uid="uid://h7gvgkn0k2pd"]
 
+[ext_resource type="Script" path="res://gd_demo_example/scripts/player.gd" id="1_vca1k"]
 [ext_resource type="Texture2D" uid="uid://wcxowoxvkef7" path="res://icon.svg" id="2_pxpn8"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSynchronizerModifier.cs" id="3_qje2h"]
+[ext_resource type="Script" path="res://addons/mattoha_lobby_system/core/nodes/MattohaSpawner.cs" id="4_w5xjx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_4d5lc"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_tncm0"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
 [node name="Player" type="CharacterBody2D"]
 collision_mask = 2
+script = ExtResource("1_vca1k")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 scale = Vector2(0.4, 0.4)
@@ -13,3 +22,13 @@ texture = ExtResource("2_pxpn8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_4d5lc")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_tncm0")
+public_visibility = false
+
+[node name="MattohaSynchronizerModifer" type="Node2D" parent="MultiplayerSynchronizer"]
+script = ExtResource("3_qje2h")
+
+[node name="MattohaSpawner" type="Node2D" parent="."]
+script = ExtResource("4_w5xjx")

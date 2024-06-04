@@ -50,7 +50,6 @@ layout_mode = 2
 text = "Lobby Name:"
 
 [node name="LobbyNameLineEdit" type="LineEdit" parent="PanelContainer/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 placeholder_text = "Enter lobby name ..."
 
@@ -63,7 +62,6 @@ layout_mode = 2
 size_flags_horizontal = 3
 
 [node name="CreateButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 text = "Continue"
 

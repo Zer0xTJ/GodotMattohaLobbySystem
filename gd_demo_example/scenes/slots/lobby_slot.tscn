@@ -1,7 +1,10 @@
-[gd_scene format=3 uid="uid://bmar0sccrq7y5"]
+[gd_scene load_steps=2 format=3 uid="uid://bmar0sccrq7y5"]
+
+[ext_resource type="Script" path="res://gd_demo_example/scripts/lobby_slot.gd" id="1_6hukj"]
 
 [node name="LobbySlot" type="HBoxContainer"]
 scale = Vector2(-0.149272, 0.73052)
+script = ExtResource("1_6hukj")
 
 [node name="LobbyNameLabel" type="Label" parent="."]
 unique_name_in_owner = true
@@ -21,3 +24,5 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "JOIN"
+
+[connection signal="pressed" from="JoinButton" to="." method="_on_join_button_pressed"]
