@@ -95,18 +95,18 @@ MattohaSystem.Instance.Client.CreateLobbyFailed += OnCreateLobbyFailed; // on fa
 - For GDScript
 
 ```gdscript
-// starting server
-MattohaSystem.Server.StartServer();
+# starting server
+MattohaSystem.Server.StartServer()
 
-// starting client (connect to server)
-MattohaSystem.Client.StartClient();
+# starting client (connect to server)
+MattohaSystem.Client.StartClient()
 
-// Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
-MattohaSystem.Client.CreateLobby(lobbyDictionary);
+# Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
+MattohaSystem.Client.CreateLobby(lobbyDictionary)
 
-// listining for a creating lobby signals.
-MattohaSystem.Client.CreateLobbySucceed.connect(_on_create_lobby); // on success
-MattohaSystem.Client.CreateLobbyFailed.connect(_on_create_lobby_failed_); // on fail
+# listining for a creating lobby signals.
+MattohaSystem.Client.CreateLobbySucceed.connect(_on_create_lobby)         # on success
+MattohaSystem.Client.CreateLobbyFailed.connect(_on_create_lobby_failed_)  # on fail
 
 ```
 
