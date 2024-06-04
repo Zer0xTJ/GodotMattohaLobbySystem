@@ -157,7 +157,7 @@ AddChild(instance);
 
 - GDScript:
 ```gdscript
-# where `scene` is a PackedScene or a scene file path for example 'res://myscene.tscn'
+# where `scene` in gdscript api is a scene file path for example 'res://myscene.tscn'
 var instance = MattohaSystem.CreateInstance(scene)
 # after creating the instance, we must add it to tree
 add_child(instance)
