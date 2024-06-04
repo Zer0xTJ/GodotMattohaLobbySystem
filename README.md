@@ -162,7 +162,7 @@ var instance = MattohaSystem.CreateInstance(scene)
 # after creating the instance, we must add it to tree
 add_child(instance)
 ```
-The instance should now spawn for all players in lobby or (in same team of configured to), because `MattohaSpawner` will auto spawn and despawn nodes for all players in same lobby or team.
+The instance should now spawn for all players in lobby or (in same team if configured to be spawn for team only), because `MattohaSpawner` will auto spawn and despawn nodes for all players in same lobby or team.
 
 
 
