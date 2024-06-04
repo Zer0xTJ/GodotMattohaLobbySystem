@@ -72,7 +72,7 @@ When you want to distrubite your game for players, disable `MATTOHA_SERVER` cons
 This configuration will help you to debug your code easly.
 
 ## Setting Up Nodes
-after installing and enable MattohaLobbySystem, a new auto load will be exists in your project with name `MattohaSystem`, you can configure it as you want.
+after installing and enable MattohaLobbySystem, a new auto load will be exists in your project with name `MattohaSystem`, you can configure it from `res://addons/mattoha_lobby_system/core/autoload/MattohaSystem.tscn` as you want.
 In addition you can access the system methods as following:
 
 - For c#
@@ -121,7 +121,7 @@ but instead of changing the scene to the game scene,
 we must navigate user to a GameHolder scene, so lets setup our game holder scene.
 
 - Create a new scene (Node2D / Node3D).
-- Now attach `MattohaGameHolder` script for it, it can be found on `addons\mattoha_lobby_system\core\nodes\MattohaGameHolder.cs`.
+- Now attach `MattohaGameHolder` script for it, it can be found on `res://addons/mattoha_lobby_system/core/nodes/MattohaGameHolder.cs`.
 
 Note that `MattohaGameHolder` is responsible for loading the scene and spawning / despawning lobby nodes of the game play.
 
