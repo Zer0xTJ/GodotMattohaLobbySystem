@@ -84,6 +84,10 @@ MattohaSystem.Instance.Server.StartServer();
 MattohaSystem.Instance.Client.StartClient();
 
 // Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
+var lobbyDictionary = new Godot.Collections.Dictionary<string, Variant>(){
+    { "Name", "My Lobby" },
+    { "LobbySceneFile", "res://my_game_scene.tscn" },
+};
 MattohaSystem.Instance.Client.CreateLobby(lobbyDictionary);
 
 // listining for a creating lobby signals.
@@ -102,13 +106,57 @@ MattohaSystem.Server.StartServer()
 MattohaSystem.Client.StartClient()
 
 # Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
-MattohaSystem.Client.CreateLobby(lobbyDictionary)
+MattohaSystem.Client.CreateLobby({"Name": "My Lobby", "LobbySceneFile": "res://my_game_scene.tscn"})
 
 # listining for a creating lobby signals.
 MattohaSystem.Client.CreateLobbySucceed.connect(_on_create_lobby)         # on success
 MattohaSystem.Client.CreateLobbyFailed.connect(_on_create_lobby_failed_)  # on fail
 
 ```
+
+# GameHolder
+When a lobby game is started, we will be listining for a `StartGameSucceed`signal, that comes with the lobby dictionary,
+but instead of changing the scene to the game scene, 
+
+we must navigate user to a GameHolder scene, so lets setup our game holder scene.
+
+- Create a new scene (Node2D / Node3D).
+- Now attach `MattohaGameHolder` script for it, it can be found on `addons\mattoha_lobby_system\core\nodes\MattohaGameHolder.cs`.
+
+Note that `MattohaGameHolder` is responsible for loading the scene and spawning / despawning lobby nodes of the game play.
+
+# Spawning/Depsawning Nodes & Replication
+Every node you want to auto spawn/despawn should has a MattohaSpawner node child.
+- When a node is a scene node (meaning that it's already exists in scene design and it's able to be despawned) then you must set `Is Scene Node` to true and disable `Auto Spawn` because its already spawned.
+- To Enable Replication Add `MultiplayerSynchronizer` node to the node you want to replicate and configure it and add what ever properties you want to replicate, BUT you "MUST" add `MattohaSynchronizerModifier` as a child for `MultiplayerSynchronizer`
+- When you set `Spawn For Team Only` to true on `MattohaSpawner`, you must set `Replicate For Team Only` in the `MattohaSynchronizerModifier` too.
+
+After setting up these configurations correctly for nodes you want to spawn, you are ready to move to next step..
+
+# Creating Node instance to spawn.
+Replicated nodes must have same name in the scene, and it's hard to create a custom name for every node, this is why MattohaSystem comes with a great method to help you out.
+
+Creating node instance must be as following:
+
+- CSharp:
+```csharp
+// where `scene` is a PackedScene or a scene file path for example 'res://myscene.tscn'
+var instance = MattohaSystem.Instance.CreateInstance(scene);
+// after creating the instance, we must add it to tree
+AddChild(instance);
+```
+
+
+- GDScript:
+```gdscript
+// where `scene` is a PackedScene or a scene file path for example 'res://myscene.tscn'
+var instance = MattohaSystem.CreateInstance(scene)
+// after creating the instance, we must add it to tree
+add_child(instance)
+```
+The instance should now spawn for all players in lobby or (in same team of configured to), because `MattohaSpawner` will auto spawn and despawn nodes for all players in same lobby or team.
+
+
 
 There is a lot of signals and methods you can use , check the API documentation:
 https://zer0xtj.github.io/GodotMattohaLobbySystem/annotated.html
