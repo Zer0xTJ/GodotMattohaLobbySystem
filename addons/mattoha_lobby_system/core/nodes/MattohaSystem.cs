@@ -101,7 +101,6 @@ public partial class MattohaSystem : Node
 	/// <returns>Created node instance.</returns>
 	public Node CreateInstance(string sceneFile)
 	{
-		GD.Print("SCENNNN: ", sceneFile);
 		return CreateInstance(GD.Load<PackedScene>(sceneFile));
 	}
 
@@ -113,19 +112,11 @@ public partial class MattohaSystem : Node
 	/// <returns>Created node instance.</returns>
 	public Node CreateInstance(PackedScene scene)
 	{
-		GD.Print("PPPPPPPPPP: ", scene);
 		var owner = Multiplayer.GetUniqueId();
-		GD.Print("1");
 		var instance = scene.Instantiate();
-		GD.Print("2");
 		instance.Name = instance.Name.ToString().Replace("@", "_");
-		GD.Print("3");
 		instance.Name += $"_{owner}_{Time.GetTicksMsec()}";
-		GD.Print("4");
 		instance.SetMultiplayerAuthority(owner);
-		GD.Print("5");
-		GD.Print("Instance: ", instance);
-		GD.Print("6");
 		return instance;
 	}
 
