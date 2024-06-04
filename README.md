@@ -111,7 +111,7 @@ MattohaSystem.Client.CreateLobbyFailed.connect(_on_create_lobby_failed_)  # on f
 ```
 
 There is a lot of signals and methods you can use , check the API documentation:
-https://zer0xtj.github.io/GodotMattohaLobbySystem/
+https://zer0xtj.github.io/GodotMattohaLobbySystem/annotated.html
 
 
 ## Export Notes
@@ -120,4 +120,4 @@ When you export your game for the server, ensure to remove MATTOHA_CLIENT from c
 
 
 ## API Documentation
-https://zer0xtj.github.io/GodotMattohaLobbySystem/
+https://zer0xtj.github.io/GodotMattohaLobbySystem/annotated.html
