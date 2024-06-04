@@ -510,7 +510,6 @@ public partial class MattohaServer : Node
 
 		if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() != sender)
 		{
-			GD.Print("NOOOOO START!!");
 			_system.SendReliableClientRpc(sender, nameof(ClientRpc.StartGameFailed), new Dictionary<string, Variant> { { "Message", "not-owner" } });
 			return;
 		}
