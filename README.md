@@ -166,8 +166,8 @@ The instance should now spawn for all players in lobby or (in same team if confi
 
 
 
-There is a lot of signals and methods you can use , check the API documentation:
-https://zer0xtj.github.io/GodotMattohaLobbySystem/annotated.html
+There is a bunch of signals and methods you can use , check the API documentation:
+https://zer0xtj.github.io/GodotMattohaLobbySystem/class_mattoha_1_1_nodes_1_1_mattoha_client.html
 
 
 ## Export Notes
