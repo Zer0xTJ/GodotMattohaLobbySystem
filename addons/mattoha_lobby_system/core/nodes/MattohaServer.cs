@@ -12,7 +12,7 @@ public partial class MattohaServer : Node
 {
 	/// <summary>
 	/// Server Middleware for executing logic before and after almost every event that client do,
-	/// This node should have "MattohaMiddleware" script attached to it.
+	/// This node should have "MattohaMiddleware" or an inherited class node script attached to it.
 	/// </summary>
 	[Export] public MattohaServerMiddleware MiddlewareNode { get; set; }
 
@@ -445,7 +445,7 @@ public partial class MattohaServer : Node
 		{
 			{ "Lobbies", lobbies }
 		};
-		MiddlewareNode.AfterLoadAvailableLobbies(sender);
+		MiddlewareNode.AfterLoadAvailableLobbies(sender, lobbies);
 		_system.SendReliableClientRpc(sender, nameof(ClientRpc.LoadAvailableLobbies), payload);
 #endif
 	}
