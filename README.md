@@ -74,3 +74,7 @@ This configuration will help you to debug your code easly.
 ## Export Notes
 
 When you export your game for the server, ensure to remove MATTOHA_CLIENT from csproject constants values for conditional compilation, same for client version, you should remove MATTOHA_SERVER for security reasons.
+
+
+## API Documentation
+https://zer0xtj.github.io/GodotMattohaLobbySystem/
