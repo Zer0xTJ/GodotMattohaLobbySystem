@@ -1,12 +1,16 @@
-[gd_scene format=3 uid="uid://bdp2tx37ko74k"]
+[gd_scene load_steps=2 format=3 uid="uid://bdp2tx37ko74k"]
 
-[node name="Lobbies" type="Control"]
+[ext_resource type="Script" path="res://gd_demo_example/scripts/lobbies.gd" id="1_uba3j"]
+
+[node name="Lobbies" type="Control" node_paths=PackedStringArray("lobbyList")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_uba3j")
+lobbyList = NodePath("PanelContainer/MarginContainer/VBoxContainer/ScrollContainer/LobbiesContainer")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -59,3 +63,5 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer2/CreateLobbyButton" to="." method="_on_create_lobby_button_pressed"]

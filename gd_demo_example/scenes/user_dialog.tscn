@@ -1,12 +1,16 @@
-[gd_scene format=3 uid="uid://fd3plralld0p"]
+[gd_scene load_steps=2 format=3 uid="uid://fd3plralld0p"]
 
-[node name="UserDialog" type="Control"]
+[ext_resource type="Script" path="res://gd_demo_example/scripts/user_dialog.gd" id="1_yl4wu"]
+
+[node name="UserDialog" type="Control" node_paths=PackedStringArray("usernameInput")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_yl4wu")
+usernameInput = NodePath("PanelContainer/MarginContainer/VBoxContainer/UsernameLineEdit")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 layout_mode = 1
@@ -63,3 +67,5 @@ unique_name_in_owner = true
 layout_mode = 2
 focus_mode = 0
 text = "Continue"
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/HBoxContainer/ContinueButton" to="." method="_on_continue_button_pressed"]
