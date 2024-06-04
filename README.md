@@ -43,10 +43,10 @@ Buy me a cofee - https://www.buymeacoffee.com/zer0xtj
 
 There is an example that comes with MattohaLobbySystem Addon , you can discover it on your own, or you can watch a youtube video .
 
--   Youtube [ English ] :
--   Youtube [ Arabic ] :
+-   Youtube [ English ] : comming soon
+-   Youtube [ Arabic ] : comming soon
 
-## Main Concepts
+## Getting Started
 
 before we start, configure your .csproject to be similar to this:
 
@@ -70,6 +70,49 @@ before we start, configure your .csproject to be similar to this:
 
 When you want to distrubite your game for players, disable `MATTOHA_SERVER` constant and keep `MATTOHA_CLIENT`, this will protect your server side code.
 This configuration will help you to debug your code easly.
+
+## Setting Up Nodes
+after installing and enable MattohaLobbySystem, a new auto load will be exists in your project with name `MattohaSystem`, you can configure it as you want.
+In addition you can access the system methods as following:
+
+- For c#
+```csharp
+// starting server
+MattohaSystem.Instance.Server.StartServer();
+
+// starting client (connect to server)
+MattohaSystem.Instance.Client.StartClient();
+
+// Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
+MattohaSystem.Instance.Client.CreateLobby(lobbyDictionary);
+
+// listining for a creating lobby signals.
+MattohaSystem.Instance.Client.CreateLobbySucceed += OnCreateLobby; // on success
+MattohaSystem.Instance.Client.CreateLobbyFailed += OnCreateLobbyFailed; // on fail
+
+```
+
+- For GDScript
+
+```gdscript
+// starting server
+MattohaSystem.Server.StartServer();
+
+// starting client (connect to server)
+MattohaSystem.Client.StartClient();
+
+// Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
+MattohaSystem.Client.CreateLobby(lobbyDictionary);
+
+// listining for a creating lobby signals.
+MattohaSystem.Client.CreateLobbySucceed.connect(_on_create_lobby); // on success
+MattohaSystem.Client.CreateLobbyFailed.connect(_on_create_lobby_failed_); // on fail
+
+```
+
+There is a lot of signals and methods you can use , check the API documentation:
+https://zer0xtj.github.io/GodotMattohaLobbySystem/
+
 
 ## Export Notes
 
