@@ -248,12 +248,12 @@ public partial class MattohaClient : Node
 	public Node LobbyNode => GetNode($"/root/GameHolder/Lobby{CurrentLobby[MattohaLobbyKeys.Id]}");
 
 	/// <summary>
-	/// Returns the current player data synced with all players in lobby except PrivateProps list.
+	/// Returns the current player data synced with all players, "PrivateProps" list is not synced with others.
 	/// </summary>
 	public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
 
 	/// <summary>
-	/// Returns the current player data synced with all players in lobby, ProvateProps items will be visible only for owner.
+	/// Returns the current player data synced with all players in lobby, "PrivateProps" list is not synced with others.
 	/// </summary>
 	public Dictionary<string, Variant> CurrentLobby { get; private set; } = new();
 
