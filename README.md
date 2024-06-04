@@ -87,9 +87,8 @@ MattohaSystem.Instance.StartClient();
 // Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
 var lobbyDictionary = new Godot.Collections.Dictionary<string, Variant>(){
     { "Name", "My Lobby" },
-    { "LobbySceneFile", "res://my_game_scene.tscn" }, // IMPORTANT
 };
-MattohaSystem.Instance.Client.CreateLobby(lobbyDictionary);
+MattohaSystem.Instance.Client.CreateLobby(lobbyDictionary, "res://my_game_scene.tscn");
 
 // listining for a creating lobby signals.
 MattohaSystem.Instance.Client.CreateLobbySucceed += OnCreateLobby; // on success
@@ -107,7 +106,7 @@ MattohaSystem.StartServer()
 MattohaSystem.StartClient()
 
 # Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
-MattohaSystem.Client.CreateLobby({"Name": "My Lobby", "LobbySceneFile": "res://my_game_scene.tscn"})
+MattohaSystem.Client.CreateLobby({"Name": "My Lobby"}, "res://my_game_scene.tscn")
 
 # listining for a creating lobby signals.
 MattohaSystem.Client.CreateLobbySucceed.connect(_on_create_lobby)         # on success
