@@ -118,7 +118,7 @@ public partial class MattohaClient : Node
 	/// Emitted when leaving a lobby succeeds.
 	/// </summary>
 	[Signal] public delegate void LeaveLobbySucceedEventHandler();
-	
+
 	/// <summary>
 	/// Emitted when joining a team succeeds.
 	/// </summary>
@@ -260,8 +260,8 @@ public partial class MattohaClient : Node
 	/// <summary>
 	/// Returns the dictionary containing joined players in current lobby, without PrivateProps items.
 	/// </summary>
-	[Export] public Dictionary<long, Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
-	
+	public Dictionary<long, Dictionary<string, Variant>> CurrentLobbyPlayers { get; private set; } = new();
+
 	/// <summary>
 	/// Returns true if player "IsInGame" proeprty is true, IsInGame will be true when player sync spawned lobby nodes by others.
 	/// </summary>
@@ -276,7 +276,7 @@ public partial class MattohaClient : Node
 		_system.ClientRpcRecieved += OnClientRpcRecieved;
 		base._Ready();
 	}
-	
+
 	/// <summary>
 	/// Returns joined lobby players Ids.
 	/// </summary>
@@ -290,7 +290,7 @@ public partial class MattohaClient : Node
 		}
 		return ids;
 	}
-	
+
 	/// <summary>
 	/// Check if peer id is joined in lobby or not.
 	/// </summary>
@@ -318,7 +318,7 @@ public partial class MattohaClient : Node
 			return false;
 		return CurrentLobbyPlayers[playerId][MattohaPlayerKeys.TeamId].AsInt32() == CurrentPlayer[MattohaPlayerKeys.TeamId].AsInt32();
 	}
-	
+
 	/// <summary>
 	/// Returns true if player entered the game scene and spawned lobby nodes, this will be used under the hood for replication purposes.
 	/// </summary>
@@ -330,7 +330,7 @@ public partial class MattohaClient : Node
 			return true;
 		return CurrentPlayer[MattohaPlayerKeys.IsInGame].AsBool();
 	}
-	
+
 	private void RpcRegisterPlayer(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
@@ -338,16 +338,16 @@ public partial class MattohaClient : Node
 		EmitSignal(SignalName.PlayerRegistered, CurrentPlayer);
 #endif
 	}
-	
+
 	/// <summary>
 	/// Set Player data in server, this will emit SetPlayerDataSucceed, for current client 
 	/// and emmit JoinedPlayerUpdated for other lobby players.
 	/// <br/><br/>
 	/// Base player keys you can edit in addition to your custom keys:
-    /// - Username {string}
-    /// - TeamId {int}
-    /// - PrivateProps {Godot Array of string}
-    /// - ChatProps {Godot Array of string}
+	/// - Username {string}
+	/// - TeamId {int}
+	/// - PrivateProps {Godot Array of string}
+	/// - ChatProps {Godot Array of string}
 	/// </summary>
 	/// <param name="playerData">A dictionary containing the keys to update, its ok to put only one key, no need for full player data.</param>
 	public void SetPlayerData(Dictionary<string, Variant> playerData)
@@ -373,7 +373,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Create new lobby on server, this will emmit "CreateLobbySucceed and SetPlayerDataSucceed" or "CreateLobbyFailed" for creator,
 	/// and "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled.
@@ -394,7 +394,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Set Lobby data and sync it, this will emmit "SetLobbyDataFailed" for caller user if Setting Data failed, 
 	/// and sync the data for all joined players - including caller user - then emmit "SetLobbyDataSucceed" for them,
@@ -430,7 +430,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Change lobby owner, this will emmit "SetLobbyOwnerSucceed" for all joined players including caller user if changing owner is succeed, 
 	/// and emmit "SetLobbyOwnerFailed" for caller user if setting owner fails, ONLY owner of the lobby can set new lobby owner.
@@ -461,7 +461,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	private void RpcSetLobbyData(Dictionary<string, Variant> lobbyData)
 	{
 #if MATTOHA_CLIENT
@@ -478,7 +478,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Load Available lobbies, this will emmit "LoadAvailableLobbiesSucceed" or "LoadAvailableLobbiesFailed" for caller user.
 	/// </summary>
@@ -505,7 +505,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Join lobby by it's ID, this will emmit "JoinLobbySucceed" or "JoinLobbyFailed" for caller user,
 	/// and "NewPlayerJoined" for other joined players,
@@ -540,7 +540,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Start Lobby Game, this eill emmit "StartGameSucceed" for all joined players or "StartGameFailed" for caller user,
 	/// and "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled.
@@ -568,7 +568,7 @@ public partial class MattohaClient : Node
 		EmitSignal(SignalName.StartGameFailed, payload["Message"].AsString());
 #endif
 	}
-	
+
 
 	/// <summary>
 	/// Load players data that joined in same lobby, this will emmit "LoadLobbyPlayersSucceed" or "LoadLobbyPlayersFailed"
@@ -604,7 +604,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Spawn node for all joined players in same lobby or same team, this will emmit "SpawnNodeRequested" for joined players or players in teams,
 	/// "SpawnNodeFailed" will be emmited and node will be locally despawned if spawning node failed.
@@ -648,7 +648,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Spawn all lobby nodes tha has been spawned by other players, team only nodes will not be spawned until player in same team, 
 	/// this method will emmit "SpawnLobbyNodesSucceed" or  "SpawnLobbyNodesFailed".
@@ -682,7 +682,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Despawn node and sync that with all players, this will emmit "DespawnNodeRequested" for all players and "DespawnNodeFailed" for caller user
 	/// if despawning fails and then respawning the node in case if player destroyed it.
@@ -712,14 +712,14 @@ public partial class MattohaClient : Node
 		EmitSignal(SignalName.DespawnNodeFailed, payload["Message"].AsString());
 #endif
 	}
-	
+
 	private void RespawnNodeDeferred(Dictionary<string, Variant> nodePayload)
 	{
 #if MATTOHA_CLIENT
 		_system.SpawnNodeFromPayload(nodePayload);
 #endif
 	}
-	
+
 
 	/// <summary>
 	/// Despawn All scene nodes that despawned during game player, used by gameholder when new player enter the game scene,
@@ -775,7 +775,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Join or change a team, this will emmit "JoinTeamSucceed" or "JoinTeamFailed" if joingin failed,
 	/// in addition, "PlayerChangedHisTeam" will be emmited on all lobby players including the player itself.
@@ -816,7 +816,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	
+
 	/// <summary>
 	/// Send a message for team members, this will emmit "TeamMessageSucceed" for all players or "TeamMessageFailed" for caller user.
 	/// </summary>
@@ -897,7 +897,7 @@ public partial class MattohaClient : Node
 		EmitSignal(SignalName.LobbyMessageFailed, payload["Message"].ToString());
 #endif
 	}
-	
+
 	/// <summary>
 	/// Leave joined lobby, this will emmit "LeaveLobbySucceed" for caller user and "PlayerLeft" for all joined players.
 	/// </summary>

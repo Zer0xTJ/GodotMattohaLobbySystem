@@ -3,7 +3,7 @@ using Godot.Collections;
 
 namespace Mattoha.Misc;
 
-public partial class MattohaServerMiddleware: Node
+public partial class MattohaServerMiddleware : Node
 {
 
 	/// <summary>
@@ -15,7 +15,7 @@ public partial class MattohaServerMiddleware: Node
 	/// dictionary contains "Status" and "Message", when status false, execution will be terminated
 	/// and error event with "Message" will be emmited to client.
 	/// </returns>
-	public virtual Dictionary<string, Variant> BeforeSetPlayerData (Dictionary<string, Variant> payload, long sender)
+	public virtual Dictionary<string, Variant> BeforeSetPlayerData(Dictionary<string, Variant> payload, long sender)
 	{
 		return new()
 		{
@@ -23,7 +23,7 @@ public partial class MattohaServerMiddleware: Node
 			{ "Message", "" }
 		};
 	}
-	
+
 	/// <summary>
 	/// Executed after setting player data.
 	/// </summary>
@@ -92,7 +92,7 @@ public partial class MattohaServerMiddleware: Node
 	/// Dictionary containing "Status" and "Message". If "Status" is false, execution will be terminated
 	/// and an error event with "Message" will be emitted to the client.
 	/// </returns>
-	public virtual  Dictionary<string, Variant> BeforeSetLobbyOwner(Dictionary<string, Variant> lobby, long sender)
+	public virtual Dictionary<string, Variant> BeforeSetLobbyOwner(Dictionary<string, Variant> lobby, long sender)
 	{
 		return new()
 		{
@@ -413,7 +413,7 @@ public partial class MattohaServerMiddleware: Node
 	/// Executed after removing a player from a lobby.
 	/// </summary>
 	/// <param name="playerId">The ID of the player who was removed.</param>
-	public virtual void AfterRemovePlayerFromLobby(long playerId) {  }
+	public virtual void AfterRemovePlayerFromLobby(long playerId) { }
 
 	/// <summary>
 	/// Executed before registering a player.
