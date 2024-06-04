@@ -101,10 +101,10 @@ MattohaSystem.Instance.Client.CreateLobbyFailed += OnCreateLobbyFailed; // on fa
 
 ```gdscript
 # starting server
-MattohaSystem.Server.StartServer()
+MattohaSystem.StartServer()
 
 # starting client (connect to server)
-MattohaSystem.Client.StartClient()
+MattohaSystem.StartClient()
 
 # Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
 MattohaSystem.Client.CreateLobby({"Name": "My Lobby", "LobbySceneFile": "res://my_game_scene.tscn"})

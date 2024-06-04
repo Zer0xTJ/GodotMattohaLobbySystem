@@ -30,11 +30,12 @@ layout_mode = 2
 size_flags_vertical = 0
 
 [node name="ServerButton" type="Button" parent="PanelContainer/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 text = "SERVER"
 
 [node name="ClientButton" type="Button" parent="PanelContainer/VBoxContainer"]
-unique_name_in_owner = true
 layout_mode = 2
 text = "CLIENT"
+
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ServerButton" to="." method="_on_server_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/ClientButton" to="." method="_on_client_button_pressed"]

@@ -1,13 +1,14 @@
 extends Control
 
 func _ready():
-    MattohaSystem.Client.ConnectedToServer.connect(_on_connected_to_server)
+	MattohaSystem.Client.ConnectedToServer.connect(_on_connected_to_server)
 
 func _on_connected_to_server():
-    get_tree().change_scene("res://gd_demo_example/scenes/lobbies.tscn")
+	get_tree().change_scene_to_file("res://gd_demo_example/scenes/game_holder.tscn")
 
 func _on_client_button_pressed():
-    MattohaSystem.ConnectToServer()
+	MattohaSystem.StartClient()
 
 func _on_server_button_pressed():
-    MattohaSystem.StartServer()
+	MattohaSystem.StartServer()
+	get_tree().change_scene_to_file("res://gd_demo_example/scenes/game_holder.tscn")
