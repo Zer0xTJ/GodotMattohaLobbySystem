@@ -11,10 +11,10 @@ public class MattohaUtils
 {
 
 	/// <summary>
-	/// Return JsonObject without Props that exists in "PrivateProps" list property, used when sending player data to other players.
+	/// Return Godot Dictionary without Props that exists in "PrivateProps" list property, used when sending player data to other players.
 	/// </summary>
-	/// <param name="dict">object to copy from.</param>
-	/// <returns>new object without PrivateProps properties.</returns>
+	/// <param name="dict">dictionary to copy from.</param>
+	/// <returns>New dictionary without PrivateProps properties.</returns>
 	public static Dictionary<string, Variant> ToSecuredDict(Dictionary<string, Variant> dict)
 	{
 		Dictionary<string, Variant> newObj = new();
@@ -69,10 +69,10 @@ public class MattohaUtils
 
 
 	/// <summary>
-	/// Convert JsonObject to a  new object that has only ChatProps fields.
+	/// Convert GodotDictionary to a  new object that has only ChatProps fields.
 	/// </summary>
 	/// <param name="dict">object to copy from.</param>
-	/// <returns>JsonObject with ChatProps only.</returns>
+	/// <returns>GodotDictionary with ChatProps only.</returns>
 	public static Dictionary<string, Variant> ToChatDict(Dictionary<string, Variant> dict)
 	{
 		if(dict == null)
@@ -138,9 +138,9 @@ public class MattohaUtils
 
 
 	/// <summary>
-	/// Get A PrivateProps property value as List<string> from JsonObject.
+	/// Get A PrivateProps property value as List<string> from GodotDictionary.
 	/// </summary>
-	/// <param name="dict">JsonObject to check if it has PrivateProps.</param>
+	/// <param name="dict">GodotDictionary to check if it has PrivateProps.</param>
 	/// <returns>List of private properties names.</returns>
 	public static Array<string> GetPrivateProps(Dictionary<string, Variant> dict)
 	{
@@ -167,9 +167,9 @@ public class MattohaUtils
 
 
 	/// <summary>
-	/// Get A ChatProps property value as List<string> from JsonObject.
+	/// Get A ChatProps property value as List<string> from GodotDictionary.
 	/// </summary>
-	/// <param name="dict">JsonObject to check if it has ChatProps.</param>
+	/// <param name="dict">GodotDictionary to check if it has ChatProps.</param>
 	/// <returns>List of chat properties names.</returns>
 	public static Array<String> GetChatProps(Dictionary<string, Variant> dict)
 	{
@@ -193,7 +193,7 @@ public class MattohaUtils
 
 
 	/// <summary>
-	/// Check if an object is primitive.
+	/// Check if a Variant object is primitive.
 	/// </summary>
 	public static bool IsPrimitive(Variant obj)
 	{
@@ -204,10 +204,10 @@ public class MattohaUtils
 
 
 	/// <summary>
-	/// Check if an object is enumerbale.
+	/// Check if a Variant object is enumerbale.
 	/// </summary>
 	public static bool IsEnumerable(Variant obj)
 	{
-		return obj.Obj is IEnumerable && obj.Obj is not JsonObject;
+		return obj.Obj is IEnumerable;
 	}
 }
