@@ -78,10 +78,11 @@ In addition you can access the system methods as following:
 - For c#
 ```csharp
 // starting server
-MattohaSystem.Instance.Server.StartServer();
+MattohaSystem.Instance.StartServer();
 
 // starting client (connect to server)
-MattohaSystem.Instance.Client.StartClient();
+MattohaSystem.Instance.StartClient();
+
 
 // Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
 var lobbyDictionary = new Godot.Collections.Dictionary<string, Variant>(){
