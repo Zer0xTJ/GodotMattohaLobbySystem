@@ -315,6 +315,10 @@ public partial class MattohaServer : Node
 		lobbyData[MattohaLobbyKeys.OwnerId] = sender;
 		lobbyData[MattohaLobbyKeys.PlayersCount] = 1;
 		lobbyData[MattohaLobbyKeys.IsGameStarted] = false;
+		if (!lobbyData.ContainsKey(MattohaLobbyKeys.PrivateProps))
+		{
+			lobbyData[MattohaLobbyKeys.PrivateProps] = new Array<string>();
+		}
 		if (lobbyData[MattohaLobbyKeys.PrivateProps].Obj == null)
 		{
 			lobbyData[MattohaLobbyKeys.PrivateProps] = new Array<string>();
