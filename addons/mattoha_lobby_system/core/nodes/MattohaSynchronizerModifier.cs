@@ -3,97 +3,123 @@ using Godot.Collections;
 using Mattoha.Core.Utils;
 
 namespace Mattoha.Nodes;
-public partial class MattohaSynchronizerModifier : Node
+public partial class MattohaSynchronizerModifier : MultiplayerSynchronizer
 {
-    private MultiplayerSynchronizer _synchronizer;
     [Export] public bool ReplicateForTeamOnly { get; set; } = false;
 
 
     public override void _Ready()
     {
-        if (Multiplayer.IsServer())
-            return;
-        _synchronizer = GetParent<MultiplayerSynchronizer>();
-        _synchronizer.PublicVisibility = false;
-        MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed += OnLoadLobbyPlayers;
-        MattohaSystem.Instance.Client.NewPlayerJoined += OnPlayerJoined;
-        MattohaSystem.Instance.Client.JoinedPlayerUpdated += OnJoinedPLayerUpdated;
-        MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
-		MattohaSystem.Instance.Client.PlayerLeft += OnPlayerLeft;
+
+        PublicVisibility = false;
+        MattohaSystem.Instance.Server.PlayerJoinedLobby += OnPlayerJoinedLobby_Server;
+        MattohaSystem.Instance.Server.PlayerLeftLobby += OnPlayerLeftLobby_Server;
+        MattohaSystem.Instance.Client.NewPlayerJoined += OnNewPlayerJoinedLobby;
+        MattohaSystem.Instance.Client.PlayerLeft += OnPlayerLeftLobby;
+        MattohaSystem.Instance.Client.JoinedPlayerUpdated += OnJoinedPlayerUpdated;
+
+        ApplySetVisibilityFor();
         ApplyMattohaReplicationFilter();
         base._Ready();
     }
 
-
-	private void SetupReplicationVisibility()
+    private void OnJoinedPlayerUpdated(Dictionary<string, Variant> playerData)
     {
-        foreach (var player in MattohaSystem.Instance.Client.CurrentLobbyPlayers.Values)
+        ApplySetVisibilityFor();
+    }
+
+
+    private void OnPlayerLeftLobby(Dictionary<string, Variant> playerData)
+    {
+        ApplySetVisibilityFor();
+    }
+
+
+    private void OnNewPlayerJoinedLobby(Dictionary<string, Variant> playerData)
+    {
+        ApplySetVisibilityFor();
+    }
+
+
+    private void OnPlayerLeftLobby_Server(long playerId, int lobbyId)
+    {
+        ApplySetVisibilityFor();
+    }
+
+
+    private void OnPlayerJoinedLobby_Server(long playerId, int lobbyId)
+    {
+        ApplySetVisibilityFor();
+    }
+
+
+    private void ApplySetVisibilityFor()
+    {
+        if (Multiplayer.IsServer())
         {
-            var playerId = player[MattohaPlayerKeys.Id].AsInt32();
-            var isInGame = player[MattohaPlayerKeys.IsInGame].AsBool();
-            var isSameTeam = MattohaSystem.Instance.Client.IsPlayerInMyTeam(playerId);
-            _synchronizer.SetVisibilityFor(playerId, isInGame && (isSameTeam && ReplicateForTeamOnly || !ReplicateForTeamOnly));
+            var players = MattohaSystem.Instance.Server.GetLobbyPlayers(MattohaSystem.ExtractLobbyId(GetPath()));
+            foreach (var player in players)
+            {
+                var lobbyId = MattohaSystem.ExtractLobbyId(GetPath());
+                var visible = player[MattohaPlayerKeys.IsInGame].AsBool()
+                                && player[MattohaPlayerKeys.JoinedLobbyId].AsInt32() == lobbyId
+                                && player[MattohaPlayerKeys.IsInGame].AsBool();
+                SetVisibilityFor(player[MattohaPlayerKeys.Id].AsInt32(), visible);
+            }
         }
-        _synchronizer.SetVisibilityFor(1, true);
+        else
+        {
+            var players = MattohaSystem.Instance.Client.CurrentLobbyPlayers.Values;
+            SetVisibilityFor(1, true);
+            foreach (var player in players)
+            {
+                var visible = player[MattohaPlayerKeys.IsInGame].AsBool() && (!ReplicateForTeamOnly || MattohaSystem.Instance.Client.IsPlayerInMyTeam(player[MattohaPlayerKeys.Id].AsInt32()));
+                SetVisibilityFor(player[MattohaPlayerKeys.Id].AsInt32(), visible);
+            }
+        }
     }
-
-	private void OnPlayerLeft(Dictionary<string, Variant> playerData)
-	{
-        SetupReplicationVisibility();
-	}
-
-
-    private void OnPlayerChangedHisTeam(Dictionary<string, Variant> playerData)
-    {
-        SetupReplicationVisibility();
-    }
-
-
-    private void OnJoinedPLayerUpdated(Dictionary<string, Variant> playerData)
-    {
-        SetupReplicationVisibility();
-    }
-
-
-    private void OnPlayerJoined(Dictionary<string, Variant> playerData)
-    {
-        SetupReplicationVisibility();
-    }
-
-
-    private void OnLoadLobbyPlayers(Array<Dictionary<string, Variant>> players)
-    {
-        SetupReplicationVisibility();
-    }
-
 
     public virtual void ApplyMattohaReplicationFilter()
     {
         var mattohaFilter = new Callable(this, nameof(MattohaFilter));
-        _synchronizer.AddVisibilityFilter(mattohaFilter);
+        AddVisibilityFilter(mattohaFilter);
     }
-
 
     private bool MattohaFilter(long peerId)
     {
-        if (peerId == 1) return true;
-        if (ReplicateForTeamOnly)
+        if (Multiplayer.IsServer())
         {
-            return MattohaSystem.Instance.Client.CanReplicate && MattohaSystem.Instance.Client.IsPlayerInMyTeam(peerId) && MattohaSystem.Instance.Client.IsPlayerInGame(peerId);
+            if (peerId == 1 || peerId == 0) return false;
+            var player = MattohaSystem.Instance.Server.GetPlayer(peerId);
+            if (player == null)
+                return false;
+            var replicate = player[MattohaPlayerKeys.IsInGame].AsBool() == true;
+            return replicate;
         }
-        else
+        if (ReplicateForTeamOnly && !Multiplayer.IsServer())
         {
-            return MattohaSystem.Instance.Client.CanReplicate && MattohaSystem.Instance.Client.IsPlayerInLobby(peerId) && MattohaSystem.Instance.Client.IsPlayerInGame(peerId);
+            if (peerId == 1 || peerId == 0) return true;
+            var replicate = MattohaSystem.Instance.Client.CanReplicate && MattohaSystem.Instance.Client.IsPlayerInMyTeam(peerId) && MattohaSystem.Instance.Client.IsPlayerInGame(peerId);
+            return replicate;
         }
+        else if (!ReplicateForTeamOnly && !Multiplayer.IsServer())
+        {
+            if (peerId == 1 || peerId == 0) return true;
+            var replicate = MattohaSystem.Instance.Client.CanReplicate && MattohaSystem.Instance.Client.IsPlayerInLobby(peerId) && MattohaSystem.Instance.Client.IsPlayerInGame(peerId);
+            return replicate;
+        }
+
+        return false;
     }
 
     public override void _ExitTree()
     {
-        MattohaSystem.Instance.Client.LoadLobbyPlayersSucceed -= OnLoadLobbyPlayers;
-        MattohaSystem.Instance.Client.NewPlayerJoined -= OnPlayerJoined;
-        MattohaSystem.Instance.Client.JoinedPlayerUpdated -= OnJoinedPLayerUpdated;
-        MattohaSystem.Instance.Client.PlayerChangedHisTeam -= OnPlayerChangedHisTeam;
-		MattohaSystem.Instance.Client.PlayerLeft -= OnPlayerLeft;
+
+        MattohaSystem.Instance.Server.PlayerJoinedLobby -= OnPlayerJoinedLobby_Server;
+        MattohaSystem.Instance.Server.PlayerLeftLobby -= OnPlayerLeftLobby_Server;
+        MattohaSystem.Instance.Client.NewPlayerJoined -= OnNewPlayerJoinedLobby;
+        MattohaSystem.Instance.Client.PlayerLeft -= OnPlayerLeftLobby;
+        MattohaSystem.Instance.Client.JoinedPlayerUpdated -= OnJoinedPlayerUpdated;
         base._ExitTree();
     }
 }

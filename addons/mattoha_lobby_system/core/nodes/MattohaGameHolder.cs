@@ -24,7 +24,7 @@ public partial class MattohaGameHolder : Node
 
 	private void OnGameSceneTreeEntered()
 	{
-		MattohaSystem.Instance.Client.SpawnLobbyNodes();
 		MattohaSystem.Instance.Client.DespawnRemovedSceneNodes();
+		MattohaSystem.Instance.Client.SpawnLobbyNodes();
 	}
 }

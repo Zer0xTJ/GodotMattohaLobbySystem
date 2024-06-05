@@ -48,6 +48,9 @@ public partial class MattohaSystem : Node
 
 	public static MattohaSystem Instance { get; set; }
 
+	// used to generate random names
+	private Array<string> _usedNames = new();
+
 
 	public override void _Ready()
 	{
@@ -55,6 +58,15 @@ public partial class MattohaSystem : Node
 		Client.SpawnNodeRequested += OnSpawnNodeRequested;
 		Client.DespawnNodeRequested += OnDespawnNodeRequested;
 		base._Ready();
+	}
+
+	/// <summary>
+	/// Get lobby node from a given node.
+	/// </summary>
+	public Node GetLobbyNodeFor(Node node)
+	{
+		var lobbyId = ExtractLobbyId(node.GetPath());
+		return GetTree().Root.HasNode($"/root/GameHolder/Lobby{lobbyId}") ? GetNode($"/root/GameHolder/Lobby{lobbyId}") : null;
 	}
 
 
@@ -92,6 +104,17 @@ public partial class MattohaSystem : Node
 		Multiplayer.MultiplayerPeer = peer;
 	}
 
+	private string GenerateUniqueName(Node node)
+	{
+		string name = node.Name.ToString().Replace("@", "_");
+		name += $"_{Multiplayer.GetUniqueId()}_{Time.GetTicksMsec()}_{GD.Randi() % 1000}";
+		if (_usedNames.Contains(name))
+		{
+			return GenerateUniqueName(node);
+		}
+
+		return name;
+	}
 
 	/// <summary>
 	/// Used to create an instance from scene, use this method to initialize instance if the instance 
@@ -114,8 +137,7 @@ public partial class MattohaSystem : Node
 	{
 		var owner = Multiplayer.GetUniqueId();
 		var instance = scene.Instantiate();
-		instance.Name = instance.Name.ToString().Replace("@", "_");
-		instance.Name += $"_{owner}_{Time.GetTicksMsec()}";
+		instance.Name = GenerateUniqueName(instance);
 		instance.SetMultiplayerAuthority(owner);
 		return instance;
 	}
@@ -208,7 +230,6 @@ public partial class MattohaSystem : Node
 			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
 			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
 		}
-
 		return payload;
 
 	}
@@ -244,6 +265,21 @@ public partial class MattohaSystem : Node
 				RpcId(peer, nameof(ClientReliableRpc), methodName, payload);
 			}
 		}
+	}
+
+	public bool IsNodeOwner(Node node)
+	{
+		if (Multiplayer.IsServer())
+			return false;
+		return node.GetMultiplayerAuthority() == Multiplayer.GetUniqueId();
+	}
+
+
+	public bool IsLobbyOwner()
+	{
+		if (Multiplayer.IsServer())
+			return false;
+		return Multiplayer.GetUniqueId() == Client.CurrentLobby[MattohaLobbyKeys.OwnerId].AsInt64();
 	}
 
 

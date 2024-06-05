@@ -245,7 +245,7 @@ public partial class MattohaClient : Node
 	/// <summary>
 	/// Returns The LobbyNode (Current arena game scene of lobby) in game tree.
 	/// </summary>
-	public Node LobbyNode => GetNode($"/root/GameHolder/Lobby{CurrentLobby[MattohaLobbyKeys.Id]}");
+	public Node LobbyNode => GetTree().Root.HasNode($"/root/GameHolder/Lobby{CurrentLobby[MattohaLobbyKeys.Id]}") ? GetNode($"/root/GameHolder/Lobby{CurrentLobby[MattohaLobbyKeys.Id]}") : null;
 
 	/// <summary>
 	/// Returns the current player data synced with all players, "PrivateProps" list is not synced with others.
@@ -283,7 +283,7 @@ public partial class MattohaClient : Node
 	/// <returns>IDs list.</returns>
 	public Array<long> GetLobbyPlayersIds()
 	{
-		var ids = new Array<long>() { 1, Multiplayer.GetUniqueId() };
+		var ids = new Array<long>() { 1 };
 		foreach (var id in CurrentLobbyPlayers.Keys)
 		{
 			ids.Add(id);
@@ -667,7 +667,7 @@ public partial class MattohaClient : Node
 		var nodes = payload["Nodes"].AsGodotArray<Dictionary<string, Variant>>();
 		foreach (var node in nodes)
 		{
-			EmitSignal(SignalName.SpawnNodeRequested, node);
+			_system.SpawnNodeFromPayload(node);
 		}
 		// why?: because to notify other players to replicate their data, and we are sure that all nodes have been spawned
 		SetPlayerData(new Dictionary<string, Variant> { { MattohaPlayerKeys.IsInGame, true } });

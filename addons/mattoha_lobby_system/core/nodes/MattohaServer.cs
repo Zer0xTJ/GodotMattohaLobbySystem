@@ -10,6 +10,17 @@ using System.Security.Authentication.ExtendedProtection;
 namespace Mattoha.Nodes;
 public partial class MattohaServer : Node
 {
+
+	/// <summary>
+	/// Emmited when a player join a lobby.
+	/// </summary>
+	[Signal] public delegate void PlayerJoinedLobbyEventHandler(long playerId, int lobbyId);
+
+	/// <summary>
+	/// Emmited when a player leave a lobby.
+	/// </summary>
+	[Signal] public delegate void PlayerLeftLobbyEventHandler(long playerId, int lobbyId);
+
 	/// <summary>
 	/// Server Middleware for executing logic before and after almost every event that client do,
 	/// This node should have "MattohaMiddleware" or an inherited class node script attached to it.
@@ -497,6 +508,7 @@ public partial class MattohaServer : Node
 
 		RefreshAvailableLobbiesForAll();
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.NewPlayerJoined), player, true);
+		EmitSignal(SignalName.PlayerJoinedLobby, sender, lobbyId);
 #endif
 	}
 
@@ -608,6 +620,27 @@ public partial class MattohaServer : Node
 			_system.SendReliableClientRpc(p[MattohaPlayerKeys.Id].AsInt64(), nameof(ClientRpc.SpawnNode), payload);
 		}
 #endif
+	}
+
+	/// <summary>
+	/// Spawn node from server for all joined players in same lobby.
+	/// </summary>
+	/// <param name="payload">a spawn payload generated from "GenerateNodePayloadData"</param>
+	/// <param name="lobbyId">lobby id</param>
+	public void SpawnNode(Dictionary<string, Variant> payload, int lobbyId)
+	{
+		payload[MattohaSpawnKeys.TeamOnly] = false;
+		payload[MattohaSpawnKeys.Owner] = 1;
+		Lobbies.TryGetValue(lobbyId, out var lobby);
+		if (lobby == null)
+			return;
+		// _system.SpawnNodeFromPayload(payload);
+		SpawnedNodes[lobbyId].Add(payload);
+		var players = GetLobbyPlayers(lobbyId);
+		foreach (var p in players)
+		{
+			_system.SendReliableClientRpc(p[MattohaPlayerKeys.Id].AsInt64(), nameof(ClientRpc.SpawnNode), payload);
+		}
 	}
 
 
@@ -914,6 +947,7 @@ public partial class MattohaServer : Node
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SetLobbyData), lobby, true, lobby[MattohaLobbyKeys.OwnerId].AsInt64());
 		LoadLobbyPlayersForAll(lobbyId);
 		RefreshAvailableLobbiesForAll();
+		EmitSignal(SignalName.PlayerLeftLobby, playerId, lobbyId);
 #endif
 	}
 
