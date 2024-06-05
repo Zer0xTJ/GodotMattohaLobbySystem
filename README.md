@@ -116,7 +116,7 @@ MattohaSystem.Client.CreateLobbyFailed.connect(_on_create_lobby_failed_)  # on f
 
 # GameHolder
 When a lobby game is started, we will be listining for a `StartGameSucceed`signal, that comes with the lobby dictionary,
-but instead of changing the scene to the game scene, 
+but instead of changing the scene to the game scene,
 
 we must navigate user to a GameHolder scene, so lets setup our game holder scene.
 
@@ -124,6 +124,8 @@ we must navigate user to a GameHolder scene, so lets setup our game holder scene
 - Now attach `MattohaGameHolder` script for it, it can be found on `res://addons/mattoha_lobby_system/core/nodes/MattohaGameHolder.cs`.
 
 Note that `MattohaGameHolder` is responsible for loading the scene and spawning / despawning lobby nodes of the game play.
+
+- `NOTE`: game holder node should be named `GameHolder` with the same letters cases.
 
 # Spawning/Depsawning Nodes & Replication
 Every node you want to auto spawn/despawn should has a `MattohaSpawner` node child.
