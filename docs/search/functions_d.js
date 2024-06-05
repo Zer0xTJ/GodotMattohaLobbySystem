@@ -18,7 +18,7 @@ var searchData=
   ['setplayerdatasucceedeventhandler_15',['SetPlayerDataSucceedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a110f7127279669e00350f8e457bc0b9d',1,'Mattoha::Nodes::MattohaClient']]],
   ['spawnlobbynodes_16',['SpawnLobbyNodes',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a60df5849eefa728463bf0b8a715dc241',1,'Mattoha::Nodes::MattohaClient']]],
   ['spawnlobbynodesfailedeventhandler_17',['SpawnLobbyNodesFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a9341dbef3ddc61bf3710463875927811',1,'Mattoha::Nodes::MattohaClient']]],
-  ['spawnnode_18',['SpawnNode',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a3bdf53cf462cbf103aa64f3981ec69ba',1,'Mattoha::Nodes::MattohaClient']]],
+  ['spawnnode_18',['SpawnNode',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a3bdf53cf462cbf103aa64f3981ec69ba',1,'Mattoha.Nodes.MattohaClient.SpawnNode()'],['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#ae5b2615cc47013ef577df854364c02d1',1,'Mattoha.Nodes.MattohaServer.SpawnNode()']]],
   ['spawnnodefailedeventhandler_19',['SpawnNodeFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#adf31afb13958c064d7e6fb86f0ee5dea',1,'Mattoha::Nodes::MattohaClient']]],
   ['spawnnodefrompayload_20',['SpawnNodeFromPayload',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#a8df092c69202e6779420fae560ee3ec7',1,'Mattoha::Nodes::MattohaSystem']]],
   ['spawnnoderequestedeventhandler_21',['SpawnNodeRequestedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ad1774c3981163887e14d98e66d7c74af',1,'Mattoha::Nodes::MattohaClient']]],

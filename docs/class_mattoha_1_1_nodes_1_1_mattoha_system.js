@@ -5,6 +5,7 @@ var class_mattoha_1_1_nodes_1_1_mattoha_system =
     [ "CreateInstance", "class_mattoha_1_1_nodes_1_1_mattoha_system.html#ab74e58eb97c053a131e19fef4ca42a6d", null ],
     [ "DespawnNodeFromPayload", "class_mattoha_1_1_nodes_1_1_mattoha_system.html#a3f80b1f27269b65a39a1687ea7533693", null ],
     [ "GenerateNodePayloadData", "class_mattoha_1_1_nodes_1_1_mattoha_system.html#af57081fff72af1230cadc188e5216416", null ],
+    [ "GetLobbyNodeFor", "class_mattoha_1_1_nodes_1_1_mattoha_system.html#a464bd1f5f7e429017cd921c91523624b", null ],
     [ "SendReliableClientRpc", "class_mattoha_1_1_nodes_1_1_mattoha_system.html#a9714f0524fa4e16d95a946e90b07994f", null ],
     [ "SendReliableServerRpc", "class_mattoha_1_1_nodes_1_1_mattoha_system.html#ac203dbb809fc9176c38d90cb7262bf8c", null ],
     [ "ServerRpcRecievedEventHandler", "class_mattoha_1_1_nodes_1_1_mattoha_system.html#a93ce58c38effe22324711e464da96506", null ],
