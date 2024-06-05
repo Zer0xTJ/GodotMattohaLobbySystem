@@ -212,9 +212,9 @@ public partial class MattohaSystem : Node
 	/// <returns>Dictionary that has node data to spawn</returns>
 	public Dictionary<string, Variant> GenerateNodePayloadData(Node node)
 	{
+		// TODO: add second param for optional properties of the node
 		var payload = new Dictionary<string, Variant>()
 		{
-			{ MattohaSpawnKeys.Owner, node.GetMultiplayerAuthority() },
 			{ MattohaSpawnKeys.SceneFile, node.SceneFilePath },
 			{ MattohaSpawnKeys.NodeName, node.Name },
 			{ MattohaSpawnKeys.ParentPath, node.GetParent().GetPath().ToString() },

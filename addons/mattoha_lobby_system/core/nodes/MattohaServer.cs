@@ -918,6 +918,7 @@ public partial class MattohaServer : Node
 				playerNodes.Add(playerNode);
 			}
 		}
+		GD.Print("Player ndoes: ", playerNodes);
 
 		player[MattohaPlayerKeys.JoinedLobbyId] = 0;
 		lobby[MattohaLobbyKeys.PlayersCount] = lobby[MattohaLobbyKeys.PlayersCount].AsInt32() - 1;

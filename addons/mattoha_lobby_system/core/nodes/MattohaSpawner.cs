@@ -19,7 +19,7 @@ public partial class MattohaSpawner : Node
             );
 #endif
         }
-        else if (AutoSpawn && !HandleByServer && !Multiplayer.IsServer())
+        else if (AutoSpawn && !HandleByServer && !Multiplayer.IsServer() && Multiplayer.GetUniqueId() == GetMultiplayerAuthority())
         {
 #if MATTOHA_CLIENT
             MattohaSystem.Instance.Client.SpawnNode(GetParent(), SpawnForTeamOnly);
@@ -38,7 +38,7 @@ public partial class MattohaSpawner : Node
                 MattohaSystem.Instance.Server.DespawnNode(MattohaSystem.Instance.GenerateNodePayloadData(GetParent()));
 #endif
             }
-            else if (!HandleByServer && !Multiplayer.IsServer())
+            else if (!HandleByServer && !Multiplayer.IsServer() && Multiplayer.GetUniqueId() == GetMultiplayerAuthority())
             {
 #if MATTOHA_CLIENT
                 MattohaSystem.Instance.Client.DespawnNode(GetParent());
