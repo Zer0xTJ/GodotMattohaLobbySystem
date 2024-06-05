@@ -136,7 +136,7 @@ Every node you want to auto spawn/despawn should has a `MattohaSpawner` node chi
 
 Configuring our nodes to spawn & despawn:
 - When a node is a scene node (meaning that it's already exists in scene design and it's able to be despawned) then you must set `Is Scene Node` to true and disable `Auto Spawn` because its already spawned.
-- To Enable Replication Add `MultiplayerSynchronizer` node to the node you want to replicate and configure it and add what ever properties you want to replicate, BUT you "MUST" add `MattohaSynchronizerModifier` as a child for `MultiplayerSynchronizer`
+- To Enable Replication Add `MultiplayerSynchronizer` node to the node you want to replicate and configure it and add what ever properties you want to replicate, BUT you "MUST" attach `MattohaSynchronizerModifier` script to `MultiplayerSynchronizer` node you have added.
 - When you set `Spawn For Team Only` to true on `MattohaSpawner`, you must set `Replicate For Team Only` in the `MattohaSynchronizerModifier` too.
 
 After setting up these configurations correctly for nodes you want to spawn, you are ready to move to next step..

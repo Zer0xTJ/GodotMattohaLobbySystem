@@ -24,6 +24,6 @@ debug_color = Color(0.851468, 0.000855187, 0.896501, 0.42)
 [node name="MattohaSpawner" type="Node2D" parent="."]
 script = ExtResource("2_tbg5o")
 AutoSpawn = false
-IsSceneNode = true
+HandleByServer = true
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
