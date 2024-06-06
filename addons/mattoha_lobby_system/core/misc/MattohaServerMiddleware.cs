@@ -1,5 +1,6 @@
 ﻿using Godot;
 using Godot.Collections;
+using System;
 
 namespace Mattoha.Misc;
 
@@ -183,6 +184,31 @@ public partial class MattohaServerMiddleware : Node
 	/// <param name="lobby">The data of the lobby where the game has started.</param>
 	/// <param name="sender">The ID of the sender who started the game.</param>
 	public virtual void AfterStartGame(Dictionary<string, Variant> lobby, long sender) { }
+
+	/// <summary>
+	/// Executed Before ending the game.
+	/// </summary>
+	/// <param name="lobby">The data of the lobby where the game will be ended.</param>
+	/// <param name="sender">The ID of the sender ending the game.</param>
+	/// <returns>
+	/// Dictionary containing "Status" and "Message". If "Status" is false, execution will be terminated
+	/// and an error event with "Message" will be emitted to the client.
+	/// </returns>
+	public virtual Dictionary<string, Variant> BeforeEndGame(Dictionary<string, Variant> lobby, long sender)
+	{
+		return new()
+		{
+			{ "Status", true },
+			{ "Message", "" }
+		};
+	}
+
+	/// <summary>
+	/// Executed after ending a game.
+	/// </summary>
+	/// <param name="lobby">The data of the lobby where the game has ended.</param>
+	/// <param name="sender">The ID of the sender who ended the game.</param>
+	public virtual void AfterEndGame(Dictionary<string, Variant> lobby, long sender) { }
 
 	/// <summary>
 	/// Executed before loading lobby players.

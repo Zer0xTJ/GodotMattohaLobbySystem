@@ -266,7 +266,13 @@ public partial class MattohaSystem : Node
 			}
 		}
 	}
+	
 
+	/// <summary>
+	/// Check if (current player) is the owner of the spawned node or a given node
+	/// </summary>
+	/// <param name="node"></param>
+	/// <returns>true if the current player is the owner</returns>
 	public bool IsNodeOwner(Node node)
 	{
 		if (Multiplayer.IsServer())
@@ -274,7 +280,11 @@ public partial class MattohaSystem : Node
 		return node.GetMultiplayerAuthority() == Multiplayer.GetUniqueId();
 	}
 
-
+	
+	/// <summary>
+	/// Check if (Current client) is the owner of the lobby.
+	/// </summary>
+	/// <returns>true if current client is the owner of joined lobby.</returns>
 	public bool IsLobbyOwner()
 	{
 		if (Multiplayer.IsServer())

@@ -102,6 +102,19 @@ public partial class MattohaClient : Node
 	/// <param name="cause">The cause of the failure.</param>
 	[Signal] public delegate void StartGameFailedEventHandler(string cause);
 
+
+	/// <summary>
+	/// Emitted when ending the game succeeds.
+	/// </summary>
+	/// <param name="lobbyData">The updated lobby data after ending the game.</param>
+	[Signal] public delegate void EndGameSucceedEventHandler(Dictionary<string, Variant> lobbyData);
+
+	/// <summary>
+	/// Emitted when ending the game fails.
+	/// </summary>
+	/// <param name="cause">The cause of the failure.</param>
+	[Signal] public delegate void EndGameFailedEventHandler(string cause);
+
 	/// <summary>
 	/// Emitted when joining a lobby succeeds.
 	/// </summary>
@@ -542,7 +555,7 @@ public partial class MattohaClient : Node
 
 
 	/// <summary>
-	/// Start Lobby Game, this eill emmit "StartGameSucceed" for all joined players or "StartGameFailed" for caller user,
+	/// Start Lobby Game, this will emmit "StartGameSucceed" for all joined players or "StartGameFailed" for caller user,
 	/// and "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled.
 	/// </summary>
 	public void StartGame()
@@ -566,6 +579,35 @@ public partial class MattohaClient : Node
 	{
 #if MATTOHA_CLIENT
 		EmitSignal(SignalName.StartGameFailed, payload["Message"].AsString());
+#endif
+	}
+
+
+	/// <summary>
+	/// End Lobby Game, this ewill emmit "EndGameSucceed" for all joined players or "EndGameFailed" for caller user,
+	/// and "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled.
+	/// </summary>
+	public void EndGame()
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.EndGame), null);
+#endif
+	}
+
+
+	private void RpcEndGame()
+	{
+#if MATTOHA_CLIENT
+		CurrentLobby[MattohaLobbyKeys.IsGameStarted] = false;
+		EmitSignal(SignalName.EndGameSucceed, CurrentLobby);
+#endif
+	}
+
+
+	private void RpcEndGameFailed(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		EmitSignal(SignalName.EndGameFailed, payload["Message"].AsString());
 #endif
 	}
 
@@ -1010,6 +1052,14 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.StartGameFailed):
 				RpcStartGameFailed(payload);
+				break;
+
+
+			case nameof(ClientRpc.EndGame):
+				RpcEndGame();
+				break;
+			case nameof(ClientRpc.EndGameFailed):
+				RpcEndGameFailed(payload);
 				break;
 
 

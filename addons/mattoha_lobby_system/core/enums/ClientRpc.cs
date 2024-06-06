@@ -59,4 +59,6 @@ internal enum ClientRpc
 	PlayerChangedHisTeam,
 
 	LeaveLobby,
+	EndGame,
+	EndGameFailed,
 }

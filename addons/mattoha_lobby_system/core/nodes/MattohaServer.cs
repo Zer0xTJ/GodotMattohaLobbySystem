@@ -542,6 +542,36 @@ public partial class MattohaServer : Node
 #endif
 	}
 
+
+	private void RpcEndGame(long sender)
+	{
+#if MATTOHA_SERVER
+		var lobby = GetPlayerLobby(sender);
+		if (lobby == null)
+			return;
+
+		if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() != sender)
+		{
+			_system.SendReliableClientRpc(sender, nameof(ClientRpc.EndGameFailed), new Dictionary<string, Variant> { { "Message", "not-owner" } });
+			return;
+		}
+
+		var result = MiddlewareNode.BeforeEndGame(lobby, sender);
+		if (!result["Status"].AsBool())
+		{
+			result.Remove("Status");
+			_system.SendReliableClientRpc(sender, nameof(ClientRpc.EndGameFailed), result);
+			return;
+		}
+
+		MiddlewareNode.AfterEndGame(lobby, sender);
+		lobby[MattohaLobbyKeys.IsGameStarted] = false;
+		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.EndGame), null);
+		RefreshAvailableLobbiesForAll();
+
+#endif
+	}
+
 	/// <summary>
 	/// Refresh joined players list for all joined players in a given lobbyId.
 	/// </summary>
@@ -981,6 +1011,9 @@ public partial class MattohaServer : Node
 				break;
 			case nameof(ServerRpc.StartGame):
 				RpcStartGame(sender);
+				break;
+			case nameof(ServerRpc.EndGame):
+				RpcEndGame(sender);
 				break;
 			case nameof(ServerRpc.LoadLobbyPlayers):
 				RpcLoadLobbyPlayers(sender);
