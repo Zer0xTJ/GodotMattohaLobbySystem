@@ -653,10 +653,10 @@ public partial class MattohaClient : Node
 	/// </summary>
 	/// <param name="node">Node object (should be existing in tree)</param>
 	/// <param name="teamOnly">true if spawning should be for team only.</param>
-	public void SpawnNode(Node node, bool teamOnly = false)
+	public void SpawnNode(Node node, bool teamOnly = false, Array<string> additionalProps = null)
 	{
 #if MATTOHA_CLIENT
-		var payload = _system.GenerateNodePayloadData(node);
+		var payload = _system.GenerateNodePayloadData(node, additionalProps);
 		payload[MattohaSpawnKeys.TeamOnly] = teamOnly;
 		_system.SendReliableServerRpc(nameof(ServerRpc.SpawnNode), payload);
 #endif

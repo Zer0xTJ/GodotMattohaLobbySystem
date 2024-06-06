@@ -131,13 +131,14 @@ Note that `MattohaGameHolder` is responsible for loading the scene and spawning 
 Every node you want to auto spawn/despawn should has a `MattohaSpawner` node child.
 `MattohaSpawner` has the following properties:
 
-- `Auto Spawn`
-- `Auto Despawn`
-- `Spawn For Team Only`
-- `Is Scene Node`.
+- `Auto Spawn` when true, will spawn node for other players on _ready()
+- `Auto Despawn` when true, will despawn node for others when queue_free()
+- `Spawn For Team Only` when true, spawning the node will be only for team members.
+- `HandleByServer` when true, the spawning and despawning will be handled by server, and nodes authority will be the server too.
+- `AdditionalProps` A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" and "Sprite2D:scale" in case of nested nodes.
 
 Configuring our nodes to spawn & despawn:
-- When a node is a scene node (meaning that it's already exists in scene design and it's able to be despawned) then you must set `Is Scene Node` to true and disable `Auto Spawn` because its already spawned.
+- When a node is a scene node (meaning that it's already exists in scene design and it's able to be despawned) then you must set `HandledByServer` to true and disable `Auto Spawn` because its already spawned.
 - To Enable Replication Add `MultiplayerSynchronizer` node to the node you want to replicate and configure it and add what ever properties you want to replicate, BUT you "MUST" attach `MattohaSynchronizerModifier` script to `MultiplayerSynchronizer` node you have added.
 - When you set `Spawn For Team Only` to true on `MattohaSpawner`, you must set `Replicate For Team Only` in the `MattohaSynchronizerModifier` too.
 
@@ -179,3 +180,6 @@ When you export your game for the server, ensure to remove MATTOHA_CLIENT from c
 
 ## API Documentation
 https://zer0xtj.github.io/GodotMattohaLobbySystem/annotated.html
+
+## TODO: 
+- GDScript binding classes for better auto complete and in-editor documentation.

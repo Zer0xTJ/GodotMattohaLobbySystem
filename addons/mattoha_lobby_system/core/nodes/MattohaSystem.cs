@@ -165,6 +165,22 @@ public partial class MattohaSystem : Node
 			(node as Node3D).Position = payload[MattohaSpawnKeys.Position].AsVector3();
 			(node as Node3D).Rotation = payload[MattohaSpawnKeys.Rotation].As<Vector3>();
 		}
+
+		foreach (var additionalProp in payload[MattohaSpawnKeys.AdditionalProps].AsGodotDictionary<string, Variant>())
+		{
+			if (additionalProp.Key.Contains(':'))
+			{
+				var nodePath = additionalProp.Key.Split(":")[0];
+				var propName = additionalProp.Key.Split(":")[^1];
+				var propValue = additionalProp.Value;
+				node.GetNode(nodePath).Set(propName, propValue);
+			}
+			else
+			{
+				node.Set(additionalProp.Key, additionalProp.Value);
+			}
+		}
+
 		if (GetTree().Root.HasNode(parentPath))
 		{
 			var parent = GetNode(parentPath);
@@ -209,10 +225,11 @@ public partial class MattohaSystem : Node
 	/// for spawning nodes across players.
 	/// </summary>
 	/// <param name="node">Node object (should be in game tree) </param>
+	/// <param name="additionalProps">Additional properties to get from node, these will be synced to other players.</param>
 	/// <returns>Dictionary that has node data to spawn</returns>
-	public Dictionary<string, Variant> GenerateNodePayloadData(Node node)
+	public Dictionary<string, Variant> GenerateNodePayloadData(Node node, Array<string> additionalProps = null)
 	{
-		// TODO: add second param for optional properties of the node
+		additionalProps ??= new();
 		var payload = new Dictionary<string, Variant>()
 		{
 			{ MattohaSpawnKeys.SceneFile, node.SceneFilePath },
@@ -229,6 +246,23 @@ public partial class MattohaSystem : Node
 		{
 			payload[MattohaSpawnKeys.Position] = (node as Node3D).Position;
 			payload[MattohaSpawnKeys.Rotation] = (node as Node3D).Rotation;
+		}
+
+		payload[MattohaSpawnKeys.AdditionalProps] = new Dictionary<string, Variant>();
+
+		foreach (var key in additionalProps)
+		{
+			if (key.Contains(':'))
+			{
+				var nodePath = key.Split(":")[0];
+				var propName = key.Split(":")[^1];
+				var propValue = node.GetNode(nodePath).Get(propName);
+				payload[MattohaSpawnKeys.AdditionalProps].AsGodotDictionary<string, Variant>().Add(key, propValue);
+			}
+			else
+			{
+				payload[MattohaSpawnKeys.AdditionalProps].AsGodotDictionary<string, Variant>().Add(key, node.Get(key));
+			}
 		}
 		return payload;
 
@@ -266,7 +300,7 @@ public partial class MattohaSystem : Node
 			}
 		}
 	}
-	
+
 
 	/// <summary>
 	/// Check if (current player) is the owner of the spawned node or a given node
@@ -280,7 +314,7 @@ public partial class MattohaSystem : Node
 		return node.GetMultiplayerAuthority() == Multiplayer.GetUniqueId();
 	}
 
-	
+
 	/// <summary>
 	/// Check if (Current client) is the owner of the lobby.
 	/// </summary>

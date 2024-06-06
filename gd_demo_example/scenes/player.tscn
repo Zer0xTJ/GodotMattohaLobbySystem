@@ -30,3 +30,4 @@ script = ExtResource("3_qje2h")
 
 [node name="MattohaSpawner" type="Node2D" parent="."]
 script = ExtResource("4_w5xjx")
+AdditionalProps = ["Foo", "Sprite2D:scale"]

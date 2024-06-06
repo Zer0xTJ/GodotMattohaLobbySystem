@@ -1,12 +1,25 @@
 using Godot;
+using Mattoha.Nodes;
 
 namespace Mattoha.Demo;
 public partial class Player : CharacterBody2D
 {
+	[Export] public string Foo { get; set; }
 	[Export] public PackedScene ProjectileScene;
 	[Export] public float Speed = 300;
 
 	private Node _currentProjectile;
+
+	public override void _EnterTree()
+	{
+		if (MattohaSystem.Instance.IsNodeOwner(this))
+		{
+			Foo = $"FOO_{GD.Randi() % 100}";
+			base._EnterTree();
+			GetNode<Sprite2D>("Sprite2D").Scale = new Vector2(0.25f, 0.25f);
+		}
+	}
+
 	public override void _Process(double delta)
 	{
 		// only owner can move node;

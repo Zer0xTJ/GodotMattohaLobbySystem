@@ -10,4 +10,5 @@ public class MattohaSpawnKeys
 	public static string Owner { get; set; } = "Owner";
 	public static string TeamOnly { get; set; } = "TeamOnly";
 	public static string TeamId { get; set; } = "TeamId";
+	public static string AdditionalProps { get; set; } = "AdditionalProps";
 }
