@@ -8,6 +8,7 @@ func _enter_tree():
 	add_custom_type("MattohaClient", "Node2D", preload ("res://addons/mattoha_lobby_system/core/nodes/MattohaClient.cs"), null)
 
 	add_autoload_singleton("MattohaSystem", "res://addons/mattoha_lobby_system/core/autoload/MattohaSystem.tscn")
+	add_autoload_singleton("MattohaSystemGD", "res://addons/mattoha_lobby_system/gd_bind/nodes/mattoha_system.gd")
 
 func _exit_tree():
 	# Clean-up of the plugin goes here.
@@ -15,3 +16,6 @@ func _exit_tree():
 	remove_custom_type("MattohaSpawner")
 	remove_custom_type("MattohaServer")
 	remove_custom_type("MattohaClient")
+
+	remove_autoload_singleton("MattohaSystem")
+	remove_autoload_singleton("MattohaSystemGD")

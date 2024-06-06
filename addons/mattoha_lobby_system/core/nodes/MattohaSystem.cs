@@ -1,7 +1,6 @@
 using Godot;
 using Godot.Collections;
 using Mattoha.Core.Utils;
-using System;
 using System.Linq;
 
 namespace Mattoha.Nodes;
@@ -117,11 +116,11 @@ public partial class MattohaSystem : Node
 	}
 
 	/// <summary>
-	/// Used to create an instance from scene, use this method to initialize instance if the instance 
+	/// Used to create an instance from scene, use this method to initialize instance if the instance
 	/// will be spawned for all players or has MattohaSpawner node.
 	/// </summary>
 	/// <param name="sceneFile">Scene file to initialize from.</param>
-	/// <returns>Created node instance.</returns>
+	/// <returns>Created node instance with multiplayer authority that belongs to the owner of node who created it.</returns>
 	public Node CreateInstance(string sceneFile)
 	{
 		return CreateInstance(GD.Load<PackedScene>(sceneFile));
@@ -132,7 +131,7 @@ public partial class MattohaSystem : Node
 	/// will be spawned for all players or has MattohaSpawner node.
 	/// </summary>
 	/// <param name="scene">PackedScene to initialize from.</param>
-	/// <returns>Created node instance.</returns>
+	/// <returns>Created node instance with multiplayer authority that belongs to the owner of node who created it.</returns>
 	public Node CreateInstance(PackedScene scene)
 	{
 		var owner = Multiplayer.GetUniqueId();
@@ -270,7 +269,7 @@ public partial class MattohaSystem : Node
 
 
 	/// <summary>
-	/// Send reliable server RPC to server, this will emmit "ServerRpcRecieved" on server node.
+	/// Send reliable server RPC to server, this will emmit "ServerRpcRecieved".
 	/// </summary>
 	/// <param name="methodName">method name you want to handle.</param>
 	/// <param name="payload"></param>
@@ -281,7 +280,7 @@ public partial class MattohaSystem : Node
 
 
 	/// <summary>
-	/// Send reliable client RPC to peer, this will emmit "ClientRpcRecieved" on client node.
+	/// Send reliable client RPC to peer, this will emmit "ClientRpcRecieved".
 	/// </summary>
 	/// <param name="peer">peer id that will recive the event, 0 for all</param>
 	/// <param name="methodName">method name you want to handle.</param>

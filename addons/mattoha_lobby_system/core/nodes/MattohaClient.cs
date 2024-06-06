@@ -353,8 +353,8 @@ public partial class MattohaClient : Node
 	}
 
 	/// <summary>
-	/// Set Player data in server, this will emit SetPlayerDataSucceed, for current client 
-	/// and emmit JoinedPlayerUpdated for other lobby players.
+	/// Set Player data in server, this will emit "SetPlayerDataSucceed" or "SetPlayerDataFailed", for current client
+	/// and emmit "JoinedPlayerUpdated" for other lobby players.
 	/// <br/><br/>
 	/// Base player keys you can edit in addition to your custom keys:
 	/// - Username {string}
@@ -395,7 +395,6 @@ public partial class MattohaClient : Node
 	/// - Name {string}
 	/// - MaxPlayers {int}
 	/// - PrivateProps {Godot Array of string}
-	/// - LobbySceneFile {string}
 	/// </summary>
 	/// <param name="lobbyData">Lobby Data to create.</param>
 	/// <param name="lobbySceneFile">The scene file for lobby game, for example: "res://maps/arean.tscn".</param>
@@ -653,6 +652,7 @@ public partial class MattohaClient : Node
 	/// </summary>
 	/// <param name="node">Node object (should be existing in tree)</param>
 	/// <param name="teamOnly">true if spawning should be for team only.</param>
+	/// <param name="additionalProps">Additional properties that will be synced during spawning node across players.</param>
 	public void SpawnNode(Node node, bool teamOnly = false, Array<string> additionalProps = null)
 	{
 #if MATTOHA_CLIENT
