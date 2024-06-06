@@ -25,7 +25,7 @@ public partial class MattohaSpawner : Node
     [Export] public bool HandleByServer { get; set; } = false;
     
     /// <summary>
-    /// A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" and "Sprite2D:scale" in case of nested ndoes.
+    /// A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" or "Child1/Child2/Sprite2D:self_modulate" for nested node and "Sprite2D:scale" for direct child node.
     /// </summary>
     [Export] public Array<string> AdditionalProps { get; set; } = new();
 

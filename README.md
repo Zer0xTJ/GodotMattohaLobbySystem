@@ -135,7 +135,7 @@ Every node you want to auto spawn/despawn should has a `MattohaSpawner` node chi
 - `Auto Despawn` when true, will despawn node for others when queue_free()
 - `Spawn For Team Only` when true, spawning the node will be only for team members.
 - `HandleByServer` when true, the spawning and despawning will be handled by server, and nodes authority will be the server too.
-- `AdditionalProps` A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" and "Sprite2D:scale" in case of nested nodes.
+- `AdditionalProps` A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" or "Child1/Child2/Sprite2D:self_modulate" for nested node and "Sprite2D:scale" for direct child node.
 
 Configuring our nodes to spawn & despawn:
 - When a node is a scene node (meaning that it's already exists in scene design and it's able to be despawned) then you must set `HandledByServer` to true and disable `Auto Spawn` because its already spawned.
