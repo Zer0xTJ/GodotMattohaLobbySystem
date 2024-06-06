@@ -8,20 +8,20 @@ public partial class MattohaSystem : Node
 {
 
 	/// <summary>
-	/// Emmited on server when a server rpc recived.
+	/// Emmited on server when a server rpc received.
 	/// </summary>
 	/// <param name="methodName">method name to call.</param>
 	/// <param name="payload">payload as godot dictionaty.</param>
 	/// <param name="sender">peer id who send the rpc.</param>
-	[Signal] public delegate void ServerRpcRecievedEventHandler(string methodName, Dictionary<string, Variant> payload, long sender);
+	[Signal] public delegate void ServerRpcReceivedEventHandler(string methodName, Dictionary<string, Variant> payload, long sender);
 
 	/// <summary>
-	/// Emmited on client when a client rpc recived.
+	/// Emmited on client when a client rpc received.
 	/// </summary>
 	/// <param name="methodName">method name to call.</param>
 	/// <param name="payload">payload as godot dictionaty.</param>
 	/// <param name="sender">peer id who send the rpc.</param>
-	[Signal] public delegate void ClientRpcRecievedEventHandler(string methodName, Dictionary<string, Variant> payload, long sender);
+	[Signal] public delegate void ClientRpcReceivedEventHandler(string methodName, Dictionary<string, Variant> payload, long sender);
 
 	[ExportGroup("Server Configuration"), Export] public string Address { get; set; } = "127.0.0.1";
 	[ExportGroup("Server Configuration"), Export] public int Port { get; set; } = 7001;
@@ -269,7 +269,7 @@ public partial class MattohaSystem : Node
 
 
 	/// <summary>
-	/// Send reliable server RPC to server, this will emmit "ServerRpcRecieved".
+	/// Send reliable server RPC to server, this will emmit "ServerRpcReceived".
 	/// </summary>
 	/// <param name="methodName">method name you want to handle.</param>
 	/// <param name="payload"></param>
@@ -280,7 +280,7 @@ public partial class MattohaSystem : Node
 
 
 	/// <summary>
-	/// Send reliable client RPC to peer, this will emmit "ClientRpcRecieved".
+	/// Send reliable client RPC to peer, this will emmit "ClientRpcReceived".
 	/// </summary>
 	/// <param name="peer">peer id that will recive the event, 0 for all</param>
 	/// <param name="methodName">method name you want to handle.</param>
@@ -330,7 +330,7 @@ public partial class MattohaSystem : Node
 	private void ServerReliableRpc(string methodName, Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_SERVER
-		EmitSignal(SignalName.ServerRpcRecieved, methodName, payload, Multiplayer.GetRemoteSenderId());
+		EmitSignal(SignalName.ServerRpcReceived, methodName, payload, Multiplayer.GetRemoteSenderId());
 #endif
 	}
 
@@ -339,7 +339,7 @@ public partial class MattohaSystem : Node
 	private void ClientReliableRpc(string methodName, Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
-		EmitSignal(SignalName.ClientRpcRecieved, methodName, payload, Multiplayer.GetRemoteSenderId());
+		EmitSignal(SignalName.ClientRpcReceived, methodName, payload, Multiplayer.GetRemoteSenderId());
 #endif
 	}
 

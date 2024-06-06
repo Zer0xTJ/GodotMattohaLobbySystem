@@ -4,7 +4,7 @@ extends CharacterBody2D
 @export var Foo: String
 
 func _enter_tree():
-	if(MattohaSystem.IsNodeOwner(self)):
+	if (MattohaSystemGD.is_node_owner(self)):
 		Foo = "Foo_%d" % (randi() % 200)
 		$Sprite2D.scale = Vector2(0.25, 0.25)
 

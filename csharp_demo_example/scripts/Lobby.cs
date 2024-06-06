@@ -17,9 +17,9 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.NewPlayerJoined += OnNewPlayerJoiend;
 		MattohaSystem.Instance.Client.SetLobbyDataSucceed += OnSetLobbyData;
 		MattohaSystem.Instance.Client.PlayerChangedHisTeam += OnPlayerChangedHisTeam;
-		MattohaSystem.Instance.Client.TeamMessageRecieved += OnTeamMessage;
-		MattohaSystem.Instance.Client.LobbyMessageRecieved += OnLobbyMessage;
-		MattohaSystem.Instance.Client.GlobalMessageRecieved += OnGlobalMessage;
+		MattohaSystem.Instance.Client.TeamMessageReceived += OnTeamMessage;
+		MattohaSystem.Instance.Client.LobbyMessageReceived += OnLobbyMessage;
+		MattohaSystem.Instance.Client.GlobalMessageReceived += OnGlobalMessage;
 		MattohaSystem.Instance.Client.PlayerLeft += OnPlayerLeft;
 
 		MattohaSystem.Instance.Client.LoadLobbyPlayers();
@@ -171,9 +171,9 @@ public partial class Lobby : Control
 		MattohaSystem.Instance.Client.NewPlayerJoined -= OnNewPlayerJoiend;
 		MattohaSystem.Instance.Client.SetLobbyDataSucceed -= OnSetLobbyData;
 		MattohaSystem.Instance.Client.PlayerChangedHisTeam -= OnPlayerChangedHisTeam;
-		MattohaSystem.Instance.Client.TeamMessageRecieved -= OnTeamMessage;
-		MattohaSystem.Instance.Client.LobbyMessageRecieved -= OnLobbyMessage;
-		MattohaSystem.Instance.Client.GlobalMessageRecieved -= OnGlobalMessage;
+		MattohaSystem.Instance.Client.TeamMessageReceived -= OnTeamMessage;
+		MattohaSystem.Instance.Client.LobbyMessageReceived -= OnLobbyMessage;
+		MattohaSystem.Instance.Client.GlobalMessageReceived -= OnGlobalMessage;
 		MattohaSystem.Instance.Client.PlayerLeft -= OnPlayerLeft;
 		base._ExitTree();
 	}

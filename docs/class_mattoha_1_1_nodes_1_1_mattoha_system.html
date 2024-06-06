@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.2</span>
+   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.3</span>
    </div>
   </td>
  </tr>
@@ -107,12 +107,12 @@ $(function(){initNavTree('class_mattoha_1_1_nodes_1_1_mattoha_system.html',''); 
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a93ce58c38effe22324711e464da96506" id="r_a93ce58c38effe22324711e464da96506"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a93ce58c38effe22324711e464da96506">ServerRpcRecievedEventHandler</a> (string methodName, Dictionary&lt; string, Variant &gt; payload, long sender)</td></tr>
-<tr class="memdesc:a93ce58c38effe22324711e464da96506"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emmited on server when a server rpc recived.  <br /></td></tr>
-<tr class="separator:a93ce58c38effe22324711e464da96506"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a95508de7598d0c9780dbd235159e31a5" id="r_a95508de7598d0c9780dbd235159e31a5"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a95508de7598d0c9780dbd235159e31a5">ClientRpcRecievedEventHandler</a> (string methodName, Dictionary&lt; string, Variant &gt; payload, long sender)</td></tr>
-<tr class="memdesc:a95508de7598d0c9780dbd235159e31a5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emmited on client when a client rpc recived.  <br /></td></tr>
-<tr class="separator:a95508de7598d0c9780dbd235159e31a5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59205e882061dd51b34ca3ab60243b6d" id="r_a59205e882061dd51b34ca3ab60243b6d"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a59205e882061dd51b34ca3ab60243b6d">ServerRpcReceivedEventHandler</a> (string methodName, Dictionary&lt; string, Variant &gt; payload, long sender)</td></tr>
+<tr class="memdesc:a59205e882061dd51b34ca3ab60243b6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emmited on server when a server rpc received.  <br /></td></tr>
+<tr class="separator:a59205e882061dd51b34ca3ab60243b6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6413c68901a715d99fe4aec0152b659a" id="r_a6413c68901a715d99fe4aec0152b659a"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a6413c68901a715d99fe4aec0152b659a">ClientRpcReceivedEventHandler</a> (string methodName, Dictionary&lt; string, Variant &gt; payload, long sender)</td></tr>
+<tr class="memdesc:a6413c68901a715d99fe4aec0152b659a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emmited on client when a client rpc received.  <br /></td></tr>
+<tr class="separator:a6413c68901a715d99fe4aec0152b659a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a590e6566b1fcd478b2ecdaf3ceb32aa7" id="r_a590e6566b1fcd478b2ecdaf3ceb32aa7"><td class="memItemLeft" align="right" valign="top"><a id="a590e6566b1fcd478b2ecdaf3ceb32aa7" name="a590e6566b1fcd478b2ecdaf3ceb32aa7"></a>
 override void&#160;</td><td class="memItemRight" valign="bottom"><b>_Ready</b> ()</td></tr>
 <tr class="separator:a590e6566b1fcd478b2ecdaf3ceb32aa7"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -144,10 +144,10 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>StartClient</b> ()</t
 <tr class="memdesc:a4900f0d775a7af03911809e0c3d1264b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a spawning payload form a given node, this method is used under the hood to generate payloads for spawning nodes across players.  <br /></td></tr>
 <tr class="separator:a4900f0d775a7af03911809e0c3d1264b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac203dbb809fc9176c38d90cb7262bf8c" id="r_ac203dbb809fc9176c38d90cb7262bf8c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac203dbb809fc9176c38d90cb7262bf8c">SendReliableServerRpc</a> (string methodName, Dictionary&lt; string, Variant &gt; payload)</td></tr>
-<tr class="memdesc:ac203dbb809fc9176c38d90cb7262bf8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send reliable server RPC to server, this will emmit "ServerRpcRecieved" on server node.  <br /></td></tr>
+<tr class="memdesc:ac203dbb809fc9176c38d90cb7262bf8c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send reliable server RPC to server, this will emmit "ServerRpcReceived".  <br /></td></tr>
 <tr class="separator:ac203dbb809fc9176c38d90cb7262bf8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9714f0524fa4e16d95a946e90b07994f" id="r_a9714f0524fa4e16d95a946e90b07994f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9714f0524fa4e16d95a946e90b07994f">SendReliableClientRpc</a> (long peer, string methodName, Dictionary&lt; string, Variant &gt; payload)</td></tr>
-<tr class="memdesc:a9714f0524fa4e16d95a946e90b07994f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send reliable client RPC to peer, this will emmit "ClientRpcRecieved" on client node.  <br /></td></tr>
+<tr class="memdesc:a9714f0524fa4e16d95a946e90b07994f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send reliable client RPC to peer, this will emmit "ClientRpcReceived".  <br /></td></tr>
 <tr class="separator:a9714f0524fa4e16d95a946e90b07994f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a37004354c863e1c6d0dff36bc3a20c3e" id="r_a37004354c863e1c6d0dff36bc3a20c3e"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a37004354c863e1c6d0dff36bc3a20c3e">IsNodeOwner</a> (Node node)</td></tr>
 <tr class="memdesc:a37004354c863e1c6d0dff36bc3a20c3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if (current player) is the owner of the spawned node or a given node.  <br /></td></tr>
@@ -201,14 +201,14 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
 <tr class="separator:a6b7a542582d2b00f2fb3ffc4df4737c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a95508de7598d0c9780dbd235159e31a5" name="a95508de7598d0c9780dbd235159e31a5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a95508de7598d0c9780dbd235159e31a5">&#9670;&#160;</a></span>ClientRpcRecievedEventHandler()</h2>
+<a id="a6413c68901a715d99fe4aec0152b659a" name="a6413c68901a715d99fe4aec0152b659a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6413c68901a715d99fe4aec0152b659a">&#9670;&#160;</a></span>ClientRpcReceivedEventHandler()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">delegate void Mattoha.Nodes.MattohaSystem.ClientRpcRecievedEventHandler </td>
+          <td class="memname">delegate void Mattoha.Nodes.MattohaSystem.ClientRpcReceivedEventHandler </td>
           <td>(</td>
           <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>methodName</em></span>, </td>
         </tr>
@@ -225,7 +225,7 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
       </table>
 </div><div class="memdoc">
 
-<p>Emmited on client when a client rpc recived. </p>
+<p>Emmited on client when a client rpc received. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">methodName</td><td>method name to call.</td></tr>
@@ -259,7 +259,7 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Created node instance.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Created node instance with multiplayer authority that belongs to the owner of node who created it.</dd></dl>
 
 </div>
 </div>
@@ -285,7 +285,7 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>Created node instance.</dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>Created node instance with multiplayer authority that belongs to the owner of node who created it.</dd></dl>
 
 </div>
 </div>
@@ -449,7 +449,7 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
       </table>
 </div><div class="memdoc">
 
-<p>Send reliable client RPC to peer, this will emmit "ClientRpcRecieved" on client node. </p>
+<p>Send reliable client RPC to peer, this will emmit "ClientRpcReceived". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">peer</td><td>peer id that will recive the event, 0 for all</td></tr>
@@ -480,7 +480,7 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
       </table>
 </div><div class="memdoc">
 
-<p>Send reliable server RPC to server, this will emmit "ServerRpcRecieved" on server node. </p>
+<p>Send reliable server RPC to server, this will emmit "ServerRpcReceived". </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">methodName</td><td>method name you want to handle.</td></tr>
@@ -491,14 +491,14 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
 
 </div>
 </div>
-<a id="a93ce58c38effe22324711e464da96506" name="a93ce58c38effe22324711e464da96506"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a93ce58c38effe22324711e464da96506">&#9670;&#160;</a></span>ServerRpcRecievedEventHandler()</h2>
+<a id="a59205e882061dd51b34ca3ab60243b6d" name="a59205e882061dd51b34ca3ab60243b6d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a59205e882061dd51b34ca3ab60243b6d">&#9670;&#160;</a></span>ServerRpcReceivedEventHandler()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">delegate void Mattoha.Nodes.MattohaSystem.ServerRpcRecievedEventHandler </td>
+          <td class="memname">delegate void Mattoha.Nodes.MattohaSystem.ServerRpcReceivedEventHandler </td>
           <td>(</td>
           <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>methodName</em></span>, </td>
         </tr>
@@ -515,7 +515,7 @@ static <a class="el" href="class_mattoha_1_1_nodes_1_1_mattoha_system.html">Matt
       </table>
 </div><div class="memdoc">
 
-<p>Emmited on server when a server rpc recived. </p>
+<p>Emmited on server when a server rpc received. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">methodName</td><td>method name to call.</td></tr>

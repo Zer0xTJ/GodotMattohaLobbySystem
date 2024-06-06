@@ -8,7 +8,7 @@ func _ready():
 	spawn_player()
 
 func spawn_player():
-	var instance = MattohaSystem.CreateInstance("res://gd_demo_example/scenes/player.tscn")
+	var instance = MattohaSystemGD.create_instance("res://gd_demo_example/scenes/player.tscn")
 	instance.rotation = 2.3
 	instance.position = Vector2(randi() % 200, randi() % 100)
 	add_child(instance)

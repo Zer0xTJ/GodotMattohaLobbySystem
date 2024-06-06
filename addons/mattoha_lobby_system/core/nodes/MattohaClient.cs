@@ -215,7 +215,7 @@ public partial class MattohaClient : Node
 	/// </summary>
 	/// <param name="senderData">The data of the message sender.</param>
 	/// <param name="message">The received message.</param>
-	[Signal] public delegate void GlobalMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void GlobalMessageReceivedEventHandler(Dictionary<string, Variant> senderData, string message);
 
 	/// <summary>
 	/// Emitted when sending a global message fails.
@@ -228,7 +228,7 @@ public partial class MattohaClient : Node
 	/// </summary>
 	/// <param name="senderData">The data of the message sender.</param>
 	/// <param name="message">The received message.</param>
-	[Signal] public delegate void LobbyMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void LobbyMessageReceivedEventHandler(Dictionary<string, Variant> senderData, string message);
 
 	/// <summary>
 	/// Emitted when sending a lobby message fails.
@@ -241,7 +241,7 @@ public partial class MattohaClient : Node
 	/// </summary>
 	/// <param name="senderData">The data of the message sender.</param>
 	/// <param name="message">The received message.</param>
-	[Signal] public delegate void TeamMessageRecievedEventHandler(Dictionary<string, Variant> senderData, string message);
+	[Signal] public delegate void TeamMessageReceivedEventHandler(Dictionary<string, Variant> senderData, string message);
 
 	/// <summary>
 	/// Emitted when sending a team message fails.
@@ -286,7 +286,7 @@ public partial class MattohaClient : Node
 	{
 		_system = GetParent<MattohaSystem>();
 		Multiplayer.ConnectedToServer += () => EmitSignal(SignalName.ConnectedToServer);
-		_system.ClientRpcRecieved += OnClientRpcRecieved;
+		_system.ClientRpcReceived += OnClientRpcReceived;
 		base._Ready();
 	}
 
@@ -873,7 +873,7 @@ public partial class MattohaClient : Node
 	private void RpcSendTeamMessage(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
-		EmitSignal(SignalName.TeamMessageRecieved, payload["Player"], payload["Message"]);
+		EmitSignal(SignalName.TeamMessageReceived, payload["Player"], payload["Message"]);
 #endif
 	}
 
@@ -901,7 +901,7 @@ public partial class MattohaClient : Node
 	private void RpcSendGlobalMessage(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
-		EmitSignal(SignalName.GlobalMessageRecieved, payload["Player"], payload["Message"]);
+		EmitSignal(SignalName.GlobalMessageReceived, payload["Player"], payload["Message"]);
 #endif
 	}
 
@@ -928,7 +928,7 @@ public partial class MattohaClient : Node
 	private void RpcSendLobbyMessage(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
-		EmitSignal(SignalName.LobbyMessageRecieved, payload["Player"], payload["Message"]);
+		EmitSignal(SignalName.LobbyMessageReceived, payload["Player"], payload["Message"]);
 #endif
 	}
 
@@ -970,7 +970,7 @@ public partial class MattohaClient : Node
 #endif
 	}
 
-	private void OnClientRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
+	private void OnClientRpcReceived(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
 		switch (methodName)

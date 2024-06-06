@@ -57,7 +57,7 @@ public partial class MattohaServer : Node
 	public override void _Ready()
 	{
 		_system = GetParent<MattohaSystem>();
-		_system.ServerRpcRecieved += OnServerRpcRecieved;
+		_system.ServerRpcReceived += OnServerRpcReceived;
 		Multiplayer.PeerConnected += OnPeerConnected;
 		Multiplayer.PeerDisconnected += OnPeerDisconnected;
 		base._Ready();
@@ -982,7 +982,7 @@ public partial class MattohaServer : Node
 	}
 
 
-	private void OnServerRpcRecieved(string methodName, Dictionary<string, Variant> payload, long sender)
+	private void OnServerRpcReceived(string methodName, Dictionary<string, Variant> payload, long sender)
 	{
 #if MATTOHA_SERVER
 		switch (methodName)

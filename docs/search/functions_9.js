@@ -10,5 +10,5 @@ var searchData=
   ['loadlobbyplayersforall_7',['LoadLobbyPlayersForAll',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a6825f39b2a7897c0f17a88fa77921bd1',1,'Mattoha::Nodes::MattohaServer']]],
   ['loadlobbyplayerssucceedeventhandler_8',['LoadLobbyPlayersSucceedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ac7b6c85092d8b75d18bd62ffc3e9e665',1,'Mattoha::Nodes::MattohaClient']]],
   ['lobbymessagefailedeventhandler_9',['LobbyMessageFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a99c840b86f1c1382f99009fa13dc48ac',1,'Mattoha::Nodes::MattohaClient']]],
-  ['lobbymessagerecievedeventhandler_10',['LobbyMessageRecievedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a25d0630a9511852dc8f5bc0ae35d00a3',1,'Mattoha::Nodes::MattohaClient']]]
+  ['lobbymessagereceivedeventhandler_10',['LobbyMessageReceivedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a6fb5d9776bcd06a33e5f0c92f2b87d44',1,'Mattoha::Nodes::MattohaClient']]]
 ];

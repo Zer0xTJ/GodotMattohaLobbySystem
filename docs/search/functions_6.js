@@ -10,5 +10,5 @@ var searchData=
   ['getplayerlobby_7',['GetPlayerLobby',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a033881dd16d3ebdb6ea031154e63278f',1,'Mattoha::Nodes::MattohaServer']]],
   ['getprivateprops_8',['GetPrivateProps',['../class_mattoha_1_1_core_1_1_mattoha_utils.html#a6e07896acbacec2e3551020962654f62',1,'Mattoha::Core::MattohaUtils']]],
   ['globalmessagefailedeventhandler_9',['GlobalMessageFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a1e07cf6dbaf58fa7422d0820c9832f8b',1,'Mattoha::Nodes::MattohaClient']]],
-  ['globalmessagerecievedeventhandler_10',['GlobalMessageRecievedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a3ef4f71b23cdb4ce631e12cf230e8ba5',1,'Mattoha::Nodes::MattohaClient']]]
+  ['globalmessagereceivedeventhandler_10',['GlobalMessageReceivedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a5e6c4dce84b3bcacd7bebe17af213a43',1,'Mattoha::Nodes::MattohaClient']]]
 ];

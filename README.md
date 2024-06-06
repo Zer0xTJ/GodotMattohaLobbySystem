@@ -100,17 +100,17 @@ MattohaSystem.Instance.Client.CreateLobbyFailed += OnCreateLobbyFailed; // on fa
 
 ```gdscript
 # starting server
-MattohaSystem.StartServer()
+MattohaSystemGD.start_server()
 
 # starting client (connect to server)
-MattohaSystem.StartClient()
+MattohaSystemGD.start_client()
 
 # Creating a lobby, lobbyDictionary is a GodotDictionary<string, Variant>
-MattohaSystem.Client.CreateLobby({"Name": "My Lobby"}, "res://my_game_scene.tscn")
+MattohaSystemGD.client.create_lobby({"Name": "My Lobby"}, "res://my_game_scene.tscn")
 
 # listining for a creating lobby signals.
-MattohaSystem.Client.CreateLobbySucceed.connect(_on_create_lobby)         # on success
-MattohaSystem.Client.CreateLobbyFailed.connect(_on_create_lobby_failed_)  # on fail
+MattohaSystemGD.client.create_lobby_succeed.connect(_on_create_lobby)         # on success
+MattohaSystemGD.client.create_lobby_failed.connect(_on_create_lobby_failed_)  # on fail
 
 ```
 
@@ -161,7 +161,7 @@ AddChild(instance);
 - GDScript:
 ```gdscript
 # where `scene` in gdscript api is a scene file path for example 'res://myscene.tscn'
-var instance = MattohaSystem.CreateInstance(scene)
+var instance = MattohaSystemGD.create_instance(scene)
 # after creating the instance, we must add it to tree
 add_child(instance)
 ```
@@ -180,6 +180,3 @@ When you export your game for the server, ensure to remove MATTOHA_CLIENT from c
 
 ## API Documentation
 https://zer0xtj.github.io/GodotMattohaLobbySystem/annotated.html
-
-## TODO: 
-- GDScript binding classes for better auto complete and in-editor documentation.

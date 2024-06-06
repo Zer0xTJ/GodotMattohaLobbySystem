@@ -11,7 +11,7 @@ var searchData=
   ['loadlobbyplayerssucceedeventhandler_8',['LoadLobbyPlayersSucceedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ac7b6c85092d8b75d18bd62ffc3e9e665',1,'Mattoha::Nodes::MattohaClient']]],
   ['lobbies_9',['Lobbies',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a358d72c2d26b62f290f5dbfd734abc77',1,'Mattoha::Nodes::MattohaServer']]],
   ['lobbymessagefailedeventhandler_10',['LobbyMessageFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a99c840b86f1c1382f99009fa13dc48ac',1,'Mattoha::Nodes::MattohaClient']]],
-  ['lobbymessagerecievedeventhandler_11',['LobbyMessageRecievedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a25d0630a9511852dc8f5bc0ae35d00a3',1,'Mattoha::Nodes::MattohaClient']]],
+  ['lobbymessagereceivedeventhandler_11',['LobbyMessageReceivedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a6fb5d9776bcd06a33e5f0c92f2b87d44',1,'Mattoha::Nodes::MattohaClient']]],
   ['lobbynode_12',['LobbyNode',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a67dbcbe8dcd0e8382048eacbc6e6ec07',1,'Mattoha::Nodes::MattohaClient']]],
   ['lobbysize_13',['LobbySize',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#a6a0b5096e0e76a4f976b5b1c66e1e318',1,'Mattoha::Nodes::MattohaSystem']]]
 ];

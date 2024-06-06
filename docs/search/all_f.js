@@ -6,7 +6,7 @@ var searchData=
   ['sendreliableserverrpc_3',['SendReliableServerRpc',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#ac203dbb809fc9176c38d90cb7262bf8c',1,'Mattoha::Nodes::MattohaSystem']]],
   ['sendrpcforplayersinlobby_4',['SendRpcForPlayersInLobby',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a38a9eb918f8a76c43acf216813ff8999',1,'Mattoha::Nodes::MattohaServer']]],
   ['sendteammessage_5',['SendTeamMessage',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a09b0deb0562d0f6e7d80d2e932921e39',1,'Mattoha::Nodes::MattohaClient']]],
-  ['serverrpcrecievedeventhandler_6',['ServerRpcRecievedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#a93ce58c38effe22324711e464da96506',1,'Mattoha::Nodes::MattohaSystem']]],
+  ['serverrpcreceivedeventhandler_6',['ServerRpcReceivedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#a59205e882061dd51b34ca3ab60243b6d',1,'Mattoha::Nodes::MattohaSystem']]],
   ['setlobbydata_7',['SetLobbyData',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ac4f8c2987f9ee060d59656259a20d3f2',1,'Mattoha::Nodes::MattohaClient']]],
   ['setlobbydatafailedeventhandler_8',['SetLobbyDataFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a44c8ec7d676044358c1769ffe4301220',1,'Mattoha::Nodes::MattohaClient']]],
   ['setlobbydatasucceedeventhandler_9',['SetLobbyDataSucceedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a01ec4e661b5d088d99f499328026946f',1,'Mattoha::Nodes::MattohaClient']]],

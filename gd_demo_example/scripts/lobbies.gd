@@ -4,9 +4,9 @@ extends Control
 @export var LobbySlot: PackedScene;
 
 func _ready():
-	MattohaSystem.Client.LoadAvailableLobbiesSucceed.connect(_on_load_available_lobbies_succeed)
-	MattohaSystem.Client.JoinLobbySucceed.connect(_on_join_lobby_succeed)
-	MattohaSystem.Client.LoadAvailableLobbies()
+	MattohaSystemGD.client.load_available_lobbies_succeed.connect(_on_load_available_lobbies_succeed)
+	MattohaSystemGD.client.join_lobby_succeed.connect(_on_join_lobby_succeed)
+	MattohaSystemGD.client.load_available_lobbies()
 
 func _on_create_lobby_button_pressed():
 	get_tree().change_scene_to_file("res://gd_demo_example/scenes/create_lobby.tscn")

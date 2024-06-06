@@ -7,4 +7,4 @@ func _ready():
 	%PlayersCountLabel.text = "%d / %d" % [lobby_dict["PlayersCount"],lobby_dict["MaxPlayers"]]
 
 func _on_join_button_pressed():
-	MattohaSystem.Client.JoinLobby(lobby_dict["Id"])
+	MattohaSystemGD.client.join_lobby(lobby_dict["Id"])
