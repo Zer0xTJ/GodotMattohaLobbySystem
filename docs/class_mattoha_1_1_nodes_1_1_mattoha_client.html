@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.2</span>
    </div>
   </td>
  </tr>
@@ -155,6 +155,12 @@ delegate void&#160;</td><td class="memItemRight" valign="bottom"><b>ConnectedToS
 <tr class="memitem:a25b841f41a2d82dd0ffb2d739abda721" id="r_a25b841f41a2d82dd0ffb2d739abda721"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a25b841f41a2d82dd0ffb2d739abda721">StartGameFailedEventHandler</a> (string cause)</td></tr>
 <tr class="memdesc:a25b841f41a2d82dd0ffb2d739abda721"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when starting the game fails.  <br /></td></tr>
 <tr class="separator:a25b841f41a2d82dd0ffb2d739abda721"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aef37a6c87bd5925c255a8a42921234a3" id="r_aef37a6c87bd5925c255a8a42921234a3"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#aef37a6c87bd5925c255a8a42921234a3">EndGameSucceedEventHandler</a> (Dictionary&lt; string, Variant &gt; lobbyData)</td></tr>
+<tr class="memdesc:aef37a6c87bd5925c255a8a42921234a3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when ending the game succeeds.  <br /></td></tr>
+<tr class="separator:aef37a6c87bd5925c255a8a42921234a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae3b8d6877b251e63c10148e9f3dbb87d" id="r_ae3b8d6877b251e63c10148e9f3dbb87d"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ae3b8d6877b251e63c10148e9f3dbb87d">EndGameFailedEventHandler</a> (string cause)</td></tr>
+<tr class="memdesc:ae3b8d6877b251e63c10148e9f3dbb87d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when ending the game fails.  <br /></td></tr>
+<tr class="separator:ae3b8d6877b251e63c10148e9f3dbb87d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15d919d3b483d380576c38c2d0121766" id="r_a15d919d3b483d380576c38c2d0121766"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a15d919d3b483d380576c38c2d0121766">JoinLobbySucceedEventHandler</a> (Dictionary&lt; string, Variant &gt; lobbyData)</td></tr>
 <tr class="memdesc:a15d919d3b483d380576c38c2d0121766"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when joining a lobby succeeds.  <br /></td></tr>
 <tr class="separator:a15d919d3b483d380576c38c2d0121766"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -264,15 +270,19 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>LoadAvailableLobbies<
 <tr class="separator:a6726da12278602b6810b4470de45b007"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4f21f6e71080614d01cd9d75cbac251" id="r_ab4f21f6e71080614d01cd9d75cbac251"><td class="memItemLeft" align="right" valign="top"><a id="ab4f21f6e71080614d01cd9d75cbac251" name="ab4f21f6e71080614d01cd9d75cbac251"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>StartGame</b> ()</td></tr>
-<tr class="memdesc:ab4f21f6e71080614d01cd9d75cbac251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start Lobby Game, this eill emmit "StartGameSucceed" for all joined players or "StartGameFailed" for caller user, and "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled. <br /></td></tr>
+<tr class="memdesc:ab4f21f6e71080614d01cd9d75cbac251"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start Lobby Game, this will emmit "StartGameSucceed" for all joined players or "StartGameFailed" for caller user, and "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled. <br /></td></tr>
 <tr class="separator:ab4f21f6e71080614d01cd9d75cbac251"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac1bce842ad981bf4be98ec840921a494" id="r_ac1bce842ad981bf4be98ec840921a494"><td class="memItemLeft" align="right" valign="top"><a id="ac1bce842ad981bf4be98ec840921a494" name="ac1bce842ad981bf4be98ec840921a494"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>EndGame</b> ()</td></tr>
+<tr class="memdesc:ac1bce842ad981bf4be98ec840921a494"><td class="mdescLeft">&#160;</td><td class="mdescRight">End Lobby Game, this ewill emmit "EndGameSucceed" for all joined players or "EndGameFailed" for caller user, and "LoadAvailableLobbiesSucceed" for all online players if "AutoLoadAvailableLobbies" is enabled. <br /></td></tr>
+<tr class="separator:ac1bce842ad981bf4be98ec840921a494"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a10c02e9641c1b105151cb94629cb8dda" id="r_a10c02e9641c1b105151cb94629cb8dda"><td class="memItemLeft" align="right" valign="top"><a id="a10c02e9641c1b105151cb94629cb8dda" name="a10c02e9641c1b105151cb94629cb8dda"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>LoadLobbyPlayers</b> ()</td></tr>
 <tr class="memdesc:a10c02e9641c1b105151cb94629cb8dda"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load players data that joined in same lobby, this will emmit "LoadLobbyPlayersSucceed" or "LoadLobbyPlayersFailed" for the caller user. <br /></td></tr>
 <tr class="separator:a10c02e9641c1b105151cb94629cb8dda"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3bdf53cf462cbf103aa64f3981ec69ba" id="r_a3bdf53cf462cbf103aa64f3981ec69ba"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3bdf53cf462cbf103aa64f3981ec69ba">SpawnNode</a> (Node node, bool teamOnly=false)</td></tr>
-<tr class="memdesc:a3bdf53cf462cbf103aa64f3981ec69ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawn node for all joined players in same lobby or same team, this will emmit "SpawnNodeRequested" for joined players or players in teams, "SpawnNodeFailed" will be emmited and node will be locally despawned if spawning node failed.  <br /></td></tr>
-<tr class="separator:a3bdf53cf462cbf103aa64f3981ec69ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd261c669e06cd4cc2e5f67a9975fd58" id="r_abd261c669e06cd4cc2e5f67a9975fd58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#abd261c669e06cd4cc2e5f67a9975fd58">SpawnNode</a> (Node node, bool teamOnly=false, Array&lt; string &gt; additionalProps=null)</td></tr>
+<tr class="memdesc:abd261c669e06cd4cc2e5f67a9975fd58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawn node for all joined players in same lobby or same team, this will emmit "SpawnNodeRequested" for joined players or players in teams, "SpawnNodeFailed" will be emmited and node will be locally despawned if spawning node failed.  <br /></td></tr>
+<tr class="separator:abd261c669e06cd4cc2e5f67a9975fd58"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a60df5849eefa728463bf0b8a715dc241" id="r_a60df5849eefa728463bf0b8a715dc241"><td class="memItemLeft" align="right" valign="top"><a id="a60df5849eefa728463bf0b8a715dc241" name="a60df5849eefa728463bf0b8a715dc241"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SpawnLobbyNodes</b> ()</td></tr>
 <tr class="memdesc:a60df5849eefa728463bf0b8a715dc241"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawn all lobby nodes tha has been spawned by other players, team only nodes will not be spawned until player in same team, this method will emmit "SpawnLobbyNodesSucceed" or "SpawnLobbyNodesFailed". <br /></td></tr>
@@ -511,6 +521,56 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CanReplicate</b><code
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">cause</td><td>The cause of the failure.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ae3b8d6877b251e63c10148e9f3dbb87d" name="ae3b8d6877b251e63c10148e9f3dbb87d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae3b8d6877b251e63c10148e9f3dbb87d">&#9670;&#160;</a></span>EndGameFailedEventHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">delegate void Mattoha.Nodes.MattohaClient.EndGameFailedEventHandler </td>
+          <td>(</td>
+          <td class="paramtype">string</td>          <td class="paramname"><span class="paramname"><em>cause</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Emitted when ending the game fails. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">cause</td><td>The cause of the failure.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aef37a6c87bd5925c255a8a42921234a3" name="aef37a6c87bd5925c255a8a42921234a3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef37a6c87bd5925c255a8a42921234a3">&#9670;&#160;</a></span>EndGameSucceedEventHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">delegate void Mattoha.Nodes.MattohaClient.EndGameSucceedEventHandler </td>
+          <td>(</td>
+          <td class="paramtype">Dictionary&lt; string, Variant &gt;</td>          <td class="paramname"><span class="paramname"><em>lobbyData</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Emitted when ending the game succeeds. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lobbyData</td><td>The updated lobby data after ending the game.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1466,8 +1526,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CanReplicate</b><code
 
 </div>
 </div>
-<a id="a3bdf53cf462cbf103aa64f3981ec69ba" name="a3bdf53cf462cbf103aa64f3981ec69ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3bdf53cf462cbf103aa64f3981ec69ba">&#9670;&#160;</a></span>SpawnNode()</h2>
+<a id="abd261c669e06cd4cc2e5f67a9975fd58" name="abd261c669e06cd4cc2e5f67a9975fd58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abd261c669e06cd4cc2e5f67a9975fd58">&#9670;&#160;</a></span>SpawnNode()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1480,7 +1540,12 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CanReplicate</b><code
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>teamOnly</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>&#160;)</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>teamOnly</em></span><span class="paramdefsep"> = </span><span class="paramdefval">false</span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Array&lt; string &gt;</td>          <td class="paramname"><span class="paramname"><em>additionalProps</em></span><span class="paramdefsep"> = </span><span class="paramdefval">null</span>&#160;)</td>
         </tr>
       </table>
 </div><div class="memdoc">

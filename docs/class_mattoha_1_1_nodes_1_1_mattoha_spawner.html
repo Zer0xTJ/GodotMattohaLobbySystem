@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.2</span>
    </div>
   </td>
  </tr>
@@ -117,16 +117,24 @@ override void&#160;</td><td class="memItemRight" valign="bottom"><b>_ExitTree</b
 Properties</h2></td></tr>
 <tr class="memitem:a449b5caa22bf74fa047d9f4dad5cff99" id="r_a449b5caa22bf74fa047d9f4dad5cff99"><td class="memItemLeft" align="right" valign="top"><a id="a449b5caa22bf74fa047d9f4dad5cff99" name="a449b5caa22bf74fa047d9f4dad5cff99"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>AutoSpawn</b> = true<code> [get, set]</code></td></tr>
+<tr class="memdesc:a449b5caa22bf74fa047d9f4dad5cff99"><td class="mdescLeft">&#160;</td><td class="mdescRight">when true, will spawn node for other players on _ready(). <br /></td></tr>
 <tr class="separator:a449b5caa22bf74fa047d9f4dad5cff99"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbef73f1dbb81ee9fc3504d1d2066088" id="r_abbef73f1dbb81ee9fc3504d1d2066088"><td class="memItemLeft" align="right" valign="top"><a id="abbef73f1dbb81ee9fc3504d1d2066088" name="abbef73f1dbb81ee9fc3504d1d2066088"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>AutoDespawn</b> = true<code> [get, set]</code></td></tr>
+<tr class="memdesc:abbef73f1dbb81ee9fc3504d1d2066088"><td class="mdescLeft">&#160;</td><td class="mdescRight">when true, will despawn node for others when queue_free(). <br /></td></tr>
 <tr class="separator:abbef73f1dbb81ee9fc3504d1d2066088"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04db46bd2a6f67a0d16c1232ed31db3e" id="r_a04db46bd2a6f67a0d16c1232ed31db3e"><td class="memItemLeft" align="right" valign="top"><a id="a04db46bd2a6f67a0d16c1232ed31db3e" name="a04db46bd2a6f67a0d16c1232ed31db3e"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>SpawnForTeamOnly</b> = false<code> [get, set]</code></td></tr>
+<tr class="memdesc:a04db46bd2a6f67a0d16c1232ed31db3e"><td class="mdescLeft">&#160;</td><td class="mdescRight">when true, spawning the node will be only for team members. <br /></td></tr>
 <tr class="separator:a04db46bd2a6f67a0d16c1232ed31db3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a067afac00bbec20dcc755326eee72c33" id="r_a067afac00bbec20dcc755326eee72c33"><td class="memItemLeft" align="right" valign="top"><a id="a067afac00bbec20dcc755326eee72c33" name="a067afac00bbec20dcc755326eee72c33"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>HandleByServer</b> = false<code> [get, set]</code></td></tr>
+<tr class="memdesc:a067afac00bbec20dcc755326eee72c33"><td class="mdescLeft">&#160;</td><td class="mdescRight">when true, the spawning and despawning will be handled by server, and nodes authority will be the server too. <br /></td></tr>
 <tr class="separator:a067afac00bbec20dcc755326eee72c33"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac6d121b890a3686cb745eadb07b59436" id="r_ac6d121b890a3686cb745eadb07b59436"><td class="memItemLeft" align="right" valign="top"><a id="ac6d121b890a3686cb745eadb07b59436" name="ac6d121b890a3686cb745eadb07b59436"></a>
+Array&lt; string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>AdditionalProps</b> = new()<code> [get, set]</code></td></tr>
+<tr class="memdesc:ac6d121b890a3686cb745eadb07b59436"><td class="mdescLeft">&#160;</td><td class="mdescRight">A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" and "Sprite2D:scale" in case of nested ndoes. <br /></td></tr>
+<tr class="separator:ac6d121b890a3686cb745eadb07b59436"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

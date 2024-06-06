@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.1</span>
+   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.2</span>
    </div>
   </td>
  </tr>
@@ -147,6 +147,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a51eea6644ec2f9e7b4e8ce91395274b9" id="r_a51eea6644ec2f9e7b4e8ce91395274b9"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a51eea6644ec2f9e7b4e8ce91395274b9">AfterStartGame</a> (Dictionary&lt; string, Variant &gt; lobby, long sender)</td></tr>
 <tr class="memdesc:a51eea6644ec2f9e7b4e8ce91395274b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executed after starting a game.  <br /></td></tr>
 <tr class="separator:a51eea6644ec2f9e7b4e8ce91395274b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af445eb9ad30621dffc716b713e2d5b3f" id="r_af445eb9ad30621dffc716b713e2d5b3f"><td class="memItemLeft" align="right" valign="top">virtual Dictionary&lt; string, Variant &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af445eb9ad30621dffc716b713e2d5b3f">BeforeEndGame</a> (Dictionary&lt; string, Variant &gt; lobby, long sender)</td></tr>
+<tr class="memdesc:af445eb9ad30621dffc716b713e2d5b3f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executed Before ending the game.  <br /></td></tr>
+<tr class="separator:af445eb9ad30621dffc716b713e2d5b3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab95b9460bbc37bcf791d54d8c16f40b7" id="r_ab95b9460bbc37bcf791d54d8c16f40b7"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ab95b9460bbc37bcf791d54d8c16f40b7">AfterEndGame</a> (Dictionary&lt; string, Variant &gt; lobby, long sender)</td></tr>
+<tr class="memdesc:ab95b9460bbc37bcf791d54d8c16f40b7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executed after ending a game.  <br /></td></tr>
+<tr class="separator:ab95b9460bbc37bcf791d54d8c16f40b7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5bb23e5afcde4d8783fa508af26fd987" id="r_a5bb23e5afcde4d8783fa508af26fd987"><td class="memItemLeft" align="right" valign="top">virtual Dictionary&lt; string, Variant &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5bb23e5afcde4d8783fa508af26fd987">BeforeLoadLobbyPlayers</a> (long sender)</td></tr>
 <tr class="memdesc:a5bb23e5afcde4d8783fa508af26fd987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executed before loading lobby players.  <br /></td></tr>
 <tr class="separator:a5bb23e5afcde4d8783fa508af26fd987"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -328,6 +334,44 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>AfterLoadLobb
   <table class="params">
     <tr><td class="paramname">lobbyId</td><td>The ID of the lobby where the nodes were despawned.</td></tr>
     <tr><td class="paramname">sender</td><td>The ID of the sender who requested the nodes despawn.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab95b9460bbc37bcf791d54d8c16f40b7" name="ab95b9460bbc37bcf791d54d8c16f40b7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab95b9460bbc37bcf791d54d8c16f40b7">&#9670;&#160;</a></span>AfterEndGame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void Mattoha.Misc.MattohaServerMiddleware.AfterEndGame </td>
+          <td>(</td>
+          <td class="paramtype">Dictionary&lt; string, Variant &gt;</td>          <td class="paramname"><span class="paramname"><em>lobby</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>sender</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Executed after ending a game. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lobby</td><td>The data of the lobby where the game has ended.</td></tr>
+    <tr><td class="paramname">sender</td><td>The ID of the sender who ended the game.</td></tr>
   </table>
   </dd>
 </dl>
@@ -1022,6 +1066,45 @@ virtual void&#160;</td><td class="memItemRight" valign="bottom"><b>AfterLoadLobb
   <table class="params">
     <tr><td class="paramname">lobbyId</td><td>The ID of the lobby where the nodes will be despawned.</td></tr>
     <tr><td class="paramname">sender</td><td>The ID of the sender requesting the nodes despawn.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Dictionary containing "Status" and "Message". If "Status" is false, execution will be terminated and an error event with "Message" will be emitted to the client. </dd></dl>
+
+</div>
+</div>
+<a id="af445eb9ad30621dffc716b713e2d5b3f" name="af445eb9ad30621dffc716b713e2d5b3f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af445eb9ad30621dffc716b713e2d5b3f">&#9670;&#160;</a></span>BeforeEndGame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual Dictionary&lt; string, Variant &gt; Mattoha.Misc.MattohaServerMiddleware.BeforeEndGame </td>
+          <td>(</td>
+          <td class="paramtype">Dictionary&lt; string, Variant &gt;</td>          <td class="paramname"><span class="paramname"><em>lobby</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">long</td>          <td class="paramname"><span class="paramname"><em>sender</em></span>&#160;)</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Executed Before ending the game. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">lobby</td><td>The data of the lobby where the game will be ended.</td></tr>
+    <tr><td class="paramname">sender</td><td>The ID of the sender ending the game.</td></tr>
   </table>
   </dd>
 </dl>

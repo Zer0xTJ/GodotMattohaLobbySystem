@@ -1,19 +1,17 @@
 var searchData=
 [
-  ['mattoha_0',['Mattoha',['../namespace_mattoha.html',1,'']]],
-  ['mattoha_3a_3acore_1',['Core',['../namespace_mattoha_1_1_core.html',1,'Mattoha']]],
-  ['mattoha_3a_3acore_3a_3ademo_2',['Demo',['../namespace_mattoha_1_1_core_1_1_demo.html',1,'Mattoha::Core']]],
-  ['mattoha_3a_3acore_3a_3autils_3',['Utils',['../namespace_mattoha_1_1_core_1_1_utils.html',1,'Mattoha::Core']]],
-  ['mattoha_3a_3amisc_4',['Misc',['../namespace_mattoha_1_1_misc.html',1,'Mattoha']]],
-  ['mattoha_3a_3anodes_5',['Nodes',['../namespace_mattoha_1_1_nodes.html',1,'Mattoha']]],
-  ['mattohaclient_6',['MattohaClient',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html',1,'Mattoha::Nodes']]],
-  ['mattohagameholder_7',['MattohaGameHolder',['../class_mattoha_1_1_nodes_1_1_mattoha_game_holder.html',1,'Mattoha::Nodes']]],
-  ['mattohaserver_8',['MattohaServer',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html',1,'Mattoha::Nodes']]],
-  ['mattohaservermiddleware_9',['MattohaServerMiddleware',['../class_mattoha_1_1_misc_1_1_mattoha_server_middleware.html',1,'Mattoha::Misc']]],
-  ['mattohaspawner_10',['MattohaSpawner',['../class_mattoha_1_1_nodes_1_1_mattoha_spawner.html',1,'Mattoha::Nodes']]],
-  ['mattohaspawnkeys_11',['MattohaSpawnKeys',['../class_mattoha_1_1_core_1_1_utils_1_1_mattoha_spawn_keys.html',1,'Mattoha::Core::Utils']]],
-  ['mattohasynchronizermodifier_12',['MattohaSynchronizerModifier',['../class_mattoha_1_1_nodes_1_1_mattoha_synchronizer_modifier.html',1,'Mattoha::Nodes']]],
-  ['mattohasystem_13',['MattohaSystem',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html',1,'Mattoha::Nodes']]],
-  ['mattohautils_14',['MattohaUtils',['../class_mattoha_1_1_core_1_1_mattoha_utils.html',1,'Mattoha::Core']]],
-  ['middlewarenode_15',['MiddlewareNode',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#ac18e5630c547e3f592d4eddcb8be04b0',1,'Mattoha::Nodes::MattohaServer']]]
+  ['leavelobby_0',['LeaveLobby',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a0f9b3b3cc2df7d6287318a5337445df0',1,'Mattoha::Nodes::MattohaClient']]],
+  ['leavelobbysucceedeventhandler_1',['LeaveLobbySucceedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ad46b6bba62d37ae52a8f173c897afd02',1,'Mattoha::Nodes::MattohaClient']]],
+  ['loadavailablelobbies_2',['LoadAvailableLobbies',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#aa2792dc0388004b2759e057b4d50eb2f',1,'Mattoha::Nodes::MattohaClient']]],
+  ['loadavailablelobbiesfailedeventhandler_3',['LoadAvailableLobbiesFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a921d0273f8c83dae225cb1cbec1e4380',1,'Mattoha::Nodes::MattohaClient']]],
+  ['loadavailablelobbiessucceedeventhandler_4',['LoadAvailableLobbiesSucceedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a86c2ec28c9e42fc08210bd918e8def6a',1,'Mattoha::Nodes::MattohaClient']]],
+  ['loadlobbyplayers_5',['LoadLobbyPlayers',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a10c02e9641c1b105151cb94629cb8dda',1,'Mattoha::Nodes::MattohaClient']]],
+  ['loadlobbyplayersfailedeventhandler_6',['LoadLobbyPlayersFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ae5cbc3fe9be53f5878089b00089313fd',1,'Mattoha::Nodes::MattohaClient']]],
+  ['loadlobbyplayersforall_7',['LoadLobbyPlayersForAll',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a6825f39b2a7897c0f17a88fa77921bd1',1,'Mattoha::Nodes::MattohaServer']]],
+  ['loadlobbyplayerssucceedeventhandler_8',['LoadLobbyPlayersSucceedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ac7b6c85092d8b75d18bd62ffc3e9e665',1,'Mattoha::Nodes::MattohaClient']]],
+  ['lobbies_9',['Lobbies',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a358d72c2d26b62f290f5dbfd734abc77',1,'Mattoha::Nodes::MattohaServer']]],
+  ['lobbymessagefailedeventhandler_10',['LobbyMessageFailedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a99c840b86f1c1382f99009fa13dc48ac',1,'Mattoha::Nodes::MattohaClient']]],
+  ['lobbymessagerecievedeventhandler_11',['LobbyMessageRecievedEventHandler',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a25d0630a9511852dc8f5bc0ae35d00a3',1,'Mattoha::Nodes::MattohaClient']]],
+  ['lobbynode_12',['LobbyNode',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a67dbcbe8dcd0e8382048eacbc6e6ec07',1,'Mattoha::Nodes::MattohaClient']]],
+  ['lobbysize_13',['LobbySize',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#a6a0b5096e0e76a4f976b5b1c66e1e318',1,'Mattoha::Nodes::MattohaSystem']]]
 ];
