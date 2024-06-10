@@ -20,6 +20,18 @@ public partial class MattohaServer : Node
 	/// </summary>
 	[Signal] public delegate void PlayerLeftLobbyEventHandler(long playerId, int lobbyId);
 
+
+	/// <summary>
+	/// Emmited when a lobby game started.
+	/// </summary>
+	[Signal] public delegate void LobbyGameStartedEventHandler(int lobbyId);
+
+
+	/// <summary>
+	/// Emmited when a lobby game ended.
+	/// </summary>
+	[Signal] public delegate void LobbyGameEndedEventHandler(int lobbyId);
+
 	/// <summary>
 	/// Server Middleware for executing logic before and after almost every event that client do,
 	/// This node should have "MattohaMiddleware" or an inherited class node script attached to it.
@@ -39,7 +51,7 @@ public partial class MattohaServer : Node
 	/// <summary>
 	/// A dictionary that contains spawned nodes for each lobby, where the key is the lobby id.
 	/// </summary>
-	public Dictionary<int, Array<Dictionary<string, Variant>>> SpawnedNodes { get; private set; } = new();
+	[Export] public Dictionary<int, Array<Dictionary<string, Variant>>> SpawnedNodes { get; private set; } = new();
 
 	/// <summary>
 	/// A dictionary that contains removed scene nodes that has been despawned during game play for each lobby,
@@ -508,6 +520,7 @@ public partial class MattohaServer : Node
 
 		RefreshAvailableLobbiesForAll();
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.NewPlayerJoined), player, true);
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SetLobbyData), lobby, true);
 		EmitSignal(SignalName.PlayerJoinedLobby, sender, lobbyId);
 #endif
 	}
@@ -536,6 +549,7 @@ public partial class MattohaServer : Node
 
 		MiddlewareNode.AfterStartGame(lobby, sender);
 		lobby[MattohaLobbyKeys.IsGameStarted] = true;
+		EmitSignal(SignalName.LobbyGameStarted, lobby[MattohaLobbyKeys.Id].AsInt32());
 		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.StartGame), null);
 		RefreshAvailableLobbiesForAll();
 
@@ -566,6 +580,7 @@ public partial class MattohaServer : Node
 
 		MiddlewareNode.AfterEndGame(lobby, sender);
 		lobby[MattohaLobbyKeys.IsGameStarted] = false;
+		EmitSignal(SignalName.LobbyGameEnded, lobby[MattohaLobbyKeys.Id].AsInt32());
 		SendRpcForPlayersInLobby(lobby[MattohaLobbyKeys.Id].AsInt32(), nameof(ClientRpc.EndGame), null);
 		RefreshAvailableLobbiesForAll();
 

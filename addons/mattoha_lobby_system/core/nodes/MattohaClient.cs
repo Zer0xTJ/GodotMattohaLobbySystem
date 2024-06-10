@@ -187,6 +187,11 @@ public partial class MattohaClient : Node
 	[Signal] public delegate void SpawnNodeFailedEventHandler(string cause);
 
 	/// <summary>
+	/// Emitted when spawning lobby nodes finishes.
+	/// </summary>
+	[Signal] public delegate void SpawnLobbyNodesSucceedEventHandler();
+
+	/// <summary>
 	/// Emitted when spawning lobby nodes fails.
 	/// </summary>
 	/// <param name="cause">The cause of the failure.</param>
@@ -713,6 +718,7 @@ public partial class MattohaClient : Node
 		}
 		// why?: because to notify other players to replicate their data, and we are sure that all nodes have been spawned
 		SetPlayerData(new Dictionary<string, Variant> { { MattohaPlayerKeys.IsInGame, true } });
+		EmitSignal(SignalName.SpawnLobbyNodesSucceed);
 #endif
 	}
 
