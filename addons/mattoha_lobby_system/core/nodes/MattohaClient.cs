@@ -283,7 +283,7 @@ public partial class MattohaClient : Node
 	/// <summary>
 	/// Returns true if player "IsInGame" proeprty is true, IsInGame will be true when player sync spawned lobby nodes by others.
 	/// </summary>
-	public bool CanReplicate => CurrentPlayer[MattohaPlayerKeys.IsInGame].AsBool();
+	public bool CanReplicate => CurrentPlayer.ContainsKey(MattohaPlayerKeys.IsInGame) && CurrentPlayer[MattohaPlayerKeys.IsInGame].AsBool();
 
 	private MattohaSystem _system;
 

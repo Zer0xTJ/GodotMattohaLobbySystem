@@ -179,7 +179,6 @@ public partial class MattohaSystem : Node
 				node.Set(additionalProp.Key, additionalProp.Value);
 			}
 		}
-
 		if (GetTree().Root.HasNode(parentPath))
 		{
 			var parent = GetNode(parentPath);
@@ -263,6 +262,7 @@ public partial class MattohaSystem : Node
 				payload[MattohaSpawnKeys.AdditionalProps].AsGodotDictionary<string, Variant>().Add(key, node.Get(key));
 			}
 		}
+
 		return payload;
 
 	}

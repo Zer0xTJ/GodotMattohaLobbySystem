@@ -8,7 +8,7 @@ public partial class MattohaSynchronizerModifier : MultiplayerSynchronizer
     [Export] public bool ReplicateForTeamOnly { get; set; } = false;
 
 
-    public override void _Ready()
+    public override void _EnterTree()
     {
 
         PublicVisibility = false;
@@ -20,7 +20,7 @@ public partial class MattohaSynchronizerModifier : MultiplayerSynchronizer
 
         ApplySetVisibilityFor();
         ApplyMattohaReplicationFilter();
-        base._Ready();
+        base._EnterTree();
     }
 
     private void OnJoinedPlayerUpdated(Dictionary<string, Variant> playerData)
