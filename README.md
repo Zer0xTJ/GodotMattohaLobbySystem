@@ -22,9 +22,6 @@ This addon is still in devlopment stage and new versions may have a breaking cha
 MattohaLobbySystem comes with demos for c# & gdscript , you can watch the demo on youtube too:
 Youtube demo: https://www.youtube.com/watch?v=9CdeYuuKfWo
 
-## Have any ideas ?
-
-DM me on X-platform - https://x.com/zer0xtj , It would be appreciated if you write in Arabic.
 
 ## Donation
 
