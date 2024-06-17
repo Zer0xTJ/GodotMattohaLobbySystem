@@ -12,15 +12,23 @@ public partial class MattohaRotationSynchronizer : Node
 
 	public override void _EnterTree()
 	{
+		MattohaSystem.Instance.Client.SetPlayerIsInGameSucceed += OnPlayerInGame;
 		_parent = GetParent<Node>();
 		_rot = _parent.Get("rotation");
+		base._EnterTree();
+	}
+
+
+	private void OnPlayerInGame(bool value)
+	{
+		if (!value)
+			return;
 		if (!MattohaSystem.Instance.IsNodeOwner(this))
 		{
 			// this will be called from unonwer players so they can sync intial rotation
 			RequestRotation();
 		}
-		base._EnterTree();
-	}
+    }
 
 
 	public override void _Process(double delta)
@@ -59,27 +67,40 @@ public partial class MattohaRotationSynchronizer : Node
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
 	void RpcRequestRotation()
 	{
-		SendRotation();
+		SendRotation(Multiplayer.GetRemoteSenderId());
 	}
 
 
-	public void SendRotation()
+	public void SendRotation(long onlyFor = 0)
 	{
 		_rot = _parent.Get("position");
 		var playersIds = MattohaSystem.Instance.Client.GetLobbyPlayersIds();
-		foreach (var id in playersIds)
+		if (onlyFor == 0) // 0 = send to all
 		{
-			if (id != Multiplayer.GetUniqueId())
+			foreach (var id in playersIds)
 			{
-				RpcId(id, nameof(RpcRotation), _parent.Get("position"));
+				if (id != Multiplayer.GetUniqueId())
+				{
+					RpcId(id, nameof(RpcSendRotation), _parent.Get("position"));
+				}
 			}
+		}
+		else
+		{
+			RpcId(onlyFor, nameof(RpcSendRotation), _parent.Get("position"));
 		}
 	}
 
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	void RpcRotation(Variant position)
+	void RpcSendRotation(Variant position)
 	{
 		_rot = position;
+	}
+
+	public override void _ExitTree()
+	{
+		MattohaSystem.Instance.Client.SetPlayerIsInGameSucceed -= OnPlayerInGame;
+		base._ExitTree();
 	}
 }

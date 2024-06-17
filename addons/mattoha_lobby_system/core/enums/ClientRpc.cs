@@ -61,4 +61,5 @@ internal enum ClientRpc
 	LeaveLobby,
 	EndGame,
 	EndGameFailed,
+	SetPlayerIsInGame,
 }

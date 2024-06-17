@@ -2,7 +2,6 @@ using Godot;
 using Godot.Collections;
 using Mattoha.Core.Demo;
 using Mattoha.Core.Utils;
-using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaClient : Node
@@ -47,6 +46,13 @@ public partial class MattohaClient : Node
 	/// </summary>
 	/// <param name="playerData">The updated player data.</param>
 	[Signal] public delegate void SetPlayerDataSucceedEventHandler(Dictionary<string, Variant> playerData);
+
+
+	/// <summary>
+	/// Emitted when change IsInGame value for the current player is done.
+	/// </summary>
+	/// <param name="playerData">The updated player data.</param>
+	[Signal] public delegate void SetPlayerIsInGameSucceedEventHandler(bool value);
 
 	/// <summary>
 	/// Emitted when setting player data fails.
@@ -268,7 +274,7 @@ public partial class MattohaClient : Node
 	/// <summary>
 	/// Returns the current player data synced with all players, "PrivateProps" list is not synced with others.
 	/// </summary>
-	public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
+	[Export] public Dictionary<string, Variant> CurrentPlayer { get; private set; } = new();
 
 	/// <summary>
 	/// Returns the current player data synced with all players in lobby, "PrivateProps" list is not synced with others.
@@ -299,12 +305,19 @@ public partial class MattohaClient : Node
 	/// Returns joined lobby players Ids.
 	/// </summary>
 	/// <returns>IDs list.</returns>
-	public Array<long> GetLobbyPlayersIds()
+	public Array<long> GetLobbyPlayersIds(bool onlyInGamePlayers = true)
 	{
 		var ids = new Array<long>() { 1 };
-		foreach (var id in CurrentLobbyPlayers.Keys)
+		foreach (var playerKeyValuePair in CurrentLobbyPlayers)
 		{
-			ids.Add(id);
+			if (playerKeyValuePair.Value[MattohaPlayerKeys.IsInGame].AsBool() && onlyInGamePlayers)
+			{
+				ids.Add(playerKeyValuePair.Key);
+			}
+			else if (!onlyInGamePlayers)
+			{
+				ids.Add(playerKeyValuePair.Key);
+			}
 		}
 		return ids;
 	}
@@ -708,6 +721,27 @@ public partial class MattohaClient : Node
 	}
 
 
+	/// <summary>
+	/// Change the state of the current player if he is in game or not.
+	/// </summary>
+	/// <param name="value">true if IsInGame should be true, otherwise false</param>
+	public void SetPlayerIsInGame(bool value)
+	{
+#if MATTOHA_CLIENT
+		_system.SendReliableServerRpc(nameof(ServerRpc.SetPlayerIsInGame), new Dictionary<string, Variant> { { "Value", value } });
+#endif
+	}
+
+	private void RpcSetPlayerIsInGame(Dictionary<string, Variant> payload)
+	{
+#if MATTOHA_CLIENT
+		var value = payload["Value"].AsBool();
+		EmitSignal(SignalName.SetPlayerIsInGameSucceed, value);
+#endif
+	}
+
+
+
 	private void RpcSpawnLobbyNodes(Dictionary<string, Variant> payload)
 	{
 #if MATTOHA_CLIENT
@@ -717,7 +751,7 @@ public partial class MattohaClient : Node
 			_system.SpawnNodeFromPayload(node);
 		}
 		// why?: because to notify other players to replicate their data, and we are sure that all nodes have been spawned
-		SetPlayerData(new Dictionary<string, Variant> { { MattohaPlayerKeys.IsInGame, true } });
+		SetPlayerIsInGame(true);
 		EmitSignal(SignalName.SpawnLobbyNodesSucceed);
 #endif
 	}
@@ -1031,6 +1065,9 @@ public partial class MattohaClient : Node
 				break;
 			case nameof(ClientRpc.JoinLobbyFailed):
 				RpcJoinLobbyFailed(payload);
+				break;
+			case nameof(ClientRpc.SetPlayerIsInGame):
+				RpcSetPlayerIsInGame(payload);
 				break;
 
 

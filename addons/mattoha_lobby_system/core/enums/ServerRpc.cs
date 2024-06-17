@@ -20,4 +20,5 @@ internal enum ServerRpc
 	SendGlobalMessage,
 	LeaveLobby,
 	EndGame,
+	SetPlayerIsInGame,
 }

@@ -324,6 +324,22 @@ public partial class MattohaServer : Node
 	}
 
 
+	private void RpcSetPlayerIsInGame(Dictionary<string, Variant> payload, long sender)
+	{
+#if MATTOHA_SERVER
+		if (!Players.TryGetValue(sender, out var player))
+			return;
+
+		player["IsInGame"] = payload["Value"].AsBool();
+
+		var lobbyId = player[MattohaPlayerKeys.JoinedLobbyId].AsInt32();
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerData), player);
+		_system.SendReliableClientRpc(sender, nameof(ClientRpc.SetPlayerIsInGame), payload);
+		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.JoinedPlayerUpdated), player, true);
+#endif
+	}
+
+
 	private void RpcCreateLobby(Dictionary<string, Variant> lobbyData, long sender)
 	{
 #if MATTOHA_SERVER
@@ -771,7 +787,7 @@ public partial class MattohaServer : Node
 		{
 			SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.DespawnNode), payload);
 			_system.DespawnNodeFromPayload(spawnedNode);
-			SpawnedNodes[lobbyId].Remove(payload);
+			SpawnedNodes[lobbyId].Remove(spawnedNode);
 		}
 		else // now , we will assume that this node was already in scene structure, so we will add it to RemovedSceneNodes if not exists
 		{
@@ -1004,6 +1020,9 @@ public partial class MattohaServer : Node
 		{
 			case nameof(ServerRpc.SetPlayerData):
 				RpcSetPlayerData(payload, sender);
+				break;
+			case nameof(ServerRpc.SetPlayerIsInGame):
+				RpcSetPlayerIsInGame(payload, sender);
 				break;
 			case nameof(ServerRpc.CreateLobby):
 				RpcCreateLobby(payload, sender);

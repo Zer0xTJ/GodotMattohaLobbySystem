@@ -1,4 +1,5 @@
 using Godot;
+using System;
 
 namespace Mattoha.Nodes;
 public partial class MattohaPositionSynchronizer : Node
@@ -11,20 +12,26 @@ public partial class MattohaPositionSynchronizer : Node
 
 	public override void _EnterTree()
 	{
+		MattohaSystem.Instance.Client.SetPlayerIsInGameSucceed += OnPlayerInGame;
 		_parent = GetParent<Node>();
 		_destinationPosition = _parent.Get("position");
+		base._EnterTree();
+	}
+
+	private void OnPlayerInGame(bool value)
+	{
+		if (!value)
+			return;
 		if (!MattohaSystem.Instance.IsNodeOwner(this))
 		{
 			// this will be called from unonwer players so they can sync intial position
 			RequestPosition();
 		}
-		base._EnterTree();
-	}
-
+    }
 
 	public override void _Process(double delta)
 	{
-		if (MattohaSystem.Instance.IsNodeOwner(this) &&  MattohaSystem.Instance.Client.CanReplicate)
+		if (MattohaSystem.Instance.IsNodeOwner(this) && MattohaSystem.Instance.Client.CanReplicate)
 		{
 			if (!Equals(_destinationPosition, _parent.Get("position")))
 			{
@@ -40,7 +47,7 @@ public partial class MattohaPositionSynchronizer : Node
 				(_parent as Node2D).Position = (_parent as Node2D).Position.Lerp(pos, InterpolationTime);
 			}
 			else if (_parent is Node3D)
-			{ 
+			{
 				var pos = _destinationPosition.AsVector3();
 				(_parent as Node3D).Position = (_parent as Node3D).Position.Lerp(pos, InterpolationTime);
 			}
@@ -55,30 +62,44 @@ public partial class MattohaPositionSynchronizer : Node
 	}
 
 
+	// todo: performance & packets issue, send for only player requested the position
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
 	void RpcRequestPosition()
 	{
-		SendPosition();
+		SendPosition(Multiplayer.GetRemoteSenderId());
 	}
 
 
-	public void SendPosition()
+	public void SendPosition(long onlyFor = 0)
 	{
 		_destinationPosition = _parent.Get("position");
 		var playersIds = MattohaSystem.Instance.Client.GetLobbyPlayersIds();
-		foreach (var id in playersIds)
+		if (onlyFor == 0) // 0 = send to all
 		{
-			if (id != Multiplayer.GetUniqueId())
+			foreach (var id in playersIds)
 			{
-				RpcId(id, nameof(RpcPosition), _parent.Get("position"));
+				if (id != Multiplayer.GetUniqueId())
+				{
+					RpcId(id, nameof(RpcSentPosition), _parent.Get("position"));
+				}
 			}
+		}
+		else
+		{
+			RpcId(onlyFor, nameof(RpcSentPosition), _parent.Get("position"));
 		}
 	}
 
 
 	[Rpc(MultiplayerApi.RpcMode.AnyPeer)]
-	void RpcPosition(Variant position)
+	void RpcSentPosition(Variant position)
 	{
 		_destinationPosition = position;
+	}
+
+	public override void _ExitTree()
+	{
+		MattohaSystem.Instance.Client.SetPlayerIsInGameSucceed -= OnPlayerInGame;
+		base._ExitTree();
 	}
 }

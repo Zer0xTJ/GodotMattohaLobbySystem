@@ -12,6 +12,6 @@ static class MattohaPlayerKeys
     public static string PrivateProps { get; private set; } = "PrivateProps";
     public static string ChatProps { get; private set; } = "ChatProps";
 
-    public static List<string> FreezedProperties { get; private set; } = new() { Id, JoinedLobbyId };
+    public static List<string> FreezedProperties { get; private set; } = new() { Id, JoinedLobbyId, IsInGame };
 
 }
