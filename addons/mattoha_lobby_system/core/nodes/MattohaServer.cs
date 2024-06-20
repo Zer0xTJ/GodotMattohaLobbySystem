@@ -32,6 +32,12 @@ public partial class MattohaServer : Node
 	/// </summary>
 	[Signal] public delegate void LobbyGameEndedEventHandler(int lobbyId);
 
+
+	/// <summary>
+	/// Emmited when a lobby has been removed.
+	/// </summary>
+	[Signal] public delegate void LobbyRemovedEventHandler(int lobbyId);
+
 	/// <summary>
 	/// Server Middleware for executing logic before and after almost every event that client do,
 	/// This node should have "MattohaMiddleware" or an inherited class node script attached to it.
@@ -985,10 +991,12 @@ public partial class MattohaServer : Node
 		var lobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
 		if (lobby[MattohaLobbyKeys.PlayersCount].AsInt32() == 0)
 		{
-			Lobbies.Remove(lobby[MattohaLobbyKeys.Id].AsInt32());
+			var toBeRemovedLobbyId = lobby[MattohaLobbyKeys.Id].AsInt32();
+			Lobbies.Remove(toBeRemovedLobbyId);
 			GameHolder.GetNode($"Lobby{lobbyId}").QueueFree();
 			SpawnedNodes.Remove(lobbyId);
 			RemovedSceneNodes.Remove(lobbyId);
+			EmitSignal(SignalName.LobbyRemoved, toBeRemovedLobbyId);
 		}
 		else if (lobby[MattohaLobbyKeys.OwnerId].AsInt64() == playerId)
 		{
