@@ -268,6 +268,8 @@ public partial class MattohaServer : Node
 	/// <param name="ignorePeer">ignore this peer and dont send RPC for him, usefull if you want to ignore the sender.</param>
 	public void SendRpcForPlayersInLobby(int lobbyId, string methodName, Dictionary<string, Variant> payload, bool secureDict = false, long superPeer = 0, long ignorePeer = 0)
 	{
+		if (lobbyId == 0)
+			return;
 		var players = GetLobbyPlayers(lobbyId);
 		foreach (var player in players)
 		{
