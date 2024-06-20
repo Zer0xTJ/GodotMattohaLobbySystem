@@ -434,6 +434,10 @@ public partial class MattohaServer : Node
 		}
 		MiddlewareNode.AfterSetLobbyData(lobbyId, payload, sender);
 		SendRpcForPlayersInLobby(lobbyId, nameof(ClientRpc.SetLobbyData), lobby, true, sender);
+		if (_system.AutoLoadAvailableLobbies)
+		{
+			RefreshAvailableLobbiesForAll();
+		}
 #endif
 	}
 
