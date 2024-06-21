@@ -16,12 +16,13 @@ Mattoha Lobby System is an addon designed to simplify multiplayer game developme
 -   **UnhandledRpc:** MattohaLobbySystem allows you to send a custom RPC and handle it at your own, for both client & server.
 
 ## Development
+
 This addon is still in devlopment stage and new versions may have a breaking changes, it needs some performance optimization too, We welcome any contributions that helps in "documentations, demos, optimizations, improvement and bug fixes" .
 
 ## Demo
+
 MattohaLobbySystem comes with demos for c# & gdscript , you can watch the demo on youtube too:
 Youtube demo: https://www.youtube.com/watch?v=9CdeYuuKfWo
-
 
 ## Donation
 
@@ -69,10 +70,12 @@ When you want to distrubite your game for players, disable `MATTOHA_SERVER` cons
 This configuration will help you to debug your code easly.
 
 ## Setting Up Nodes
+
 after installing and enable MattohaLobbySystem, a new auto load will be exists in your project with name `MattohaSystem`, you can configure it from `res://addons/mattoha_lobby_system/core/autoload/MattohaSystem.tscn` as you want.
 In addition you can access the system methods as following:
 
-- For c#
+-   For c#
+
 ```csharp
 // starting server
 MattohaSystem.Instance.StartServer();
@@ -93,7 +96,7 @@ MattohaSystem.Instance.Client.CreateLobbyFailed += OnCreateLobbyFailed; // on fa
 
 ```
 
-- For GDScript
+-   For GDScript
 
 ```gdscript
 # starting server
@@ -112,41 +115,46 @@ MattohaSystemGD.client.create_lobby_failed.connect(_on_create_lobby_failed_)  # 
 ```
 
 # GameHolder
+
 When a lobby game is started, we will be listining for a `StartGameSucceed`signal, that comes with the lobby dictionary,
 but instead of changing the scene to the game scene,
 
 we must navigate user to a GameHolder scene, so lets setup our game holder scene.
 
-- Create a new scene (Node2D / Node3D).
-- Now attach `MattohaGameHolder` script for it, it can be found on `res://addons/mattoha_lobby_system/core/nodes/MattohaGameHolder.cs`.
+-   Create a new scene (Node2D / Node3D).
+-   Now attach `MattohaGameHolder` script for it, it can be found on `res://addons/mattoha_lobby_system/core/nodes/MattohaGameHolder.cs`.
 
 Note that `MattohaGameHolder` is responsible for loading the scene and spawning / despawning lobby nodes of the game play.
 
-- `NOTE`: game holder node should be named `GameHolder` with the same letters cases.
+-   `NOTE`: game holder node should be named `GameHolder` with the same letters cases.
 
 # Spawning/Depsawning Nodes & Replication
+
 Every node you want to auto spawn/despawn should has a `MattohaSpawner` node child.
 `MattohaSpawner` has the following properties:
 
-- `Auto Spawn` when true, will spawn node for other players on _ready()
-- `Auto Despawn` when true, will despawn node for others when queue_free()
-- `Spawn For Team Only` when true, spawning the node will be only for team members.
-- `HandleByServer` when true, the spawning and despawning will be handled by server, and nodes authority will be the server too.
-- `AdditionalProps` A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" or "Child1/Child2/Sprite2D:self_modulate" for nested node and "Sprite2D:scale" for direct child node.
+-   `Auto Spawn` when true, will spawn node for other players on \_ready()
+-   `Auto Despawn` when true, will despawn node for others when queue_free()
+-   `Spawn For Team Only` when true, spawning the node will be only for team members.
+-   `HandleByServer` when true, the spawning and despawning will be handled by server, and nodes authority will be the server too.
+-   `AdditionalProps` A properties list that should be replicated for other players during spawning, eg: "velocity", "motion_mode" or "Child1/Child2/Sprite2D:self_modulate" for nested node and "Sprite2D:scale" for direct child node.
 
 Configuring our nodes to spawn & despawn:
-- When a node is a scene node (meaning that it's already exists in scene design and it's able to be despawned) then you must set `HandledByServer` to true and disable `Auto Spawn` because its already spawned.
-- To Enable Replication Add `MultiplayerSynchronizer` node to the node you want to replicate and configure it and add what ever properties you want to replicate, BUT you "MUST" attach `MattohaSynchronizerModifier` script to `MultiplayerSynchronizer` node you have added.
-- When you set `Spawn For Team Only` to true on `MattohaSpawner`, you must set `Replicate For Team Only` in the `MattohaSynchronizerModifier` too.
+
+-   When a node is a scene node (meaning that it's already exists in scene design and it's able to be despawned) then you must set `HandledByServer` to true and disable `Auto Spawn` because its already spawned.
+-   To Enable Replication Add `MultiplayerSynchronizer` node to the node you want to replicate and configure it and add what ever properties you want to replicate, BUT you "MUST" attach `MattohaSynchronizerModifier` script to `MultiplayerSynchronizer` node you have added.
+-   When you set `Spawn For Team Only` to true on `MattohaSpawner`, you must set `Replicate For Team Only` in the `MattohaSynchronizerModifier` too.
 
 After setting up these configurations correctly for nodes you want to spawn, you are ready to move to next step..
 
 # Creating Node instance to spawn.
+
 Replicated nodes must have same name in the scene, and it's hard to create a custom name for every node, this is why MattohaSystem comes with a great method to help you out.
 
 Creating node instance must be as following:
 
-- CSharp:
+-   CSharp:
+
 ```csharp
 // where `scene` is a PackedScene or a scene file path for example 'res://myscene.tscn'
 var instance = MattohaSystem.Instance.CreateInstance(scene);
@@ -154,26 +162,28 @@ var instance = MattohaSystem.Instance.CreateInstance(scene);
 AddChild(instance);
 ```
 
+-   GDScript:
 
-- GDScript:
 ```gdscript
 # where `scene` in gdscript api is a scene file path for example 'res://myscene.tscn'
 var instance = MattohaSystemGD.create_instance(scene)
 # after creating the instance, we must add it to tree
 add_child(instance)
 ```
+
 The instance should now spawn for all players in lobby or (in same team if configured to be spawn for team only), because `MattohaSpawner` will auto spawn and despawn nodes for all players in same lobby or team.
-
-
 
 There is a bunch of signals and methods you can use , check the API documentation:
 https://zer0xtj.github.io/GodotMattohaLobbySystem/class_mattoha_1_1_nodes_1_1_mattoha_client.html
-
 
 ## Export Notes
 
 When you export your game for the server, ensure to remove MATTOHA_CLIENT from csproject constants values for conditional compilation, same for client version, you should remove MATTOHA_SERVER for security reasons.
 
-
 ## API Documentation
+
 https://zer0xtj.github.io/GodotMattohaLobbySystem/annotated.html
+
+## TODO:
+
+Add missing bindings to GDScript
