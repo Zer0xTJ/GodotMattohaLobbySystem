@@ -27,7 +27,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.3</span>
+   <div id="projectname">GodotMattohaLobbySystem<span id="projectnumber">&#160;0.2.4</span>
    </div>
   </td>
  </tr>
@@ -128,6 +128,9 @@ delegate void&#160;</td><td class="memItemRight" valign="bottom"><b>ConnectedToS
 <tr class="memitem:a110f7127279669e00350f8e457bc0b9d" id="r_a110f7127279669e00350f8e457bc0b9d"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a110f7127279669e00350f8e457bc0b9d">SetPlayerDataSucceedEventHandler</a> (Dictionary&lt; string, Variant &gt; playerData)</td></tr>
 <tr class="memdesc:a110f7127279669e00350f8e457bc0b9d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when setting player data succeeds.  <br /></td></tr>
 <tr class="separator:a110f7127279669e00350f8e457bc0b9d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ada9f280d046aed5670079946c02b63a6" id="r_ada9f280d046aed5670079946c02b63a6"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ada9f280d046aed5670079946c02b63a6">SetPlayerIsInGameSucceedEventHandler</a> (bool value)</td></tr>
+<tr class="memdesc:ada9f280d046aed5670079946c02b63a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when change IsInGame value for the current player is done.  <br /></td></tr>
+<tr class="separator:ada9f280d046aed5670079946c02b63a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a266aa568ba4756f121a5e7bd0d33bf05" id="r_a266aa568ba4756f121a5e7bd0d33bf05"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a266aa568ba4756f121a5e7bd0d33bf05">SetPlayerDataFailedEventHandler</a> (string cause)</td></tr>
 <tr class="memdesc:a266aa568ba4756f121a5e7bd0d33bf05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when setting player data fails.  <br /></td></tr>
 <tr class="separator:a266aa568ba4756f121a5e7bd0d33bf05"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -198,6 +201,10 @@ delegate void&#160;</td><td class="memItemRight" valign="bottom"><b>LeaveLobbySu
 <tr class="memitem:adf31afb13958c064d7e6fb86f0ee5dea" id="r_adf31afb13958c064d7e6fb86f0ee5dea"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adf31afb13958c064d7e6fb86f0ee5dea">SpawnNodeFailedEventHandler</a> (string cause)</td></tr>
 <tr class="memdesc:adf31afb13958c064d7e6fb86f0ee5dea"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when node spawning fails.  <br /></td></tr>
 <tr class="separator:adf31afb13958c064d7e6fb86f0ee5dea"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4c6fe020eda56954e5a782cddad8fbe3" id="r_a4c6fe020eda56954e5a782cddad8fbe3"><td class="memItemLeft" align="right" valign="top"><a id="a4c6fe020eda56954e5a782cddad8fbe3" name="a4c6fe020eda56954e5a782cddad8fbe3"></a>
+delegate void&#160;</td><td class="memItemRight" valign="bottom"><b>SpawnLobbyNodesSucceedEventHandler</b> ()</td></tr>
+<tr class="memdesc:a4c6fe020eda56954e5a782cddad8fbe3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when spawning lobby nodes finishes. <br /></td></tr>
+<tr class="separator:a4c6fe020eda56954e5a782cddad8fbe3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9341dbef3ddc61bf3710463875927811" id="r_a9341dbef3ddc61bf3710463875927811"><td class="memItemLeft" align="right" valign="top">delegate void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9341dbef3ddc61bf3710463875927811">SpawnLobbyNodesFailedEventHandler</a> (string cause)</td></tr>
 <tr class="memdesc:a9341dbef3ddc61bf3710463875927811"><td class="mdescLeft">&#160;</td><td class="mdescRight">Emitted when spawning lobby nodes fails.  <br /></td></tr>
 <tr class="separator:a9341dbef3ddc61bf3710463875927811"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -231,9 +238,9 @@ delegate void&#160;</td><td class="memItemRight" valign="bottom"><b>LeaveLobbySu
 <tr class="memitem:a27aaaf9c7f322daecdfca3e8f8167e8c" id="r_a27aaaf9c7f322daecdfca3e8f8167e8c"><td class="memItemLeft" align="right" valign="top"><a id="a27aaaf9c7f322daecdfca3e8f8167e8c" name="a27aaaf9c7f322daecdfca3e8f8167e8c"></a>
 override void&#160;</td><td class="memItemRight" valign="bottom"><b>_Ready</b> ()</td></tr>
 <tr class="separator:a27aaaf9c7f322daecdfca3e8f8167e8c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac990496d8ea2878cbece9a1471702953" id="r_ac990496d8ea2878cbece9a1471702953"><td class="memItemLeft" align="right" valign="top">Array&lt; long &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ac990496d8ea2878cbece9a1471702953">GetLobbyPlayersIds</a> ()</td></tr>
-<tr class="memdesc:ac990496d8ea2878cbece9a1471702953"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns joined lobby players Ids.  <br /></td></tr>
-<tr class="separator:ac990496d8ea2878cbece9a1471702953"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a309dce7ea1fc77280bcf53ed11ddb7cd" id="r_a309dce7ea1fc77280bcf53ed11ddb7cd"><td class="memItemLeft" align="right" valign="top">Array&lt; long &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a309dce7ea1fc77280bcf53ed11ddb7cd">GetLobbyPlayersIds</a> (bool onlyInGamePlayers=true)</td></tr>
+<tr class="memdesc:a309dce7ea1fc77280bcf53ed11ddb7cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns joined lobby players Ids.  <br /></td></tr>
+<tr class="separator:a309dce7ea1fc77280bcf53ed11ddb7cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add7a1189672f90bbdce4e2fdefdda219" id="r_add7a1189672f90bbdce4e2fdefdda219"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#add7a1189672f90bbdce4e2fdefdda219">IsPlayerInLobby</a> (long playerId)</td></tr>
 <tr class="memdesc:add7a1189672f90bbdce4e2fdefdda219"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if peer id is joined in lobby or not.  <br /></td></tr>
 <tr class="separator:add7a1189672f90bbdce4e2fdefdda219"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -287,6 +294,9 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>LoadLobbyPlayers</b> 
 void&#160;</td><td class="memItemRight" valign="bottom"><b>SpawnLobbyNodes</b> ()</td></tr>
 <tr class="memdesc:a60df5849eefa728463bf0b8a715dc241"><td class="mdescLeft">&#160;</td><td class="mdescRight">Spawn all lobby nodes tha has been spawned by other players, team only nodes will not be spawned until player in same team, this method will emmit "SpawnLobbyNodesSucceed" or "SpawnLobbyNodesFailed". <br /></td></tr>
 <tr class="separator:a60df5849eefa728463bf0b8a715dc241"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1c533fd6d934a06004b031f167b55225" id="r_a1c533fd6d934a06004b031f167b55225"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1c533fd6d934a06004b031f167b55225">SetPlayerIsInGame</a> (bool value)</td></tr>
+<tr class="memdesc:a1c533fd6d934a06004b031f167b55225"><td class="mdescLeft">&#160;</td><td class="mdescRight">Change the state of the current player if he is in game or not.  <br /></td></tr>
+<tr class="separator:a1c533fd6d934a06004b031f167b55225"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af47b88e6d704190c811e79a151d8cda5" id="r_af47b88e6d704190c811e79a151d8cda5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#af47b88e6d704190c811e79a151d8cda5">DespawnNode</a> (Node node)</td></tr>
 <tr class="memdesc:af47b88e6d704190c811e79a151d8cda5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Despawn node and sync that with all players, this will emmit "DespawnNodeRequested" for all players and "DespawnNodeFailed" for caller user if despawning fails and then respawning the node in case if player destroyed it.  <br /></td></tr>
 <tr class="separator:af47b88e6d704190c811e79a151d8cda5"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -576,8 +586,8 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CanReplicate</b><code
 
 </div>
 </div>
-<a id="ac990496d8ea2878cbece9a1471702953" name="ac990496d8ea2878cbece9a1471702953"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac990496d8ea2878cbece9a1471702953">&#9670;&#160;</a></span>GetLobbyPlayersIds()</h2>
+<a id="a309dce7ea1fc77280bcf53ed11ddb7cd" name="a309dce7ea1fc77280bcf53ed11ddb7cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a309dce7ea1fc77280bcf53ed11ddb7cd">&#9670;&#160;</a></span>GetLobbyPlayersIds()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -585,7 +595,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CanReplicate</b><code
         <tr>
           <td class="memname">Array&lt; long &gt; Mattoha.Nodes.MattohaClient.GetLobbyPlayersIds </td>
           <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>onlyInGamePlayers</em></span><span class="paramdefsep"> = </span><span class="paramdefval">true</span></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1491,6 +1501,56 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><b>CanReplicate</b><code
 </div><div class="memdoc">
 
 <p>Emitted when setting player data succeeds. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">playerData</td><td>The updated player data.</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a1c533fd6d934a06004b031f167b55225" name="a1c533fd6d934a06004b031f167b55225"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1c533fd6d934a06004b031f167b55225">&#9670;&#160;</a></span>SetPlayerIsInGame()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void Mattoha.Nodes.MattohaClient.SetPlayerIsInGame </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Change the state of the current player if he is in game or not. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">value</td><td>true if IsInGame should be true, otherwise false</td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ada9f280d046aed5670079946c02b63a6" name="ada9f280d046aed5670079946c02b63a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ada9f280d046aed5670079946c02b63a6">&#9670;&#160;</a></span>SetPlayerIsInGameSucceedEventHandler()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">delegate void Mattoha.Nodes.MattohaClient.SetPlayerIsInGameSucceedEventHandler </td>
+          <td>(</td>
+          <td class="paramtype">bool</td>          <td class="paramname"><span class="paramname"><em>value</em></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Emitted when change IsInGame value for the current player is done. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">playerData</td><td>The updated player data.</td></tr>

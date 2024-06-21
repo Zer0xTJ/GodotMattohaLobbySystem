@@ -21,6 +21,8 @@ var searchData=
   ['afterstartgame_18',['AfterStartGame',['../class_mattoha_1_1_misc_1_1_mattoha_server_middleware.html#a51eea6644ec2f9e7b4e8ce91395274b9',1,'Mattoha::Misc::MattohaServerMiddleware']]],
   ['afterunregisterplayer_19',['AfterUnRegisterPlayer',['../class_mattoha_1_1_misc_1_1_mattoha_server_middleware.html#afa35395d8daac842085fd15892554355',1,'Mattoha::Misc::MattohaServerMiddleware']]],
   ['autodespawn_20',['AutoDespawn',['../class_mattoha_1_1_nodes_1_1_mattoha_spawner.html#abbef73f1dbb81ee9fc3504d1d2066088',1,'Mattoha::Nodes::MattohaSpawner']]],
-  ['autoloadavailablelobbies_21',['AutoLoadAvailableLobbies',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#ab0b8dfc0059cc4a9e6b3e8d5c379ae77',1,'Mattoha::Nodes::MattohaSystem']]],
-  ['autospawn_22',['AutoSpawn',['../class_mattoha_1_1_nodes_1_1_mattoha_spawner.html#a449b5caa22bf74fa047d9f4dad5cff99',1,'Mattoha::Nodes::MattohaSpawner']]]
+  ['autodespawnremovedscenenodes_21',['AutoDespawnRemovedSceneNodes',['../class_mattoha_1_1_nodes_1_1_mattoha_game_holder.html#a7ee22bafd536bd099b1a3d2b05034b1a',1,'Mattoha::Nodes::MattohaGameHolder']]],
+  ['autoloadavailablelobbies_22',['AutoLoadAvailableLobbies',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#ab0b8dfc0059cc4a9e6b3e8d5c379ae77',1,'Mattoha::Nodes::MattohaSystem']]],
+  ['autospawn_23',['AutoSpawn',['../class_mattoha_1_1_nodes_1_1_mattoha_spawner.html#a449b5caa22bf74fa047d9f4dad5cff99',1,'Mattoha::Nodes::MattohaSpawner']]],
+  ['autospawnlobbynodes_24',['AutoSpawnLobbyNodes',['../class_mattoha_1_1_nodes_1_1_mattoha_game_holder.html#ab3ffb1a39169f54f28a988390d3e084c',1,'Mattoha::Nodes::MattohaGameHolder']]]
 ];

@@ -5,7 +5,7 @@ var searchData=
   ['getchatprops_2',['GetChatProps',['../class_mattoha_1_1_core_1_1_mattoha_utils.html#a6d20f014419a2d2c41adfde40e5641e6',1,'Mattoha::Core::MattohaUtils']]],
   ['getlobbynodefor_3',['GetLobbyNodeFor',['../class_mattoha_1_1_nodes_1_1_mattoha_system.html#a464bd1f5f7e429017cd921c91523624b',1,'Mattoha::Nodes::MattohaSystem']]],
   ['getlobbyplayers_4',['GetLobbyPlayers',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a0664d2be9bc4152be5607144787bee79',1,'Mattoha::Nodes::MattohaServer']]],
-  ['getlobbyplayersids_5',['GetLobbyPlayersIds',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#ac990496d8ea2878cbece9a1471702953',1,'Mattoha::Nodes::MattohaClient']]],
+  ['getlobbyplayersids_5',['GetLobbyPlayersIds',['../class_mattoha_1_1_nodes_1_1_mattoha_client.html#a309dce7ea1fc77280bcf53ed11ddb7cd',1,'Mattoha::Nodes::MattohaClient']]],
   ['getlobbyplayerssecured_6',['GetLobbyPlayersSecured',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#adb3632b5ec3dcccd8645e156be7bad8c',1,'Mattoha::Nodes::MattohaServer']]],
   ['getplayer_7',['GetPlayer',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a14b39ba79b3b21a6c4cb2388188c8505',1,'Mattoha::Nodes::MattohaServer']]],
   ['getplayerlobby_8',['GetPlayerLobby',['../class_mattoha_1_1_nodes_1_1_mattoha_server.html#a033881dd16d3ebdb6ea031154e63278f',1,'Mattoha::Nodes::MattohaServer']]],
